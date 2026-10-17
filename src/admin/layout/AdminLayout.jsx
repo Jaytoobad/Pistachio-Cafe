@@ -8,8 +8,8 @@ import MobileTabBar from './MobileTabBar';
 const links = [
   { to: '/admin', label: 'Dashboard' },
   { to: '/admin/orders', label: 'Orders' },
-  { to: '/admin/menu', label: 'Menu' },
-  { to: '/admin/categories', label: 'Categories' },
+  { to: '/admin/dishes', label: 'Dishes' },
+  { to: '/admin/menu', label: 'Menu Sections' },
   { to: '/admin/reviews', label: 'Reviews' },
   { to: '/admin/subscribers', label: 'Subscribers' },
   { to: '/admin/settings', label: 'Settings' },
@@ -32,7 +32,7 @@ export default function AdminLayout() {
       <Sidebar links={links} user={user} onLogout={handleLogout} />
       <main className="admin-main">
         <header className="admin-header">
-          <button className="sidebar-toggle" aria-label="Toggle menu">☰</button>
+          <button className="sidebar-toggle" aria-label="Toggle Dishes">☰</button>
           <h1>Pistachio Café <span style={{ color: 'var(--color-primary)' }}>Admin</span></h1>
           <div className="admin-header-actions">
             <a className="admin-view-shop" href="/pistachio-cafe/index.html" target="_blank" rel="noopener noreferrer">View shop</a>
@@ -45,3 +45,5 @@ export default function AdminLayout() {
     </div>
   );
 }
+
+

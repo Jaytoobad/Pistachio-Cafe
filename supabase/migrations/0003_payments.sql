@@ -1,5 +1,5 @@
 -- ============================================================================
--- 0002_pistachio_payments.sql
+-- 0003_payments.sql
 -- Payments infrastructure for Pistachio Café admin.
 --
 -- Adds: payments, order_status_history, notifications tables + decrement_stock
@@ -10,7 +10,7 @@
 --     phone, email(?), user_id(?), total, created_at
 --   - order_items: expects order_id, product_id, variant_id, product_name,
 --     quantity, unit_price, subtotal
---   - products: a `stock` numeric column is added here if missing (for stock
+--   - dishes: a `stock` numeric column is added here if missing (for stock
 --     decrement). product_variants.stock is referenced only when variant_id is
 --     set; adjust if your schema differs.
 -- ============================================================================
@@ -78,21 +78,21 @@ create policy notifications_staff_all on public.notifications
   using (public.is_staff())
   with check (public.is_staff());
 
--- --- Stock column on products (if missing) -----------------------------------
+-- --- Stock column on dishes (if missing) -----------------------------------
 
 do $$
 begin
   if not exists (
     select 1 from information_schema.columns
-    where table_schema = 'public' and table_name = 'products' and column_name = 'stock'
+    where table_schema = 'public' and table_name = 'dishes' and column_name = 'stock'
   ) then
-    alter table public.products add column stock numeric not null default 0;
+    alter table public.dishes add column stock numeric not null default 0;
   end if;
 end $$;
 
 -- --- Safe stock decrement helper --------------------------------------------
 
-create or replace function public.decrement_stock(p_product_id uuid, p_variant_id uuid, p_qty int)
+create or replace function public.decrement_stock(p_dish_id uuid, p_variant_id uuid, p_qty int)
 returns void
 language plpgsql
 security definer
@@ -105,11 +105,11 @@ begin
     -- leaves a status-history note when stock can't be decremented.
     null;
   else
-    update public.products
+    update public.dishes
     set stock = stock - p_qty
-    where id = p_product_id and stock >= p_qty;
+    where id = p_dish_id and stock >= p_qty;
     if not found then
-      raise exception 'Insufficient stock for product %', p_product_id;
+      raise exception 'Insufficient stock for dish %', p_dish_id;
     end if;
   end if;
 end;
@@ -131,3 +131,9 @@ begin
       execute function public.guard_order_payment_fields();
   end if;
 end $$;
+
+
+
+
+
+

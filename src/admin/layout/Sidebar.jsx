@@ -8,8 +8,7 @@ import MobileTabBar from './MobileTabBar';
 const links = [
   { to: '/admin', label: 'Dashboard' },
   { to: '/admin/orders', label: 'Orders' },
-  { to: '/admin/menu', label: 'Menu' },
-  { to: '/admin/categories', label: 'Categories' },
+  { to: '/admin/menu', label: 'Menu Sections' },
   { to: '/admin/reviews', label: 'Reviews' },
   { to: '/admin/subscribers', label: 'Subscribers' },
   { to: '/admin/settings', label: 'Settings' },

@@ -66,28 +66,28 @@ Deno.serve(async (req) => {
       return json({ error: 'Name and phone are required.' }, 400, corsHeaders);
     }
 
-    // Look up products server-side so the browser can't inject prices.
-    const productIds = [...new Set(items.map((i: any) => i.product_id))];
-    const { data: products, error: productsError } = await supabase
-      .from('products')
+    // Look up dishes server-side so the browser can't inject prices.
+    const dishIds = [...new Set(items.map((i: any) => i.dish_id))];
+    const { data: dishes, error: dishesError } = await supabase
+      .from('dishes')
       .select('id, name, price, is_available')
-      .in('id', productIds);
-    if (productsError) throw productsError;
-    const byId = new Map((products ?? []).map((p: any) => [p.id, p]));
+      .in('id', dishIds);
+    if (dishesError) throw dishesError;
+    const byId = new Map((dishes ?? []).map((p: any) => [p.id, p]));
 
     let total = 0;
     const lineItems: any[] = [];
     for (const item of items) {
-      const product = byId.get(item.product_id);
-      if (!product) return json({ error: `Unknown product ${item.product_id}.` }, 400, corsHeaders);
-      if (!product.is_available) return json({ error: `${product.name} is unavailable.` }, 400, corsHeaders);
+      const dish = byId.get(item.dish_id);
+      if (!dish) return json({ error: `Unknown dish ${item.dish_id}.` }, 400, corsHeaders);
+      if (!dish.is_available) return json({ error: `${dish.name} is unavailable.` }, 400, corsHeaders);
       const qty = Number(item.quantity) || 1;
-      const unitPrice = Number(product.price);
+      const unitPrice = Number(dish.price);
       const subtotal = unitPrice * qty;
       total += subtotal;
       lineItems.push({
-        product_name: product.name,
-        product_id: product.id,
+        dish_name: dish.name,
+        dish_id: dish.id,
         variant_id: item.variant_id ?? null,
         quantity: qty,
         unit_price: unitPrice,
@@ -186,3 +186,8 @@ Deno.serve(async (req) => {
     return json({ error: 'Could not create order right now. Please try again shortly.' }, 500, corsHeaders);
   }
 });
+
+
+
+
+

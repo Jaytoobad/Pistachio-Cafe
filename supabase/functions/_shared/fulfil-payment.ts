@@ -108,19 +108,19 @@ export async function verifyAndFulfil(reference: string) {
   });
 
   // Decrement stock for each line item.
-  const { data: items } = await supabase.from('order_items').select('product_id, variant_id, product_name, variant_summary, quantity').eq('order_id', payment.order_id);
+  const { data: items } = await supabase.from('order_items').select('dish_id, variant_id, dish_name, variant_summary, quantity').eq('order_id', payment.order_id);
   for (const item of items ?? []) {
     const { error: stockErr } = await supabase.rpc('decrement_stock', {
-      p_product_id: item.product_id,
+      p_dish_id: item.dish_id,
       p_variant_id: item.variant_id ?? null,
       p_qty: item.quantity,
     });
     if (stockErr) {
-      console.error('Stock decrement failed:', { orderId: payment.order_id, productId: item.product_id, detail: stockErr.message });
+      console.error('Stock decrement failed:', { orderId: payment.order_id, dishId: item.dish_id, detail: stockErr.message });
       await supabase.from('order_status_history').insert({
         order_id: payment.order_id,
         status: 'paid',
-        note: `Stock could not be decremented for ${item.product_name} — adjust manually.`,
+        note: `Stock could not be decremented for ${item.dish_name} — adjust manually.`,
       });
     }
   }
@@ -136,3 +136,5 @@ export async function verifyAndFulfil(reference: string) {
 
   return { orderId: payment.order_id, orderNumber: payment.orders.order_code, status: 'paid' };
 }
+
+

@@ -34,69 +34,69 @@ export async function fetchOrderById(id) {
 
 // --- Menu ---
 
-export async function fetchCategories() {
-  const { data, error } = await supabase.from('categories').select('*').order('sort_order');
+export async function fetchMenu() {
+  const { data, error } = await supabase.from('menu').select('*').order('sort_order');
   if (error) throw error;
   return data || [];
 }
 
-export async function fetchProducts() {
-  const { data, error } = await supabase.from('products').select('*, categories(name)').order('sort_order');
+export async function fetchDishes() {
+  const { data, error } = await supabase.from('dishes').select('*, menu(name)').order('sort_order');
   if (error) throw error;
   return data || [];
 }
 
-export async function saveProduct(product, id) {
+export async function saveDish(dish, id) {
   if (id) {
-    const { data, error } = await supabase.from('products').update(product).eq('id', id).select().single();
+    const { data, error } = await supabase.from('dishes').update(dish).eq('id', id).select().single();
     if (error) throw error;
     return data;
   }
-  const { data, error } = await supabase.from('products').insert(product).select().single();
+  const { data, error } = await supabase.from('dishes').insert(dish).select().single();
   if (error) throw error;
   return data;
 }
 
-export async function setProductAvailable(id, available) {
-  const { error } = await supabase.from('products').update({ is_available: available }).eq('id', id);
+export async function setDishAvailable(id, available) {
+  const { error } = await supabase.from('dishes').update({ is_available: available }).eq('id', id);
   if (error) throw error;
 }
 
-export async function deleteProduct(id) {
-  const { error } = await supabase.from('products').delete().eq('id', id);
+export async function deleteDish(id) {
+  const { error } = await supabase.from('dishes').delete().eq('id', id);
   if (error) throw error;
 }
 
-export async function uploadProductImage(file, productId) {
+export async function uploadProductImage(file, dishId) {
   const bucket = supabase.storage.from('product-images');
   const ext = file.name.split('.').pop();
-  const path = `products/${productId}/${Date.now()}.${ext}`;
+  const path = `dishes/${dishId}/${Date.now()}.${ext}`;
   const { error } = await bucket.upload(path, file, { upsert: false });
   if (error) throw error;
   return bucket.getPublicUrl(path).data.publicUrl;
 }
 
-// --- Categories ---
+// --- Menu ---
 
-export async function saveCategory(category, id) {
+export async function saveMenuSection(menuSection, id) {
   if (id) {
-    const { data, error } = await supabase.from('categories').update(category).eq('id', id).select().single();
+    const { data, error } = await supabase.from('menu').update(menuSection).eq('id', id).select().single();
     if (error) throw error;
     return data;
   }
-  const { data, error } = await supabase.from('categories').insert(category).select().single();
+  const { data, error } = await supabase.from('menu').insert(menuSection).select().single();
   if (error) throw error;
   return data;
 }
 
-export async function deleteCategory(id) {
-  const { error } = await supabase.from('categories').delete().eq('id', id);
+export async function deleteMenuSection(id) {
+  const { error } = await supabase.from('menu').delete().eq('id', id);
   if (error) throw error;
 }
 
-export async function reorderCategories(orderedIds) {
+export async function reorderMenuSections(orderedIds) {
   const results = orderedIds.map((id, index) =>
-    supabase.from('categories').update({ sort_order: index }).eq('id', id),
+    supabase.from('menu').update({ sort_order: index }).eq('id', id),
   );
   const failed = results.find((r) => r.error);
   if (failed) throw failed.error;
@@ -105,7 +105,7 @@ export async function reorderCategories(orderedIds) {
 // --- Reviews ---
 
 export async function fetchReviews() {
-  const { data, error } = await supabase.from('reviews').select('*, products(name)').order('created_at', { ascending: false });
+  const { data, error } = await supabase.from('reviews').select('*, dishes(name)').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
@@ -165,5 +165,11 @@ export async function removeStaff(id) {
   const { error } = await supabase.from('staff').delete().eq('id', id);
   if (error) throw error;
 }
+
+
+
+
+
+
 
 

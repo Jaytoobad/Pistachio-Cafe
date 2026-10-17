@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchCategories, saveCategory, deleteCategory, reorderCategories, fetchProducts } from '../../services/admin';
+import { fetchMenu, saveMenuSection, deleteMenuSection, reorderMenuSections, fetchDishes } from '../../services/admin';
 import { slugify } from '../../lib/format';
 import { useToast } from '../../context/ToastContext';
 import PageLoader from '../../components/PageLoader';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
-export default function Categories() {
-  const [categories, setCategories] = useState([]);
-  const [productCounts, setProductCounts] = useState({});
+export default function MenuSections() {
+  const [menuSections, setCategories] = useState([]);
+  const [dishCounts, setProductCounts] = useState({});
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -21,10 +21,10 @@ export default function Categories() {
     setLoading(true);
     setLoadError(false);
     try {
-      const [cats, prods] = await Promise.all([fetchCategories(), fetchProducts()]);
+      const [cats, prods] = await Promise.all([fetchMenu(), fetchDishes()]);
       setCategories(cats.slice().sort((a, b) => a.sort_order - b.sort_order));
       const counts = {};
-      (prods || []).forEach((p) => { counts[p.category_id] = (counts[p.category_id] || 0) + 1; });
+      (prods || []).forEach((p) => { counts[p.menuSection_id] = (counts[p.menuSection_id] || 0) + 1; });
       setProductCounts(counts);
     } catch {
       setLoadError(true);
@@ -44,7 +44,7 @@ export default function Categories() {
     if (!c.name) { showToast('Name is required.', 'error'); return; }
     setSaving(true);
     try {
-      await saveCategory({
+      await saveMenuSection({
         name: c.name,
         slug: c.slug || slugify(c.name),
         sort_order: Number(c.sort_order || 0),
@@ -53,28 +53,28 @@ export default function Categories() {
       setEditing(null);
       load();
     } catch (err) {
-      showToast(err?.message || 'Could not save category.', 'error');
+      showToast(err?.message || 'Could not save menuSection.', 'error');
     } finally {
       setSaving(false);
     }
   }
 
   function moveCategory(c, dir) {
-    const list = [...categories];
+    const list = [...menuSections];
     const i = list.findIndex((x) => x.id === c.id);
     const j = dir === 'up' ? i - 1 : i + 1;
     if (j < 0 || j >= list.length) return;
     [list[i], list[j]] = [list[j], list[i]];
     setCategories(list);
     setReordering(true);
-    reorderCategories(list.map((x) => x.id))
+    reorderMenuSections(list.map((x) => x.id))
       .then(() => load())
-      .catch(() => { showToast('Could not reorder categories.', 'error'); load(); })
+      .catch(() => { showToast('Could not reorder menuSections.', 'error'); load(); })
       .finally(() => setReordering(false));
   }
 
   function requestDelete(c) {
-    const count = productCounts[c.id] || 0;
+    const count = dishCounts[c.id] || 0;
     if (count > 0) {
       setBlockedTarget(c);
       return;
@@ -85,11 +85,11 @@ export default function Categories() {
   async function doDelete() {
     if (!deleteTarget) return;
     try {
-      await deleteCategory(deleteTarget.id);
+      await deleteMenuSection(deleteTarget.id);
       showToast('Category deleted');
       load();
     } catch (err) {
-      showToast(err?.message || 'Could not delete category.', 'error');
+      showToast(err?.message || 'Could not delete menuSection.', 'error');
     } finally {
       setDeleteTarget(null);
     }
@@ -100,25 +100,25 @@ export default function Categories() {
     return (
       <div className="page">
         <div className="page-header"><h1>Categories</h1></div>
-        <p className="empty-state">Could not load categories. <button className="btn btn-outline" onClick={load}>Try again</button></p>
+        <p className="empty-state">Could not load menuSections. <button className="btn btn-outline" onClick={load}>Try again</button></p>
       </div>
     );
   }
 
   return (
-    <div className="page categories-page">
+    <div className="page menuSections-page">
       <div className="page-header">
         <div>
           <h1>Categories</h1>
-          <p className="page-sub">Add, rename and reorder menu categories</p>
+          <p className="page-sub">Add, rename and reorder menu menuSections</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setEditing({ ...emptyCategory })}>+ Add category</button>
+        <button className="btn btn-primary" onClick={() => setEditing({ ...emptyCategory })}>+ Add menuSection</button>
       </div>
 
       {blockedTarget && (
         <div className="card" style={{ padding: 14, marginBottom: 16 }}>
           <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-error)' }}>
-            Cannot delete &ldquo;${blockedTarget.name}&rdquo; — it has ${productCounts[blockedTarget.id] || 0} product(s). Move those products to another category first.
+            Cannot delete &ldquo;${blockedTarget.name}&rdquo; — it has ${dishCounts[blockedTarget.id] || 0} dish(s). Move those dishs to another menuSection first.
           </p>
           <button className="btn btn-outline btn-sm" onClick={() => setBlockedTarget(null)}>OK</button>
         </div>
@@ -126,7 +126,7 @@ export default function Categories() {
 
       <ConfirmDialog
         open={!!deleteTarget}
-        title="Delete category?"
+        title="Delete menuSection?"
         message={`Delete "${deleteTarget.name}"? This cannot be undone.`}
         confirmLabel="Delete"
         cancelLabel="Keep"
@@ -137,21 +137,21 @@ export default function Categories() {
       <div className="data-table-wrap">
         <table className="data-table">
           <thead>
-            <tr><th>#</th><th>Name</th><th>Slug</th><th>Products</th><th>Actions</th></tr>
+            <tr><th>#</th><th>Name</th><th>Slug</th><th>Dishes</th><th>Actions</th></tr>
           </thead>
           <tbody>
-            {categories.map((c, index) => (
+            {menuSections.map((c, index) => (
               <tr key={c.id}>
                   <td style={{ width: 52 }}>
                   <span className="cell-muted">{c.sort_order}</span>
                   <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
                     <button className="btn btn-xs btn-outline" onClick={() => moveCategory(c, 'up')} disabled={index === 0 || reordering}>&uarr;</button>
-                    <button className="btn btn-xs btn-outline" onClick={() => moveCategory(c, 'down')} disabled={index === categories.length - 1 || reordering}>&darr;</button>
+                    <button className="btn btn-xs btn-outline" onClick={() => moveCategory(c, 'down')} disabled={index === menuSections.length - 1 || reordering}>&darr;</button>
                   </div>
                 </td>
                 <td className="cell-primary">{c.name}</td>
                 <td className="cell-muted">{c.slug}</td>
-                <td>{productCounts[c.id] || 0}</td>
+                <td>{dishCounts[c.id] || 0}</td>
                 <td className="table-actions">
                   <button className="btn btn-sm btn-outline" onClick={() => setEditing(c)}>Edit</button>
                   <button className="btn btn-sm btn-outline" onClick={() => requestDelete(c)}>Delete</button>
@@ -161,12 +161,12 @@ export default function Categories() {
           </tbody>
         </table>
       </div>
-      {categories.length === 0 && <p className="empty-state">No categories yet.</p>}
+      {menuSections.length === 0 && <p className="empty-state">No menuSections yet.</p>}
 
       {editing && (
         <div className="modal-overlay" onClick={() => setEditing(null)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h3 style={{ marginBottom: 16 }}>{editing.id ? 'Edit category' : 'New category'}</h3>
+            <h3 style={{ marginBottom: 16 }}>{editing.id ? 'Edit menuSection' : 'New menuSection'}</h3>
             <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <label>Name</label>
@@ -192,3 +192,4 @@ export default function Categories() {
     </div>
   );
 }
+

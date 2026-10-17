@@ -25,7 +25,7 @@ supabase secrets set SERVICE_ROLE_KEY=your-service-role-key
 ## Migrations
 1. `npm install`
 2. `cp .env.example .env` and fill values
-3. Apply `supabase/migrations/0001_pistachio_admin.sql` (via Supabase SQL Editor or CLI)
+3. Apply `supabase/migrations/0001_rename_menu_dishes.sql, then 0002_admin.sql, 0003_payments.sql, 0004_storefront.sql (or follow supabase/migrations/README.md)` (via Supabase SQL Editor or CLI)
 4. `npm run dev` then `npm run build`
 
 ## Edge functions
@@ -50,3 +50,5 @@ Then sign in at `/admin/login` with that account.
 - `npm run dev` — dev server
 - `npm run build` — production build
 - `npm run preview` — preview production build
+
+
