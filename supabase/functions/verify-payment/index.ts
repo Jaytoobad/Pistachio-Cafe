@@ -3,8 +3,8 @@
 // ============================================================================
 // Called by the React order-confirmation page after Paystack redirects the
 // customer back. It does NOT trust the redirect — it asks Paystack directly
-// "did this reference actually succeed?" and only then marks the order paid.
-// Idempotent: if the order is already paid, it just returns the order.
+// "did this payment_reference actually succeed?" and only then marks the order
+// paid. Idempotent: if the order is already paid, it just returns the order.
 //
 // Deploy with:  supabase functions deploy verify-payment
 // Requires secrets: PAYSTACK_SECRET_KEY, SUPABASE_URL, SERVICE_ROLE_KEY
@@ -40,13 +40,28 @@ function getCorsHeaders(req: Request) {
   };
 }
 
+function json(body: unknown, status = 200, headers?: Record<string, string>) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...headers, 'Content-Type': 'application/json' },
+  });
+}
+
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    const { reference } = await req.json();
-    if (!reference) return json({ error: 'Missing payment reference.' }, 400, corsHeaders);
+    let body: any = {};
+    try {
+      body = await req.json();
+    } catch {
+      return json({ error: 'Invalid request body.' }, 400, corsHeaders);
+    }
+    const reference = body?.reference;
+    if (!reference || typeof reference !== 'string') {
+      return json({ error: 'Missing payment reference.' }, 400, corsHeaders);
+    }
 
     const result = await verifyAndFulfil(String(reference));
     if (result.error) {
@@ -65,10 +80,3 @@ Deno.serve(async (req) => {
     return json({ error: 'Could not verify payment right now. Please try again shortly.' }, 500, corsHeaders);
   }
 });
-
-function json(body: unknown, status = 200, headers?: Record<string, string>) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...headers, 'Content-Type': 'application/json' },
-  });
-}

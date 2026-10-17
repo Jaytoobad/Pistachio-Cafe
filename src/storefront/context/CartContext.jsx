@@ -22,12 +22,12 @@ export function CartProvider({ children }) {
     localStorage.setItem(CART_KEY, JSON.stringify(items));
   }, [items]);
 
-  const add = useCallback((product, qty = 1) => {
+  const add = useCallback((product, qty = 1, extras = [], notes = '') => {
     setItems((cur) => {
       const existing = cur.find((i) => i.dish_id === product.id);
       if (existing) {
         return cur.map((i) =>
-          i.dish_id === product.id ? { ...i, qty: i.qty + qty } : i,
+          i.dish_id === product.id ? { ...i, qty: i.qty + qty, extras: extras || i.extras, notes: notes || i.notes } : i,
         );
       }
       return [
@@ -38,6 +38,8 @@ export function CartProvider({ children }) {
           name: product.name,
           price: Number(product.price),
           image_url: product.image_url || null,
+          extras: extras || [],
+          notes: notes || '',
         },
       ];
     });

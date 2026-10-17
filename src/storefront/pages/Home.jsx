@@ -66,9 +66,9 @@ export default function Home() {
     }
   };
 
-  const addToCart = (product) => {
-    add(product, 1);
-    showToast(`${product.name} added to cart`);
+  const addToCart = (dish) => {
+    add(dish, 1);
+    showToast(`${dish.name} added to cart`);
   };
 
   if (error) {
@@ -133,8 +133,8 @@ export default function Home() {
         <section className="sf-section">
           <SectionHeading title="Featured" subtitle="Fresh from the kitchen" />
           <div className="sf-grid">
-            {featured.map((p) => (
-              <DishCard key={p.id} dish={p} onAdd={addToCart} />
+            {featured.map((dish) => (
+              <DishCard key={dish.id} dish={dish} onAdd={addToCart} />
             ))}
           </div>
         </section>

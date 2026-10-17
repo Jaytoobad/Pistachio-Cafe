@@ -4,11 +4,18 @@ import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
 import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
+const ROLES = [
+  { value: 'admin', label: 'Admin' },
+  { value: 'manager', label: 'Manager' },
+  { value: 'staff', label: 'Staff' },
+];
+
 export default function Staff() {
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [newUserId, setNewUserId] = useState('');
+  const [newRole, setNewRole] = useState('staff');
   const [adding, setAdding] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const { showToast } = useToast();
@@ -32,9 +39,10 @@ export default function Staff() {
     if (!newUserId || adding) return;
     setAdding(true);
     try {
-      await addStaff(newUserId);
+      await addStaff(newUserId, newRole);
       showToast('Staff member added');
       setNewUserId('');
+      setNewRole('staff');
       load();
     } catch (err) {
       showToast(err?.message || 'Could not add staff member.', 'error');
@@ -96,6 +104,13 @@ export default function Staff() {
             placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000"
             style={{ flex: 1, minWidth: 260, padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)' }}
           />
+          <select
+            value={newRole}
+            onChange={(e) => setNewRole(e.target.value)}
+            style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)' }}
+          >
+            {ROLES.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
+          </select>
           <button type="submit" className="btn btn-primary" disabled={adding}>{adding ? 'Adding&hellip;' : 'Add staff'}</button>
         </form>
         <p className="form-hint">Add a staff row for each Supabase Auth account that should have admin access. Create the account first at /admin/login, then add its user ID here.</p>
@@ -104,13 +119,15 @@ export default function Staff() {
       <div className="data-table-wrap">
         <table className="data-table">
           <thead>
-            <tr><th>User ID</th><th>Email</th><th>Added</th><th>Actions</th></tr>
+            <tr><th>User ID</th><th>Email</th><th>Role</th><th>Active</th><th>Added</th><th>Actions</th></tr>
           </thead>
           <tbody>
             {staff.map((s) => (
               <tr key={s.id}>
                 <td className="cell-muted" style={{ fontSize: '0.85rem' }}>{s.user_id}</td>
-                <td>{s.profiles?.email || '—'}</td>
+                <td>{s.email || '—'}</td>
+                <td className="cell-muted">{s.role || 'staff'}</td>
+                <td>{s.is_active ? '✓' : '—'}</td>
                 <td className="cell-muted">{s.created_at ? new Date(s.created_at).toLocaleDateString() : '—'}</td>
                 <td className="table-actions">
                   <button className="btn btn-sm btn-outline" onClick={() => requestDelete(s)}>Remove</button>

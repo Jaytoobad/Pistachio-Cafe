@@ -72,7 +72,7 @@ export default function Reviews() {
       <ConfirmDialog
         open={!!deleteTarget}
         title="Delete review?"
-        message={deleteTarget ? `Delete the review for &ldquo;${deleteTarget.product_name || 'an item'}&rdquo;?` : 'Delete review?'}
+        message={deleteTarget ? `Delete the review for &ldquo;${deleteTarget.dish_name || 'an item'}&rdquo;?` : 'Delete review?'}
         confirmLabel="Delete"
         cancelLabel="Keep"
         onConfirm={doDelete}
@@ -88,7 +88,7 @@ export default function Reviews() {
             {reviews.map((r) => (
               <tr key={r.id}>
                 <td>{r.customer_name || r.user_email || '—'}</td>
-                <td className="cell-muted">{r.product_name || '—'}</td>
+                <td className="cell-muted">{r.dish_name || '—'}</td>
                 <td>{'★'.repeat(r.rating || 0)}${'☆'.repeat(5 - (r.rating || 0))}</td>
                 <td className="cell-muted" style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.comment || ''}</td>
                 <td>

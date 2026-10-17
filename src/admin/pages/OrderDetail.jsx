@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchOrderById, updateOrderStatus, cancelOrder } from '../services/admin';
+import { fetchOrderById, updateOrderStatus, cancelOrder, setRider, fetchRiders, STATUS_LABELS } from '../services/admin';
 import { formatMoney, formatAccra } from '../../lib/format';
 import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
 import StatusPill from '../../lib/components/StatusPill';
 import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
-const STATUS_ORDER = ['received', 'preparing', 'ready', 'completed'];
+// Canonical order lifecycle: received, confirmed, preparing, ready,
+// out_for_delivery, delivered, completed, cancelled.
+const STATUS_ORDER = ['received', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'completed'];
 
 function toWhatsAppNumber(phone) {
   const digits = String(phone || '').replace(/\D/g, '');
@@ -19,6 +21,7 @@ export default function OrderDetail() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [order, setOrder] = useState(null);
+  const [riders, setRiders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -29,8 +32,10 @@ export default function OrderDetail() {
     setLoading(true);
     setLoadError(false);
     setNotFound(false);
-    fetchOrderById(id)
-      .then((o) => { setOrder(o); })
+    Promise.all([
+      fetchOrderById(id),
+      fetchRiders().catch(() => []),
+    ]).then(([o, r]) => { setOrder(o); setRiders(r); })
       .catch((err) => {
         const missing = err?.code === 'PGRST116' || /0 rows/i.test(err?.message || '');
         if (missing) setNotFound(true);
@@ -39,7 +44,7 @@ export default function OrderDetail() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const statusRank = order ? STATUS_ORDER.indexOf(order.status) : -1;
+const statusRank = order ? STATUS_ORDER.indexOf(order.status) : -1;
 
   const handleSetStatus = async (next) => {
     if (next === order.status) return;
@@ -49,6 +54,20 @@ export default function OrderDetail() {
       setOrder((o) => ({ ...o, status: next }));
     } catch (err) {
       showToast(err?.message || 'Could not update status.', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSetRider = async (riderId) => {
+    if (!riderId) return;
+    setSaving(true);
+    try {
+      await setRider(order.id, riderId);
+      setOrder((o) => ({ ...o, rider_id: riderId }));
+      showToast('Rider assigned');
+    } catch (err) {
+      showToast(err?.message || 'Could not assign rider.', 'error');
     } finally {
       setSaving(false);
     }
@@ -80,13 +99,13 @@ export default function OrderDetail() {
 
   const backLink = `<a href="/admin/orders">&larr; Back to orders</a>`;
   const telLink = `tel:${order.phone}`;
-  const waText = `Hi ${order.customer_name}, this is Pistachio Café about your order ${order.order_code}.`;
+  const waText = `Hi ${order.customer_name}, this is Pistachio Cafe about your order ${order.order_code}.`;
   const waLink = `https://wa.me/${toWhatsAppNumber(order.phone)}?text=${encodeURIComponent(waText)}`;
 
   const timeline = STATUS_ORDER.map((status, index) => ({
     status,
     done: index <= statusRank,
-    label: status.charAt(0).toUpperCase() + status.slice(1),
+    label: STATUS_LABELS[status] || status.charAt(0).toUpperCase() + status.slice(1),
   }));
 
   const itemLines = (order.order_items || []).map((item) => (
@@ -148,7 +167,7 @@ export default function OrderDetail() {
           <br />Total {formatMoney(order.total)}
         </div>
         <div className="ticket-foot">
-          {order.paystack_reference ? `Paid via Paystack &bull; Ref ${order.paystack_reference}` : 'Payment pending'}
+          {order.payment_reference ? `Paid via Paystack &bull; Ref ${order.payment_reference}` : 'Payment pending'}
           <br />
           {order.notes ? `Notes: ${order.notes}` : ''}
         </div>
@@ -177,6 +196,18 @@ export default function OrderDetail() {
             <dd>{order.address}</dd>
           </div>
         )}
+        {order.landmark && (
+          <div>
+            <dt>Landmark</dt>
+            <dd>{order.landmark}</dd>
+          </div>
+        )}
+        {order.estimated_minutes && (
+          <div>
+            <dt>Est. minutes</dt>
+            <dd>{order.estimated_minutes}</dd>
+          </div>
+        )}
         {order.notes && (
           <div>
             <dt>Notes</dt>
@@ -184,8 +215,8 @@ export default function OrderDetail() {
           </div>
         )}
         <div>
-          <dt>Paystack reference</dt>
-          <dd>{order.paystack_reference || '\u2014'}</dd>
+          <dt>Payment reference</dt>
+          <dd>{order.payment_reference || '\u2014'}</dd>
         </div>
         {order.paid_at && (
           <div>
@@ -215,7 +246,7 @@ export default function OrderDetail() {
         </ul>
       </div>
 
-      <div style={{ marginTop: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div style={{ marginTop: 20, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
         {statusRank >= 0 && (
           <select
             value={order.status}
@@ -224,8 +255,23 @@ export default function OrderDetail() {
             className="btn-outline"
             style={{ padding: '6px 10px', fontSize: '0.9rem' }}
           >
+            <option value={order.status} disabled>— Change status —</option>
             {STATUS_ORDER.filter((s) => STATUS_ORDER.indexOf(s) > statusRank).map((s) => (
-              <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+              <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+            ))}
+          </select>
+        )}
+        {order.fulfilment === 'delivery' && order.status !== 'completed' && order.status !== 'cancelled' && (
+          <select
+            value={order.rider_id || ''}
+            onChange={(e) => handleSetRider(e.target.value || null)}
+            disabled={saving}
+            className="btn-outline"
+            style={{ padding: '6px 10px', fontSize: '0.9rem' }}
+          >
+            <option value="">— No rider —</option>
+            {riders.filter((r) => r.is_active !== false).map((r) => (
+              <option key={r.id} value={r.id}>{r.name}</option>
             ))}
           </select>
         )}

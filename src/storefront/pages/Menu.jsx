@@ -1,29 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { fetchMenu, fetchAvailableDishes } from '../services/dishes';
+import { useNavigate } from 'react-router-dom';
+import { fetchMenu, fetchAvailableDishes } from '../services/dishes.index';
 import DishCard from '../components/DishCard';
+import DishModal from '../components/DishModal';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { formatMoney } from '../../lib/format';
-import DishDetailModal from '../components/DishDetailModal';
+import { SkeletonGrid } from '../../lib/components/Skeleton';
 
 export default function Menu() {
-  const [menuSections, setMenuSections] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [activeSection, setActiveSection] = useState(null);
+  const [menus, setMenus] = useState([]);
+  const [dishes, setDishes] = useState([]);
+  const [activeMenu, setActiveMenu] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const { add } = useCart();
+  const [selectedDish, setSelectedDish] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { add, count, subtotal } = useCart();
   const { showToast } = useToast();
-
-  
+  const navigate = useNavigate();
 
   const load = async () => {
     setLoading(true);
     setError(false);
     try {
       const [sections, items] = await Promise.all([fetchMenu(), fetchAvailableDishes()]);
-      setCategories(sections);
-      setProducts(items);
+      setMenus(sections);
+      setDishes(items);
     } catch {
       setError(true);
     } finally {
@@ -33,28 +36,14 @@ export default function Menu() {
 
   useEffect(() => { load(); }, []);
 
-  const filtered = activeSection ? dishes.filter((d) => d.menu_id === activeSection) : dishes;
+  const filtered = activeMenu ? dishes.filter((d) => d.menu_id === activeMenu) : dishes;
 
-      if (error) {
-    return (
-      <div className="sf-container">
-        <div className="sf-section">
-          <div className="sf-error" role="alert">
-            <h3>Something went wrong</h3>
-            <p>We couldn't load the menu. Please try again.</p>
-            <button className="sf-btn sf-btn-primary" style={{ marginTop: 12 }} onClick={load}>Try again</button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-if (loading) {
+  if (loading) {
     return (
       <div className="sf-container">
         <div className="sf-section">
           <div className="sf-section-head"><div><h2>Menu</h2></div></div>
-          <SkeletonGrid count={6} />
+          <Skeleton count={6} />
         </div>
       </div>
     );
@@ -82,17 +71,17 @@ if (loading) {
         <div className="sf-tabs" role="tablist">
           <button
             type="button"
-            className={`sf-tab ${activeSection === null ? 'active' : ''}`}
-            onClick={() => setActiveSection(null)}
+            className={`sf-tab ${activeMenu === null ? 'active' : ''}`}
+            onClick={() => setActiveMenu(null)}
           >
             All
           </button>
-          {menuSections.map((c) => (
+          {menus.map((c) => (
             <button
               key={c.id}
               type="button"
-              className={`sf-tab ${activeSection === c.id ? 'active' : ''}`}
-              onClick={() => setActiveSection(c.id)}
+              className={`sf-tab ${activeMenu === c.id ? 'active' : ''}`}
+              onClick={() => setActiveMenu(c.id)}
             >
               {c.name}
             </button>
@@ -102,17 +91,17 @@ if (loading) {
         {filtered.length === 0 ? (
           <div className="sf-empty">
             <h3>Nothing available right now</h3>
-            <p>Check back soon ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â we restock the menu daily.</p>
+            <p>Check back soon — we restock the menu daily.</p>
           </div>
         ) : (
           <div className="sf-grid">
-            {filtered.map((p) => (
+            {filtered.map((dish) => (
               <DishCard
-                key={p.id}
-                dish={p}
-                onAdd={(product, qty) => {
-                  add(product, qty);
-                  showToast(`${product.name} added to cart`);
+                key={dish.id}
+                dish={dish}
+                onAdd={(dish, qty) => {
+                  add(dish, qty);
+                  showToast(`${dish.name} added to cart`);
                 }}
                 onQuickView={(dish) => {
                   setSelectedDish(dish);
@@ -144,28 +133,11 @@ if (loading) {
         dish={selectedDish}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onAdd={(product, qty) => {
-          add(product, qty);
-          showToast(`${product.name} added to cart`);
+        onAdd={(dish, qty) => {
+          add(dish, qty);
+          showToast(`${dish.name} added to cart`);
         }}
       />
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

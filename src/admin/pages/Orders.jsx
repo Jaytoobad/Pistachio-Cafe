@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchOrders, updateOrderStatus, cancelOrder } from '../services/admin';
+import { fetchOrders, updateOrderStatus, cancelOrder, STATUS_LABELS } from '../services/admin';
 import { formatMoney, minutesAgo } from '../../lib/format';
 import { useToast } from '../../lib/context/ToastContext';
 import { supabase } from '../../lib/supabase';
@@ -8,14 +8,25 @@ import PageLoader from '../../lib/components/PageLoader';
 import StatusPill from '../../lib/components/StatusPill';
 import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
-const COLUMNS = ['received', 'preparing', 'ready', 'completed'];
+// Kanban columns: the active lifecycle. completed/cancelled live in History.
+const COLUMNS = ['received', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered'];
 const COLUMN_LABELS = {
   received: 'Received',
+  confirmed: 'Confirmed',
   preparing: 'Preparing',
   ready: 'Ready',
-  completed: 'Completed',
+  out_for_delivery: 'Out for delivery',
+  delivered: 'Delivered',
 };
-const NEXT_STATUS = { received: 'preparing', preparing: 'ready', ready: 'completed', completed: null };
+const NEXT_STATUS = {
+  received: 'confirmed',
+  confirmed: 'preparing',
+  preparing: 'ready',
+  ready: 'out_for_delivery',
+  out_for_delivery: 'delivered',
+  delivered: 'completed',
+  completed: null,
+};
 const SOUND_MUTE_KEY = 'pistachio:orders:mute';
 
 function tone({ frequency = 880, duration = 160, type = 'sine', volume = 0.12 }) {
@@ -127,8 +138,8 @@ export default function Orders() {
     setConfirm(null);
   };
 
-  const boardOrders = orders.filter((o) => o.status !== 'completed' && o.status !== 'cancelled');
-  const completedOrders = orders.filter((o) => o.status === 'completed' || o.status === 'cancelled');
+  const boardOrders = orders.filter((o) => o.status !== 'completed' && o.status !== 'cancelled' && o.status !== 'delivered');
+  const completedOrders = orders.filter((o) => o.status === 'completed' || o.status === 'cancelled' || o.status === 'delivered');
 
   const term = hSearch.replace(/[,()%*]/g, ' ').trim().toLowerCase();
   const history = completedOrders.filter((o) => {

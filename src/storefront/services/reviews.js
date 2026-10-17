@@ -15,7 +15,7 @@ export async function fetchApprovedReviews() {
 
 // Submit a review for moderation. Inserts as NOT approved; the admin Reviews
 // page is the only place that flips is_approved to true.
-export async function submitReview({ customer_name, user_email, product_id, product_name, rating, comment }) {
+export async function submitReview({ customer_name, user_email, dish_id, dish_name, rating, comment }) {
   if (!customer_name || !rating || !comment) {
     throw new Error('Name, rating and review are required.');
   }
@@ -27,8 +27,8 @@ export async function submitReview({ customer_name, user_email, product_id, prod
     .insert({
       customer_name: String(customer_name).trim(),
       user_email: user_email ? String(user_email).trim() : null,
-      product_id: product_id || null,
-      product_name: product_name ? String(product_name).trim() : null,
+      dish_id: dish_id || null,
+      dish_name: dish_name ? String(dish_name).trim() : null,
       rating: Number(rating),
       comment: String(comment).trim(),
       is_approved: false,

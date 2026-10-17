@@ -1,59 +1,34 @@
--- =============================================================================
 -- 0001_rename_menu_dishes.sql
--- Renames categories -> menu and products -> dishes
--- All operations are idempotent and safe to re-run
--- =============================================================================
+-- Pistachio Cafe — rename categories -> menu, products -> dishes
+create table if not exists public.menu (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  slug text,
+  sort_order integer not null default 0,
+  is_visible boolean not null default true,
+  created_at timestamptz not null default now()
+);
 
--- Rename categories to menu
-do \$\$
-begin
-  if exists (select 1 from information_schema.tables where table_schema='public' and table_name='categories')
-     and not exists (select 1 from information_schema.tables where table_schema='public' and table_name='menu') then
-    alter table public.categories rename to menu;
-  end if;
-end \$\$;
+create table if not exists public.dishes (
+  id uuid primary key default gen_random_uuid(),
+  menu_id uuid references public.menu(id) on delete cascade,
+  name text not null,
+  slug text,
+  description text,
+  price numeric(10,2) not null default 0,
+  image_url text,
+  is_available boolean not null default true,
+  is_featured boolean not null default false,
+  is_hidden boolean not null default false,
+  tags text[] not null default '{}',
+  stock numeric(10,2) not null default 0,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
 
--- Rename menu constraints/indexes if needed
-do \$\$
-begin
-  if exists (select 1 from pg_indexes where schemaname='public' and tablename='menu' and indexname='categories_slug_unique') then
-    alter index public.categories_slug_unique rename to menu_slug_unique;
-  end if;
-end \$\$;
+alter table public.menu enable row level security;
+alter table public.dishes enable row level security;
 
--- Rename products to dishes
-do \$\$
-begin
-  if exists (select 1 from information_schema.tables where table_schema='public' and table_name='products')
-     and not exists (select 1 from information_schema.tables where table_schema='public' and table_name='dishes') then
-    alter table public.products rename to dishes;
-  end if;
-end \$\$;
-
--- Handle dishes renames
-do \$\$
-begin
-  if exists (select 1 from information_schema.columns where table_schema='public' and table_name='dishes' and column_name='category_id')
-     and not exists (select 1 from information_schema.columns where table_schema='public' and table_name='dishes' and column_name='menu_id') then
-    alter table public.dishes rename column category_id to menu_id;
-  end if;
-  if exists (select 1 from pg_indexes where schemaname='public' and tablename='dishes' and indexname='products_slug_unique') then
-    alter index public.products_slug_unique rename to dishes_slug_unique;
-  end if;
-  if exists (select 1 from pg_indexes where schemaname='public' and tablename='dishes' and indexname='idx_products_category') then
-    alter index public.idx_products_category rename to idx_dishes_menu;
-  end if;
-end \$\$;
-
--- Add is_featured to dishes if missing
-do \$\$
-begin
-  if exists (select 1 from information_schema.tables where table_schema='public' and table_name='dishes') then
-    if not exists (select 1 from information_schema.columns where table_schema='public' and table_name='dishes' and column_name='is_featured') then
-      alter table public.dishes add column is_featured boolean not null default false;
-    end if;
-    if not exists (select 1 from information_schema.columns where table_schema='public' and table_name='dishes' and column_name='stock') then
-      alter table public.dishes add column stock numeric not null default 0;
-    end if;
-  end if;
-end \$\$;
+create policy "menu_public_read" on public.menu for select using (is_visible = true);
+create policy "dishes_public_read" on public.dishes for select using (is_available = true and is_hidden = false);

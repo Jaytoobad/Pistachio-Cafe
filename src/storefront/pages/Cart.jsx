@@ -12,7 +12,7 @@ export default function Cart() {
     return (
       <div className="sf-container">
         <section className="sf-section" style={{ textAlign: 'center', paddingTop: 80 }}>
-          <h1 style={{ fontSize: '2rem' }}>Your cart is empty</h1>
+          <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)' }}>Your cart is empty</h1>
           <p style={{ color: 'var(--color-text-muted)', marginTop: 12, maxWidth: '38ch', marginInline: 'auto' }}>
             Browse the menu and add something delicious. Pickup is free and orders are ready in about 20 minutes.
           </p>
@@ -30,7 +30,7 @@ export default function Cart() {
         <div className="sf-section-head">
           <div>
             <h2>Your cart</h2>
-            <p>{count} item{count === 1 ? '' : 's'} — {items.length} product{items.length === 1 ? '' : 's'}</p>
+            <p>{count} item{count === 1 ? '' : 's'} — {items.length} dish{items.length === 1 ? '' : 's'}</p>
           </div>
           <Link to="/menu" className="sf-btn sf-btn-ghost">Continue shopping</Link>
         </div>
@@ -39,7 +39,7 @@ export default function Cart() {
           <div className="sf-cart-items">
             {items.map((item) => (
               <div key={item.dish_id} className="sf-cart-line">
-                <img src={item.image_url || IMAGES.placeholder} alt="" className="sf-cart-line-img" />
+                <img src={item.image_url || IMAGES.placeholder} alt={item.name} className="sf-cart-line-img" />
                 <div className="sf-cart-line-body">
                   <div className="sf-cart-line-name">{item.name}</div>
                   <div className="sf-cart-line-price">{formatMoney(item.price)} each</div>

@@ -65,31 +65,32 @@ export const IMAGES = {
   heroCoffee: '/images/hero-coffee-beans.jpg',
   // TODO: final about image
   about: '/images/about-marble-bag.jpg',
-  // TODO: final menu / category imagery
+  // TODO: final menu imagery
   menu: '/images/menu-marble-closeup.jpg',
   poster: '/images/poster-three-cups-wide.jpg',
-  // Generic product placeholder when a product has no image_url.
+  // Generic dish placeholder when a dish has no image_url.
   // TODO: final placeholder asset
   placeholder: '/images/placeholder-cup-pistachios.jpg',
 };
 
 // --- Order code -------------------------------------------------------------
-// Human-friendly prefix for new order codes.
-export const ORDER_CODE_PREFIX = 'PSC';
+// Human-friendly prefix for new order codes. Format: PI-123456.
+export const ORDER_CODE_PREFIX = 'PI';
 
 // --- Tracking stepper -------------------------------------------------------
-// Order statuses shown to customers, in chronological order.
-export const TRACK_STATUSES = ['received', 'preparing', 'ready', 'completed'];
+// Order statuses shown to customers, in chronological order. The full server
+// lifecycle is: received, confirmed, preparing, ready, out_for_delivery,
+// delivered, completed, cancelled. The stepper only shows the customer-facing
+// subset (cancelled is rendered by StatusPill instead).
+export const TRACK_STATUSES = ['received', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'completed'];
 export const TRACK_STATUS_LABELS = {
   received: 'Received',
+  confirmed: 'Confirmed',
   preparing: 'Preparing',
   ready: 'Ready',
+  out_for_delivery: 'Out for delivery',
+  delivered: 'Delivered',
   completed: 'Completed',
-};
-// 'out for delivery' is a valid status the kitchen may set; keep it in the
-// display order but show it between ready and completed.
-export const TRACK_STATUS_LABELS_EXTRA = {
-  'out for delivery': 'Out for delivery',
 };
 
 // --- Delivery promise -------------------------------------------------------

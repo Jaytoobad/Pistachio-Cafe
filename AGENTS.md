@@ -25,8 +25,9 @@ supabase secrets set SERVICE_ROLE_KEY=your-service-role-key
 ## Migrations
 1. `npm install`
 2. `cp .env.example .env` and fill values
-3. Apply `supabase/migrations/0001_rename_menu_dishes.sql, then 0002_admin.sql, 0003_payments.sql, 0004_storefront.sql (or follow supabase/migrations/README.md)` (via Supabase SQL Editor or CLI)
-4. `npm run dev` then `npm run build`
+3. Apply `supabase/migrations/0001_rename_menu_dishes.sql, 0002_admin.sql, 0003_payments.sql, 0004_storefront.sql, 0005_order_status_enum.sql, 0006_riders_and_helpers.sql` (or run `psql "$DATABASE_URL" -f supabase/ALL_IN_ONE.sql`) (via Supabase SQL Editor or CLI)
+4. Seed the database: `psql "$DATABASE_URL" -f supabase/seed.sql`
+5. `npm run dev` then `npm run build`
 
 ## Edge functions
 Deploy after setting secrets:

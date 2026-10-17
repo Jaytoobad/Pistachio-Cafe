@@ -5,7 +5,8 @@
 // status changes. This is the RELIABLE source of truth for payment status —
 // customers can close their browser tab before the redirect-based verify
 // runs, but the webhook still fires. Both paths call the same fulfilment
-// logic, and both are idempotent, so whichever arrives first wins safely.
+// logic, and both are idempotent on payment_reference, so whichever arrives
+// first wins safely.
 //
 // After deploying, register this URL in your Paystack dashboard:
 //   Settings -> API Keys & Webhooks -> Webhook URL
@@ -20,8 +21,35 @@
 import { verifyAndFulfil } from '../_shared/fulfil-payment.ts';
 
 const PAYSTACK_SECRET_KEY = Deno.env.get('PAYSTACK_SECRET_KEY')!;
+const PUBLIC_SITE_URL = Deno.env.get('PUBLIC_SITE_URL')?.replace(/\/$/, '') ?? '';
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin')?.replace(/\/$/, '');
+  let allowOrigin = PUBLIC_SITE_URL || '*';
+  if (origin) {
+    try {
+      const { protocol, hostname } = new URL(origin);
+      const isLocal = protocol === 'http:' && (hostname === 'localhost' || hostname === '127.0.0.1');
+      const configuredHostname = PUBLIC_SITE_URL ? new URL(PUBLIC_SITE_URL).hostname : '';
+      const isProduction = configuredHostname && hostname.replace(/^www\./, '') === configuredHostname.replace(/^www\./, '');
+      if (isLocal || isProduction) allowOrigin = origin;
+    } catch {
+      // use configured fallback
+    }
+  }
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-paystack-signature',
+    'Access-Control-Allow-Credentials': 'true',
+    'Vary': 'Origin',
+  };
+}
 
 Deno.serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+
   try {
     const rawBody = await req.text();
 
@@ -29,24 +57,36 @@ Deno.serve(async (req) => {
     const signature = req.headers.get('x-paystack-signature');
     const expectedSignature = await hmacSha512Hex(PAYSTACK_SECRET_KEY, rawBody);
     if (!signature || !timingSafeEqual(signature, expectedSignature)) {
-      return new Response('Invalid signature', { status: 401 });
+      return new Response('Invalid signature', { status: 401, headers: corsHeaders });
     }
 
-    const event = JSON.parse(rawBody);
+    let event: any;
+    try {
+      event = JSON.parse(rawBody);
+    } catch {
+      return new Response('Invalid payload', { status: 400, headers: corsHeaders });
+    }
+
+    if (!event || typeof event !== 'object' || !event.event) {
+      return new Response('ok', { status: 200, headers: corsHeaders });
+    }
 
     if (event.event === 'charge.success') {
-      const reference = event.data.reference;
+      const reference = event.data?.reference;
+      if (!reference) {
+        return new Response('ok', { status: 200, headers: corsHeaders });
+      }
       const result = await verifyAndFulfil(String(reference));
       if (result.error) {
         console.warn('Webhook charge.success not fulfilled:', reference, result.error, 'retryable:', result.retryable);
         if (result.retryable) {
-          return new Response('Temporary payment processing failure', { status: 500 });
+          return new Response('Temporary payment processing failure', { status: 500, headers: corsHeaders });
         }
-        return new Response('ok', { status: 200 });
+        return new Response('ok', { status: 200, headers: corsHeaders });
       }
     }
 
-    return new Response('ok', { status: 200 });
+    return new Response('ok', { status: 200, headers: corsHeaders });
   } catch (err) {
     console.error('Webhook error:', err);
     return new Response('Temporary webhook processing failure', { status: 500 });

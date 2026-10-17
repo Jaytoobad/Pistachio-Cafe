@@ -46,10 +46,9 @@ function json(body: unknown, status = 200, headers?: Record<string, string>) {
 }
 
 function orderNumber() {
-  const d = new Date();
-  const ymd = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
-  const rand = Math.floor(Math.random() * 900 + 100);
-  return `PSC-${ymd}-${rand}`;
+  // New format: PI-123456 (6-digit sequential-ish random number).
+  const rand = Math.floor(Math.random() * 900000 + 100000);
+  return `PI-${rand}`;
 }
 
 Deno.serve(async (req) => {
@@ -59,18 +58,26 @@ Deno.serve(async (req) => {
   try {
     const { items, customer_name, phone, email, fulfilment, address, notes } = await req.json();
 
-    if (!Array.isArray(items) || items.length === 0) {
+if (!Array.isArray(items) || items.length === 0) {
       return json({ error: 'Cart is empty.' }, 400, corsHeaders);
     }
     if (!customer_name || !phone) {
       return json({ error: 'Name and phone are required.' }, 400, corsHeaders);
+    }
+    // Basic phone validation — digits only, 9-15 chars.
+    const phoneDigits = String(phone).replace(/\D/g, '');
+    if (phoneDigits.length < 9 || phoneDigits.length > 15) {
+      return json({ error: 'Enter a valid phone number.' }, 400, corsHeaders);
+    }
+    if (typeof items !== 'object' || !Array.isArray(items)) {
+      return json({ error: 'Invalid request body.' }, 400, corsHeaders);
     }
 
     // Look up dishes server-side so the browser can't inject prices.
     const dishIds = [...new Set(items.map((i: any) => i.dish_id))];
     const { data: dishes, error: dishesError } = await supabase
       .from('dishes')
-      .select('id, name, price, is_available')
+      .select('id, name, price, is_available, is_hidden')
       .in('id', dishIds);
     if (dishesError) throw dishesError;
     const byId = new Map((dishes ?? []).map((p: any) => [p.id, p]));
@@ -80,9 +87,12 @@ Deno.serve(async (req) => {
     for (const item of items) {
       const dish = byId.get(item.dish_id);
       if (!dish) return json({ error: `Unknown dish ${item.dish_id}.` }, 400, corsHeaders);
+      if (dish.is_hidden) return json({ error: `${dish.name} is not available.` }, 400, corsHeaders);
       if (!dish.is_available) return json({ error: `${dish.name} is unavailable.` }, 400, corsHeaders);
       const qty = Number(item.quantity) || 1;
+      if (!Number.isFinite(qty) || qty <= 0) return json({ error: 'Invalid quantity.' }, 400, corsHeaders);
       const unitPrice = Number(dish.price);
+      if (!Number.isFinite(unitPrice) || unitPrice < 0) return json({ error: `Invalid price for ${dish.name}.` }, 400, corsHeaders);
       const subtotal = unitPrice * qty;
       total += subtotal;
       lineItems.push({
@@ -95,10 +105,15 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Fulfilment + delivery fee come from the settings table, never from the
-    // browser, so the total charged to Paystack is always the trusted total.
+    // Recalculate delivery fee from delivery_zones when a zone is supplied;
+    // fall back to the settings table. The browser's totals are ignored.
     const safeFulfilment = String(fulfilment || 'pickup') === 'delivery' ? 'delivery' : 'pickup';
     let deliveryFee = 0;
+    let deliveryZoneId: string | null = null;
+    let estimatedMinutes: number | null = null;
+    let landmark: string | null = null;
+    let lat: number | null = null;
+    let lng: number | null = null;
     if (safeFulfilment === 'delivery') {
       const { data: settingsRow } = await supabase
         .from('settings')
@@ -109,6 +124,30 @@ Deno.serve(async (req) => {
         return json({ error: 'Delivery is currently not available. Please choose pickup.' }, 400, corsHeaders);
       }
       deliveryFee = Number(settingsRow?.delivery_fee || 0);
+
+      // If the browser sent a delivery_zone_id, look up its fee + estimate.
+      const requestedZone = item?.delivery_zone_id ?? null;
+      if (requestedZone) {
+        const { data: zone } = await supabase
+          .from('delivery_zones')
+          .select('id, fee, estimated_minutes, name')
+          .eq('id', requestedZone)
+          .maybeSingle();
+        if (zone) {
+          deliveryZoneId = zone.id;
+          deliveryFee = Number(zone.fee ?? deliveryFee);
+          estimatedMinutes = Number(zone.estimated_minutes ?? null);
+        }
+      }
+      if (item?.landmark) landmark = String(item.landmark).slice(0, 200);
+      if (item?.lat != null) {
+        const n = Number(item.lat);
+        if (Number.isFinite(n) && n >= -90 && n <= 90) lat = n;
+      }
+      if (item?.lng != null) {
+        const n = Number(item.lng);
+        if (Number.isFinite(n) && n >= -180 && n <= 180) lng = n;
+      }
     }
     const grandTotal = total + deliveryFee;
 
@@ -122,34 +161,48 @@ Deno.serve(async (req) => {
       .insert({
         order_code: orderCode,
         customer_name,
-        phone,
+        phone: phoneDigits,
         email: email || null,
         fulfilment: safeFulfilment,
         address: address || null,
+        landmark,
+        lat,
+        lng,
+        estimated_minutes: estimatedMinutes,
+        delivery_zone_id: deliveryZoneId,
         notes: notes || null,
         subtotal: total,
         delivery_fee: deliveryFee,
         total: grandTotal,
         payment_status: 'pending_payment',
-        status: 'pending',
+        status: 'received',
       })
       .select()
       .single();
     if (orderError) throw orderError;
 
-    const { error: itemsError } = await supabase.from('order_items').insert(
+const { error: itemsError } = await supabase.from('order_items').insert(
       lineItems.map((li) => ({ ...li, order_id: order.id }))
     );
     if (itemsError) throw itemsError;
 
+    // Record the payment intent. The column is `payment_reference` — the
+    // webhook/verify paths look it up by this name and must stay idempotent.
     const { error: paymentError } = await supabase.from('payments').insert({
       order_id: order.id,
-      reference,
+      payment_reference: reference,
       amount: grandTotal,
       currency: 'GHS',
       status: 'initialized',
     });
     if (paymentError) throw paymentError;
+
+    // Record the initial status so the history timeline is complete.
+    await supabase.from('order_status_history').insert({
+      order_id: order.id,
+      status: 'received',
+      note: 'Order received, awaiting payment.',
+    }).catch(() => { /* history is best-effort */ });
 
     // Ask Paystack to initialize the transaction.
     const initRes = await fetch('https://api.paystack.co/transaction/initialize', {

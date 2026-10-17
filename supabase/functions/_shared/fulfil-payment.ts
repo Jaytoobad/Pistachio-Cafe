@@ -3,8 +3,12 @@
 // ============================================================================
 // Shared payment fulfilment used by verify-payment (browser redirect) and
 // paystack-webhook (server-to-server). Both call verifyAndFulfil(), which asks
-// Paystack directly whether a reference succeeded, then marks the order paid,
-// adjusts stock and records status history exactly once (idempotent).
+// Paystack directly whether a payment_reference succeeded, then marks the order
+// paid, adjusts stock and records status history exactly once (idempotent).
+//
+// Order statuses: received, confirmed, preparing, ready, out_for_delivery,
+// delivered, completed, cancelled. Payment success moves the order to
+// 'confirmed' (kitchen starts preparing from there).
 //
 // Deployed functions that import this:
 //   supabase functions deploy verify-payment
@@ -28,11 +32,11 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 //   retryable: false — final; retrying cannot change the outcome.
 export type FulfilFailure = { error: string; retryable: boolean; orderId?: string | null };
 
-export async function verifyAndFulfil(reference: string) {
+export async function verifyAndFulfil(paymentReference: string) {
   const { data: payment, error: paymentErr } = await supabase
     .from('payments')
     .select('*, orders(*)')
-    .eq('reference', reference)
+    .eq('payment_reference', paymentReference)
     .maybeSingle();
 
   if (paymentErr || !payment) {
@@ -44,7 +48,7 @@ export async function verifyAndFulfil(reference: string) {
     return { orderId: payment.order_id, orderNumber: payment.orders.order_code, status: payment.orders.status, alreadyProcessed: true };
   }
 
-  const verifyRes = await fetch(`https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`, {
+  const verifyRes = await fetch(`https://api.paystack.co/transaction/verify/${encodeURIComponent(paymentReference)}`, {
     headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` },
   });
   const verifyData = await verifyRes.json();
@@ -52,7 +56,7 @@ export async function verifyAndFulfil(reference: string) {
   if (!verifyData.status || verifyData.data?.status !== 'success') {
     const finalFailure = ['failed', 'abandoned', 'reversed'].includes(verifyData.data?.status);
     if (finalFailure) {
-      await supabase.from('payments').update({ status: 'failed', paystack_raw: verifyData }).eq('reference', reference);
+      await supabase.from('payments').update({ status: 'failed', paystack_raw: verifyData }).eq('payment_reference', paymentReference);
       await supabase.from('orders').update({ payment_status: 'failed' }).eq('id', payment.order_id).not('payment_status', 'in', '(paid,refunded)');
     }
     return {
@@ -65,15 +69,15 @@ export async function verifyAndFulfil(reference: string) {
   // Confirm the amount Paystack charged matches our trusted total.
   const expectedAmount = Math.round(Number(payment.amount) * 100);
   if (verifyData.data.amount !== expectedAmount) {
-    console.error('Amount mismatch on reference', reference);
+    console.error('Amount mismatch on reference', paymentReference);
     return { error: 'Payment amount could not be verified.', retryable: false, orderId: payment.order_id };
   }
 
-  await supabase.from('payments').update({ status: 'success', channel: verifyData.data.channel, paystack_raw: verifyData }).eq('reference', reference);
+  await supabase.from('payments').update({ status: 'success', channel: verifyData.data.channel, paystack_raw: verifyData }).eq('payment_reference', paymentReference);
 
   const { data: paidOrder, error: orderUpdateError } = await supabase
     .from('orders')
-    .update({ payment_status: 'paid', status: 'paid' })
+    .update({ payment_status: 'paid', status: 'confirmed' })
     .eq('id', payment.order_id)
     .neq('payment_status', 'paid')
     .neq('payment_status', 'refunded')
@@ -98,12 +102,12 @@ export async function verifyAndFulfil(reference: string) {
         orderId: payment.order_id,
       };
     }
-    return { orderId: payment.order_id, orderNumber: payment.orders.order_code, status: 'paid', alreadyProcessed: true };
+    return { orderId: payment.order_id, orderNumber: payment.orders.order_code, status: 'confirmed', alreadyProcessed: true };
   }
 
   await supabase.from('order_status_history').insert({
     order_id: payment.order_id,
-    status: 'paid',
+    status: 'confirmed',
     note: 'Payment confirmed via Paystack.',
   });
 
@@ -119,7 +123,7 @@ export async function verifyAndFulfil(reference: string) {
       console.error('Stock decrement failed:', { orderId: payment.order_id, dishId: item.dish_id, detail: stockErr.message });
       await supabase.from('order_status_history').insert({
         order_id: payment.order_id,
-        status: 'paid',
+        status: 'confirmed',
         note: `Stock could not be decremented for ${item.dish_name} — adjust manually.`,
       });
     }
@@ -134,7 +138,5 @@ export async function verifyAndFulfil(reference: string) {
     }).catch(() => { /* notifications best-effort */ });
   }
 
-  return { orderId: payment.order_id, orderNumber: payment.orders.order_code, status: 'paid' };
+  return { orderId: payment.order_id, orderNumber: payment.orders.order_code, status: 'confirmed' };
 }
-
-

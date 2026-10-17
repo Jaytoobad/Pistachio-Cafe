@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { createOrder, openPaystack, verifyPayment } from '../services/orders';
+import { createOrder, openPaystack, verifyPayment } from '../services/orders.index';
 import { useCart } from '../context/CartContext';
 import { useSettings } from '../context/SettingsContext';
 import { BRAND, CURRENCY_SYMBOL } from '../config';
@@ -81,7 +81,7 @@ export default function Checkout() {
       {items.length === 0 ? (
         <section className="sf-section" style={{ textAlign: 'center', paddingTop: 80 }}>
           <h1>Your cart is empty</h1>
-          <p style={{ color: 'var(--color-text-muted)', marginTop: 12, maxWidth: '38ch', marginInline: 'auto' }}>Add something from the menu before checking out.</p>
+          <p style={{ color: 'var(--color-text-muted)', marginTop: 12, maxWidth: 'min(38ch, 90vw)', marginInline: 'auto' }}>Add something from the menu before checking out.</p>
           <div style={{ marginTop: 28 }}><Link to="/menu" className="sf-btn sf-btn-primary">Browse the menu</Link></div>
         </section>
       ) : (
@@ -137,7 +137,7 @@ export default function Checkout() {
                 <span className="sf-field-hint">e.g. allergy information or a gate code.</span>
               </div>
 
-              <button type="submit" className="sf-btn sf-btn-primary sf-btn-block" disabled={processing} style={{ marginTop: 8 }}>
+              <button type="submit" className="sf-btn sf-btn-primary sf-btn-block sf-checkout-desktop-pay" disabled={processing} style={{ marginTop: 8 }} aria-label="Pay now">
                 {processing ? 'Placing order…' : 'Pay now'}
               </button>
             </div>
@@ -167,7 +167,21 @@ export default function Checkout() {
               <p className="sf-field-hint" style={{ margin: '16px 0 0' }}>
                 Amounts are in {CURRENCY_SYMBOL} (Ghana cedis). The final total is confirmed by our system before payment.
               </p>
+              <button type="submit" className="sf-btn sf-btn-primary sf-btn-block" disabled={processing} style={{ marginTop: 16 }} aria-label="Pay now">
+                {processing ? 'Placing order…' : 'Pay now'}
+              </button>
             </aside>
+          </div>
+
+          <div className="sf-checkout-sticky-pay">
+            <div className="sf-sticky-pay-inner">
+              <div className="sf-sticky-pay-total">
+                Total: {formatMoney(total)}
+              </div>
+              <button type="submit" className="sf-btn sf-btn-primary" disabled={processing} aria-label="Pay now">
+                {processing ? 'Placing order…' : 'Pay now'}
+              </button>
+            </div>
           </div>
         </form>
       )}

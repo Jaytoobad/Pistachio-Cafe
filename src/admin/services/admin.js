@@ -9,6 +9,20 @@
 
 // --- Orders -----------------------------------------------------------------
 
+// Canonical order lifecycle: received, confirmed, preparing, ready,
+// out_for_delivery, delivered, completed, cancelled.
+export const ORDER_STATUSES = ['received', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'completed', 'cancelled'];
+export const STATUS_LABELS = {
+  received: 'Received',
+  confirmed: 'Confirmed',
+  preparing: 'Preparing',
+  ready: 'Ready',
+  out_for_delivery: 'Out for delivery',
+  delivered: 'Delivered',
+  completed: 'Completed',
+  cancelled: 'Cancelled',
+};
+
 export async function fetchOrders({ paymentStatus, status, search, dateFrom, dateTo } = {}) {
   let q = supabase.from('orders').select('*, order_items(*)').order('created_at', { ascending: false });
 
@@ -39,6 +53,17 @@ export async function fetchOrderById(id) {
   const { data, error } = await supabase.from('orders').select('*, order_items(*)').eq('id', id).single();
   if (error) throw error;
   return data;
+}
+
+export async function setRider(orderId, riderId) {
+  const { error } = await supabase.from('orders').update({ rider_id: riderId }).eq('id', orderId);
+  if (error) throw error;
+}
+
+export async function fetchRiders() {
+  const { data, error } = await supabase.from('riders').select('*').order('name');
+  if (error) throw error;
+  return data || [];
 }
 
 // --- Menu / dishes ----------------------------------------------------------
@@ -164,8 +189,8 @@ export async function fetchStaff() {
   return data || [];
 }
 
-export async function addStaff(userId) {
-  const { data, error } = await supabase.from('staff').insert({ user_id: userId }).select().single();
+export async function addStaff(userId, role = 'staff') {
+  const { data, error } = await supabase.from('staff').insert({ user_id: userId, role, is_active: true }).select().single();
   if (error) throw error;
   return data;
 }

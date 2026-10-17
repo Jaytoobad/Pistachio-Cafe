@@ -13,7 +13,7 @@ export default function Dashboard() {
     setLoading(true);
     setError(false);
     try {
-      const data = await fetchOrders({ status: ['pending', 'paid', 'preparing', 'ready', 'completed'] });
+      const data = await fetchOrders({ status: ['received', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'completed'] });
       setOrders(data);
     } catch {
       setError(true);
@@ -26,7 +26,7 @@ export default function Dashboard() {
 
   const todayOrders = useMemo(() => orders.filter((o) => isTodayAccra(o.created_at)), [orders]);
   const paidToday = useMemo(() => todayOrders.filter((o) => o.payment_status === 'paid'), [todayOrders]);
-  const pending = useMemo(() => orders.filter((o) => o.status === 'pending' || o.payment_status === 'pending_payment'), [orders]);
+  const pending = useMemo(() => orders.filter((o) => o.status === 'received' || o.payment_status === 'pending_payment'), [orders]);
 
   const revenueToday = useMemo(() => paidToday.reduce((sum, o) => sum + Number(o.total || 0), 0), [paidToday]);
 

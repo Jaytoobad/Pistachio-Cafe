@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import '../storefront.css';
 import { useCart } from '../context/CartContext';
@@ -10,7 +10,7 @@ function hoursString() {
   const d = new Date();
   const isWeekend = d.getDay() === 0 || d.getDay() === 6;
   const h = isWeekend ? HOURS.weekend : HOURS.weekday;
-  return `${h.open} – ${h.close}`;
+  return `${h.open} â€“ ${h.close}`;
 }
 
 export default function StorefrontLayout({ children }) {
@@ -76,7 +76,7 @@ export default function StorefrontLayout({ children }) {
             aria-label="View cart"
             onClick={() => navigate('/cart')}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="20" height="20" aria-hidden="true">
               <circle cx="9" cy="21" r="1" />
               <circle cx="20" cy="21" r="1" />
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
@@ -90,7 +90,7 @@ export default function StorefrontLayout({ children }) {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
           >
-            {menuOpen ? '✕' : '☰'}
+            {menuOpen ? 'âœ•' : 'â˜°'}
           </button>
         </div>
 
@@ -126,7 +126,7 @@ export default function StorefrontLayout({ children }) {
               <p>{BRAND.offerings.join(' · ')}. {BRAND.location}.</p>
               <div className="sf-footer-social">
                 <a href={BRAND.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label={`Instagram ${BRAND.instagram}`}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
                 </a>
               </div>
             </div>
@@ -144,8 +144,8 @@ export default function StorefrontLayout({ children }) {
               <ul>
                 <li><a href={`tel:${CONTACT.phone}`}>{CONTACT.phone}</a></li>
                 <li>{CONTACT.address}</li>
-                <li>Weekdays {HOURS.weekday.open} – {HOURS.weekday.close}</li>
-                <li>Weekends {HOURS.weekend.open} – {HOURS.weekend.close}</li>
+                <li>Weekdays {HOURS.weekday.open} â€“ {HOURS.weekday.close}</li>
+                <li>Weekends {HOURS.weekend.open} â€“ {HOURS.weekend.close}</li>
               </ul>
             </div>
             <div>
@@ -158,7 +158,7 @@ export default function StorefrontLayout({ children }) {
             </div>
           </div>
           <div className="sf-footer-bottom">
-            <span>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</span>
+            <span>Â© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</span>
             <span>Made with care, one plate at a time.</span>
           </div>
         </div>
