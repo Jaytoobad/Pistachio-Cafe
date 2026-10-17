@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { fetchMenu, saveMenuSection, deleteMenuSection, reorderMenuSections, fetchDishes } from '../services/admin';
 
 import { slugify } from '../../lib/format';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 
 import { useToast } from '../../lib/context/ToastContext';
 
@@ -13,6 +14,7 @@ import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
 
 export default function MenuSections() {
+  useDocumentTitle();
 
   const [menus, setMenus] = useState([]);
   const [dishCounts, setDishCounts] = useState({});

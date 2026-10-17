@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchOrderById, updateOrderStatus, cancelOrder, setRider, fetchRiders, STATUS_LABELS } from '../services/admin';
 import { formatMoney, formatAccra } from '../../lib/format';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
 import StatusPill from '../../lib/components/StatusPill';
@@ -17,6 +18,7 @@ function toWhatsAppNumber(phone) {
 }
 
 export default function OrderDetail() {
+  useDocumentTitle();
   const { id } = useParams();
   const navigate = useNavigate();
   const { showToast } = useToast();

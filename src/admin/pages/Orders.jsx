@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchOrders, updateOrderStatus, cancelOrder, STATUS_LABELS } from '../services/admin';
 import { formatMoney, minutesAgo } from '../../lib/format';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { useToast } from '../../lib/context/ToastContext';
 import { supabase } from '../../lib/supabase';
 import PageLoader from '../../lib/components/PageLoader';
@@ -55,6 +56,7 @@ function playNewOrderSound(muted) {
 }
 
 export default function Orders() {
+  useDocumentTitle();
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [orders, setOrders] = useState([]);

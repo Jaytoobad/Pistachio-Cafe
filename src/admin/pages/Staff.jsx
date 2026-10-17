@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchStaff, addStaff, removeStaff } from '../services/admin';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
 import ConfirmDialog from '../../lib/components/ConfirmDialog';
@@ -11,6 +12,7 @@ const ROLES = [
 ];
 
 export default function Staff() {
+  useDocumentTitle();
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

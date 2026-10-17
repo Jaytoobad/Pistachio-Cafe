@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchSettings, updateSettings } from '../services/admin';
 import { formatMoney } from '../../lib/format';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
 
 export default function Settings() {
+  useDocumentTitle();
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
