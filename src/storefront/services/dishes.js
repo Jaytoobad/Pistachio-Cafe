@@ -5,13 +5,13 @@
 // The browser never sends prices; it only sends dish IDs + quantities.
 
 export async function fetchMenu() {
-  const { data, error } = await supabase.from('menu').select('*').order('sort_order');
+  const { data, error } = await supabase.from('menus').select('*').order('sort_order');
   if (error) throw error;
   return data || [];
 }
 
 export async function fetchDishes() {
-  const { data, error } = await supabase.from('dishes').select('*, menu(name)').order('sort_order');
+  const { data, error } = await supabase.from('dishes').select('*, menus(name)').order('sort_order');
   if (error) throw error;
   return data || [];
 }
@@ -20,7 +20,7 @@ export async function fetchDishes() {
 export async function fetchAvailableDishes(menuId = null) {
   let q = supabase
     .from('dishes')
-    .select('*, menu(name)')
+    .select('*, menus(name)')
     .eq('is_available', true)
     .order('sort_order');
 

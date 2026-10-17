@@ -10,8 +10,9 @@ export async function fetchMenu() {
     return toSafeResult(MOCK_MENU_SECTIONS);
   }
   try {
-    const { data, error } = await supabase.from('menu').select('*').order('sort_order');
+    const { data, error } = await supabase.from('menus').select('*').order('sort_order');
     if (error) throw error;
+    if (!data || data.length === 0) throw new Error('no rows');
     return toSafeResult(data);
   } catch (err) {
     if (import.meta.env.DEV) {
@@ -26,8 +27,9 @@ export async function fetchDishes() {
     return toSafeResult(MOCK_DISHES);
   }
   try {
-    const { data, error } = await supabase.from('dishes').select('*, menu(name)').order('sort_order');
+    const { data, error } = await supabase.from('dishes').select('*, menus(name)').order('sort_order');
     if (error) throw error;
+    if (!data || data.length === 0) throw new Error('no rows');
     return toSafeResult(data);
   } catch (err) {
     if (import.meta.env.DEV) {
