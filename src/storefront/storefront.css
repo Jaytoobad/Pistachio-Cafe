@@ -6,7 +6,7 @@
 .sf-header { position: sticky; top: 0; z-index: 100; background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
 .sf-header-inner { max-width: var(--container-width); margin: 0 auto; padding: 0 20px; height: var(--header-height); display: flex; align-items: center; gap: 16px; }
 .sf-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
-.sf-brand-logo { height: 40px; width: auto; }
+.sf-brand-logo { height: 44px; width: auto; }
 .sf-brand-name { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; line-height: 1.1; }
 .sf-brand-tag { display: block; font-family: var(--font-body); font-weight: 400; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-text-muted); }
 .sf-nav { display: none; gap: 4px; }

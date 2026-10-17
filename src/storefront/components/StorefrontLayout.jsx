@@ -60,11 +60,7 @@ export default function StorefrontLayout({ children }) {
       <header className="sf-header">
         <div className="sf-header-inner">
           <Link to="/" className="sf-brand" aria-label="Pistachio Café home">
-            <img src={IMAGES.logo} alt="" className="sf-brand-logo" onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.logoPng; }} />
-            <span>
-              <span className="sf-brand-name">{BRAND.name}</span>
-              <span className="sf-brand-tag">{BRAND.tagline}</span>
-            </span>
+            <img src={IMAGES.logo} alt="Pistachio Café" className="sf-brand-logo" onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.logoPng; }} />
           </Link>
 
           <nav className="sf-nav" aria-label="Primary">
