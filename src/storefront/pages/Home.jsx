@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchFeaturedItems } from '../services/products';
+import { fetchFeaturedDishes } from '../services/dishes';
 import { fetchApprovedReviews, submitReview } from '../services/reviews';
-import ProductCard from '../components/ProductCard';
+import DishCard from '../components/DishCard';
 import ReviewCard from '../components/ReviewCard';
 import StarRating from '../components/StarRating';
 import SectionHeading from '../components/SectionHeading';
@@ -23,7 +23,7 @@ export default function Home() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([fetchFeaturedItems(), fetchApprovedReviews()])
+    Promise.all([fetchFeaturedDishes(), fetchApprovedReviews()])
       .then(([items, approved]) => {
         if (active) { setFeatured(items || []); setReviews(approved || []); }
       })
@@ -107,7 +107,7 @@ export default function Home() {
           <SectionHeading title="Featured" subtitle="Fresh from the kitchen" />
           <div className="sf-grid">
             {featured.map((p) => (
-              <ProductCard key={p.id} product={p} onAdd={addToCart} />
+              <DishCard key={p.id} dish={p} onAdd={addToCart} />
             ))}
           </div>
         </section>
@@ -190,3 +190,5 @@ export default function Home() {
     </div>
   );
 }
+
+
