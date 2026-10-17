@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { BRAND, HOURS, CONTACT, IMAGES, HAS_PHONE } from '../config';
 import { formatMoney } from '../../lib/format';
 import { useSettings } from '../context/SettingsContext';
@@ -7,6 +8,7 @@ import { useSettings } from '../context/SettingsContext';
 export default function About() {
   const { settings } = useSettings();
   const deliveryFee = Number(settings?.delivery_fee || 0);
+  useDocumentTitle('About | Pistachio Café');
 
   return (
     <div className="sf-container">

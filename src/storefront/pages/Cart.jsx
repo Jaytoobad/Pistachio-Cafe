@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { useCart } from '../context/CartContext';
 import QuantityStepper from '../components/QuantityStepper';
 import { formatMoney } from '../../lib/format';
@@ -7,6 +8,7 @@ import { IMAGES } from '../config';
 
 export default function Cart() {
   const { items, updateQty, remove, subtotal, count } = useCart();
+  useDocumentTitle('Cart | Pistachio Café');
 
   if (items.length === 0) {
     return (

@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { BRAND } from '../config';
 
 export default function NotFound() {
+  useDocumentTitle('Not Found | Pistachio Café');
   return (
     <div className="sf-container">
       <section className="sf-section" style={{ textAlign: 'center', paddingTop: 80 }}>

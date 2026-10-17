@@ -1,7 +1,7 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../lib/context/AuthContext';
 import { signOut } from '../../lib/services/auth';
-import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import PageLoader from '../../lib/components/PageLoader';
 import Sidebar from './Sidebar';
 import MobileTabBar from './MobileTabBar';
@@ -16,10 +16,20 @@ const links = [
   { to: '/admin/staff', label: 'Staff' },
 ];
 
+const DEFAULT_TITLE = 'Pistachio Café — Elegance you can taste';
+
 export default function AdminLayout() {
-  useDocumentTitle('Pistachio Cafe - Admin');
+  const location = useLocation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  const exact = links.find((l) => location.pathname === l.to);
+  const page = exact ? exact.label : (links.find((l) => location.pathname.startsWith(`${l.to}/`))?.label || 'Admin');
+
+  useEffect(() => {
+    document.title = `${page} — Admin`;
+    return () => { document.title = DEFAULT_TITLE; };
+  }, [page]);
 
   if (loading) return <PageLoader />;
 

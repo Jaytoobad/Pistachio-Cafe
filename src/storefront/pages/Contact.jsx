@@ -1,7 +1,9 @@
 import React from 'react';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { BRAND, HOURS, CONTACT, HAS_PHONE, HAS_WHATSAPP } from '../config';
 
 export default function Contact() {
+  useDocumentTitle('Contact | Pistachio Café');
   return (
     <div className="sf-container">
       <section className="sf-section">

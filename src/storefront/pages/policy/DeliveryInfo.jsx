@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND, CONTACT } from '../../config';
+import { BRAND, CONTACT, HAS_PHONE, HAS_WHATSAPP } from '../../config';
 
 export default function DeliveryInfo() {
   return (
@@ -42,8 +42,8 @@ export default function DeliveryInfo() {
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
           <h3 style={{ margin: '0 0 8px' }}>Contact</h3>
           <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-            Phone: {CONTACT.phone}<br />
-            WhatsApp: {CONTACT.whatsapp}<br />
+            {HAS_PHONE && `Phone: ${CONTACT.phone}`}<br />
+            {HAS_WHATSAPP && `WhatsApp: ${CONTACT.whatsapp}`}<br />
             Address: {CONTACT.address}
           </p>
           <p style={{ margin: '8px 0 0', color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>
@@ -56,8 +56,8 @@ export default function DeliveryInfo() {
             If your order is late or you have a special request, call or message us on WhatsApp and we will sort it out.
           </p>
           <div style={{ marginTop: 14, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <a href={`tel:${CONTACT.phone}`} className="sf-btn sf-btn-primary">Call us</a>
-            <a href={`https://wa.me/${CONTACT.whatsapp}`} className="sf-btn sf-btn-ghost" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            {HAS_PHONE && <a href={`tel:${CONTACT.phone}`} className="sf-btn sf-btn-primary">Call us</a>}
+            {HAS_WHATSAPP && <a href={`https://wa.me/${CONTACT.whatsapp}`} className="sf-btn sf-btn-ghost" target="_blank" rel="noopener noreferrer">WhatsApp</a>}
           </div>
         </div>
       </section>

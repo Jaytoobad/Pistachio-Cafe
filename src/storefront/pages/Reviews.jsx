@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { fetchApprovedReviews } from '../services/reviews';
 import ReviewCard from '../components/ReviewCard';
 import SectionHeading from '../components/SectionHeading';
@@ -6,6 +7,7 @@ import SectionHeading from '../components/SectionHeading';
 export default function Reviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  useDocumentTitle('Reviews | Pistachio Café');
 
   const load = useCallback(() => {
     fetchApprovedReviews().then((r) => setReviews(r || [])).catch(() => setReviews([])).finally(() => setLoading(false));

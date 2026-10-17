@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { createOrder, openPaystack, verifyPayment } from '../services/orders.index';
 import { useCart } from '../context/CartContext';
 import { useSettings } from '../context/SettingsContext';
@@ -16,6 +17,7 @@ export default function Checkout() {
   const { settings } = useSettings();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  useDocumentTitle('Checkout | Pistachio Café');
 
   const deliveryFee = Number(settings?.delivery_fee || 0);
   const [form, setForm] = useState({ customer_name: '', phone: '', email: '', fulfilment: 'pickup', address: '', notes: '' });

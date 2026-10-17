@@ -6,7 +6,7 @@ import { useToast } from '../../lib/context/ToastContext';
 import PasswordInput from '../../lib/components/PasswordInput';
 
 export default function Login() {
-  useDocumentTitle('Pistachio Cafe - Admin');
+  useDocumentTitle('Login — Admin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);

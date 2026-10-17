@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { fetchMenu, fetchAvailableDishes } from '../services/dishes.index';
 import DishCard from '../components/DishCard';
 import DishModal from '../components/DishModal';
@@ -19,6 +20,7 @@ export default function Menu() {
   const { add, count, subtotal } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  useDocumentTitle('Menu | Pistachio Café');
 
   const load = async () => {
     setLoading(true);
