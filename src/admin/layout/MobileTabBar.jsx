@@ -4,7 +4,7 @@ const icons = {
   Dashboard: '⌂',
   Orders: '🧾',
   Menu: '🍽️',
-  Categories: '🗂️',
+  'Menu Sections': '🗂️',
   Reviews: '⭐',
   Subscribers: '✉️',
   Settings: '⚙️',
