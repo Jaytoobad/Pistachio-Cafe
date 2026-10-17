@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { signIn } from '../../services/auth';
 import { useToast } from '../../context/ToastContext';
 import PasswordInput from '../../components/PasswordInput';
@@ -11,6 +11,9 @@ export default function Login() {
   const [error, setError] = useState('');
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || '/admin';
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -22,7 +25,7 @@ export default function Login() {
     setError('');
     try {
       await signIn({ email: emailValue, password: passwordValue });
-      navigate('/admin', { replace: true });
+      navigate(from, { replace: true });
     } catch (err) {
       const message = err?.message || 'Login failed. Try again.';
       setError(message);

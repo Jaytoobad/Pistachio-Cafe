@@ -14,8 +14,8 @@ const AdminLayout = lazy(() => import('./admin/layout/AdminLayout'));
 const AdminDashboard = lazy(() => import('./admin/pages/Dashboard'));
 const AdminOrders = lazy(() => import('./admin/pages/Orders'));
 const AdminOrderDetail = lazy(() => import('./admin/pages/OrderDetail'));
-const AdminMenu = lazy(() => import('./admin/pages/Menu'));
-const AdminCategories = lazy(() => import('./admin/pages/Categories'));
+const AdminDishes = lazy(() => import('./admin/pages/Dishes'));
+const AdminMenuSections = lazy(() => import('./admin/pages/MenuSections'));
 const AdminReviews = lazy(() => import('./admin/pages/Reviews'));
 const AdminSubscribers = lazy(() => import('./admin/pages/Subscribers'));
 const AdminSettings = lazy(() => import('./admin/pages/Settings'));
@@ -59,12 +59,17 @@ export default function App() {
                 <Route index element={<AdminDashboard />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="orders/:id" element={<AdminOrderDetail />} />
-                <Route path="menu" element={<AdminMenu />} />
-                <Route path="categories" element={<AdminCategories />} />
+                <Route path="dishes" element={<AdminDishes />} />
+                <Route path="menu" element={<AdminMenuSections />} />
                 <Route path="reviews" element={<AdminReviews />} />
                 <Route path="subscribers" element={<AdminSubscribers />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="staff" element={<AdminStaff />} />
+                <Route path="*" element={
+                  <ProtectedAdminRoute>
+                    <Navigate to="/admin" replace />
+                  </ProtectedAdminRoute>
+                } />
               </Route>
 
               {/* Storefront routes inside the shared storefront layout */}
@@ -87,3 +92,7 @@ export default function App() {
     </AuthProvider>
   );
 }
+
+
+
+
