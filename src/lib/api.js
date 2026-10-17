@@ -27,7 +27,7 @@ export async function fetchDishes() {
     return toSafeResult(MOCK_DISHES);
   }
   try {
-    const { data, error } = await supabase.from('dishes').select('*, menus(name)').order('sort_order');
+    const { data, error } = await supabase.from('dishes').select('*, menu_id, tags, is_available, is_featured, menus(name)').order('sort_order');
     if (error) throw error;
     if (!data || data.length === 0) throw new Error('no rows');
     return toSafeResult(data);
@@ -50,7 +50,7 @@ export async function fetchAvailableDishes(menuId = null) {
   try {
     let q = supabase
       .from('dishes')
-      .select('*, menu(name)')
+      .select('*, menu_id, tags, is_available, is_featured, menus(name)')
       .eq('is_available', true)
       .order('sort_order');
     if (menuId) q = q.eq('menu_id', menuId);

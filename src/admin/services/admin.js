@@ -170,15 +170,18 @@ export async function deleteSubscriber(id) {
 // --- Settings ---------------------------------------------------------------
 
 export async function fetchSettings() {
-  const { data, error } = await supabase.from('settings').select('*').eq('id', 1).single();
+  const { data, error } = await supabase.from('site_settings').select('key,value');
   if (error) throw error;
-  return data;
+  const out = {};
+  (data || []).forEach((r) => { if (r && r.key != null) out[r.key] = r.value; });
+  return out;
 }
 
 export async function updateSettings(settings) {
-  const { data, error } = await supabase.from('settings').update(settings).eq('id', 1).select().single();
+  const rows = Object.entries(settings || {}).map(([key, value]) => ({ key, value, is_public: true }));
+  const { error } = await supabase.from('site_settings').upsert(rows, { onConflict: 'key' });
   if (error) throw error;
-  return data;
+  return settings;
 }
 
 // --- Staff ------------------------------------------------------------------
