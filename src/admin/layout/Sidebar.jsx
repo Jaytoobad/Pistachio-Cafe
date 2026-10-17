@@ -1,0 +1,47 @@
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { signOut } from '../../services/auth';
+import PageLoader from '../../components/PageLoader';
+import Sidebar from './Sidebar';
+import MobileTabBar from './MobileTabBar';
+
+const links = [
+  { to: '/admin', label: 'Dashboard' },
+  { to: '/admin/orders', label: 'Orders' },
+  { to: '/admin/menu', label: 'Menu' },
+  { to: '/admin/categories', label: 'Categories' },
+  { to: '/admin/reviews', label: 'Reviews' },
+  { to: '/admin/subscribers', label: 'Subscribers' },
+  { to: '/admin/settings', label: 'Settings' },
+  { to: '/admin/staff', label: 'Staff' },
+];
+
+export default function AdminLayout() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  if (loading) return <PageLoader />;
+
+  async function handleLogout() {
+    await signOut();
+    navigate('/admin/login', { replace: true });
+  }
+
+  return (
+    <div className="admin-shell">
+      <Sidebar links={links} user={user} onLogout={handleLogout} />
+      <main className="admin-main">
+        <header className="admin-header">
+          <button className="sidebar-toggle" aria-label="Toggle menu">☰</button>
+          <h1>Pistachio CafÃÂ© <span style={{ color: 'var(--color-primary)' }}>Admin</span></h1>
+          <div className="admin-header-actions">
+            <a className="admin-view-shop" href="/pistachio-cafe/index.html" target="_blank" rel="noopener noreferrer">View shop</a>
+            <button className="admin-logout" onClick={handleLogout}>Logout</button>
+          </div>
+        </header>
+        <Outlet />
+      </main>
+      <MobileTabBar links={links} />
+    </div>
+  );
+}

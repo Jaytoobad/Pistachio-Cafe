@@ -1,0 +1,81 @@
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
+const CART_KEY = 'pistachio_cart';
+
+function loadCart() {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+const CartContext = createContext(null);
+
+export function CartProvider({ children }) {
+  const [items, setItems] = useState(loadCart);
+
+  useEffect(() => {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+  }, [items]);
+
+  const add = useCallback((product, qty = 1) => {
+    setItems((cur) => {
+      const existing = cur.find((i) => i.product_id === product.id);
+      if (existing) {
+        return cur.map((i) =>
+          i.product_id === product.id ? { ...i, qty: i.qty + qty } : i,
+        );
+      }
+      return [
+        ...cur,
+        {
+          product_id: product.id,
+          qty,
+          name: product.name,
+          price: Number(product.price),
+          image_url: product.image_url || null,
+        },
+      ];
+    });
+  }, []);
+
+  const updateQty = useCallback((product_id, qty) => {
+    setItems((cur) =>
+      cur
+        .map((i) => (i.product_id === product_id ? { ...i, qty: Math.max(1, qty) } : i))
+        .filter((i) => i.qty > 0),
+    );
+  }, []);
+
+  const remove = useCallback((product_id) => {
+    setItems((cur) => cur.filter((i) => i.product_id !== product_id));
+  }, []);
+
+  const clear = useCallback(() => setItems([]), []);
+
+  const subtotal = useMemo(
+    () => items.reduce((sum, i) => sum + Number(i.price) * Number(i.qty), 0),
+    [items],
+  );
+
+  const count = useMemo(
+    () => items.reduce((sum, i) => sum + Number(i.qty), 0),
+    [items],
+  );
+
+  return (
+    <CartContext.Provider value={{ items, add, updateQty, remove, clear, subtotal, count }}>
+      {children}
+    </CartContext.Provider>
+  );
+}
+
+export function useCart() {
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error('useCart must be used within CartProvider');
+  return ctx;
+}

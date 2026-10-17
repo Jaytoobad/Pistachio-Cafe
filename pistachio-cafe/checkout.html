@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — Pistachio Café</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">Pistachio</span>
+      <span class="brand-tag">Café</span>
+    </a>
+    <ul class="nav-links" data-nav-links>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="index.html#reviews">Reviews</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="cart.html" class="cart-link" aria-label="View cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge" data-cart-badge hidden>0</span>
+      </a>
+      <button class="nav-toggle" data-nav-toggle aria-label="Toggle menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <p class="page-hero-eyebrow">Last step</p>
+      <h1>Checkout &amp; order tracking</h1>
+      <p>Pay securely with Paystack, then watch your order move from kitchen to counter in real time.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="checkout-layout">
+
+        <!-- ============ LEFT: FORM ============ -->
+        <div data-checkout-form-wrap>
+          <form data-checkout-form>
+            <div class="checkout-section">
+              <h3>Your details</h3>
+              <div class="form-grid-2">
+                <div class="form-row">
+                  <label for="fullname">Full name</label>
+                  <input type="text" id="fullname" name="fullname" required>
+                </div>
+                <div class="form-row">
+                  <label for="phone">Phone number</label>
+                  <input type="tel" id="phone" name="phone" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" required>
+              </div>
+            </div>
+
+            <div class="checkout-section">
+              <h3>Pickup or delivery?</h3>
+              <div class="fulfil-toggle">
+                <button type="button" data-fulfil="pickup" aria-pressed="true">Pickup in store</button>
+                <button type="button" data-fulfil="delivery" aria-pressed="false">Delivery</button>
+              </div>
+              <div class="form-row" data-address-row style="display:none;">
+                <label for="address">Delivery address</label>
+                <textarea id="address" name="address" rows="2"></textarea>
+              </div>
+              <div class="form-row">
+                <label for="notes">Order notes (optional)</label>
+                <textarea id="notes" name="notes" rows="2" placeholder="Allergies, extra napkins, anything we should know"></textarea>
+              </div>
+            </div>
+
+            <div class="checkout-section">
+              <h3>Payment</h3>
+              <p style="font-size:0.9rem;color:var(--ink-soft);">You'll be securely redirected to Paystack to complete payment by card, mobile money, or bank transfer.</p>
+              <button type="submit" class="btn btn-accent btn-block" data-pay-btn>Pay now</button>
+              <div class="pay-note">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Payments are processed by Paystack. Pistachio never sees or stores your card details.</span>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- ============ RIGHT: ORDER SUMMARY / TRACKER ============ -->
+        <aside>
+          <div class="summary-card" style="position:static;" data-checkout-summary-wrap>
+            <h3>Order summary</h3>
+            <div data-checkout-summary></div>
+          </div>
+
+          <div class="summary-card tracker" style="position:static;margin-top:1.5rem;" data-tracker>
+            <h3>Order tracking</h3>
+            <p class="tracker-id">Order <strong data-order-id>—</strong></p>
+            <div class="steps" data-steps></div>
+            <p style="font-size:0.85rem;color:var(--ink-soft);margin-top:1.5rem;">We'll text you when it's ready. Thanks for ordering with us!</p>
+          </div>
+
+          <div class="summary-card" style="position:static;margin-top:1.5rem;">
+            <h3>Track an existing order</h3>
+            <form class="lookup-row" data-lookup-form>
+              <label for="lookup-id" class="skip-link">Order ID</label>
+              <input type="text" id="lookup-id" placeholder="e.g. PI482913" required>
+              <button type="submit" class="btn btn-outline">Track</button>
+            </form>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer" id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-brand mt-0">Pistachio</p>
+        <p>Handmade breakfast, brunch, and desserts in the heart of East Legon.</p>
+        <div class="social-row">
+          <a href="https://instagram.com/" aria-label="Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="https://facebook.com/" aria-label="Facebook" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.5-3H13.5V8.3c0-.87.24-1.46 1.5-1.46H16.6V4.14C16.34 4.1 15.44 4 14.4 4c-2.17 0-3.66 1.32-3.66 3.75v2.75H8.2v3h2.54V21h2.76z"/></svg></a>
+          <a href="https://wa.me/233000000000" aria-label="WhatsApp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.7 14.2c-.24.7-1.4 1.3-2 1.4-.5.1-1.2.2-3.6-.75-3-1.2-4.9-4.2-5-4.4-.15-.2-1.2-1.6-1.2-3.1 0-1.4.75-2.1 1-2.4.25-.3.6-.35.8-.35h.55c.2 0 .45 0 .65.5.24.6.8 2 .87 2.15.07.15.12.33.02.53-.1.2-.15.33-.3.5-.15.2-.3.4-.45.5-.15.15-.3.3-.13.6.15.3.7 1.2 1.5 1.95 1.05 1 1.9 1.3 2.2 1.45.3.15.5.13.68-.08.2-.2.75-.85.95-1.15.2-.3.4-.25.65-.15.25.1 1.6.75 1.9.9.3.15.5.2.55.35.07.15.07.85-.17 1.55z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Full menu</a></li>
+          <li><a href="about.html">Our story</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Visit</h4>
+        <ul class="footer-links">
+          <li>12 Palm Grove Ave, East Legon, Accra</li>
+          <li><a href="tel:+233000000000">+233 00 000 0000</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Stay in the loop</h4>
+        <form class="newsletter-form" data-newsletter-form>
+          <label for="newsletter-email-4" class="skip-link">Email address</label>
+          <input type="email" id="newsletter-email-4" placeholder="you@email.com" required>
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Pistachio Café. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Paystack inline JS. See js/checkout.js for setup instructions. -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/main.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>
