@@ -1,12 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchSubscribers, deleteSubscriber } from '../services/admin';
-import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
 import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
 export default function Subscribers() {
-  useDocumentTitle();
   const [subscribers, setSubscribers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);

@@ -4,6 +4,7 @@ import '../storefront.css';
 import { useCart } from '../context/CartContext';
 import { subscribeNewsletter } from '../services/newsletter';
 import { useToast } from '../../lib/context/ToastContext';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { BRAND, HOURS, CONTACT, IMAGES } from '../config';
 
 function hoursString() {
@@ -14,6 +15,7 @@ function hoursString() {
 }
 
 export default function StorefrontLayout({ children }) {
+  useDocumentTitle();
   const { count } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();

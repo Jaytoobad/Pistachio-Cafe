@@ -1,6 +1,7 @@
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/context/AuthContext';
 import { signOut } from '../../lib/services/auth';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import PageLoader from '../../lib/components/PageLoader';
 import Sidebar from './Sidebar';
 import MobileTabBar from './MobileTabBar';
@@ -16,6 +17,7 @@ const links = [
 ];
 
 export default function AdminLayout() {
+  useDocumentTitle('Pistachio Cafe - Admin');
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 

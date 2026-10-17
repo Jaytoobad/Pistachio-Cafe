@@ -1,12 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fetchOrders } from '../services/admin';
 import { formatMoney, isTodayAccra } from '../../lib/format';
-import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import PageLoader from '../../lib/components/PageLoader';
 import StatusPill from '../../lib/components/StatusPill';
 
 export default function Dashboard() {
-  useDocumentTitle();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
