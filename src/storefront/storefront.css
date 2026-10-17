@@ -1,4 +1,4 @@
-﻿/* Pistachio Café storefront — mobile-first, sf- prefixed. */
+/* Pistachio Café storefront — mobile-first, sf- prefixed. */
 .sf-root { display: flex; flex-direction: column; min-height: 100dvh; font-family: var(--font-body); color: var(--color-ink); background: var(--color-cream); line-height: 1.55; }
 .sf-skip { position: absolute; left: -999px; top: 0; background: var(--color-forest); color: #fff; padding: 8px 14px; z-index: 100; border-radius: 0 0 6px 0; }
 .sf-skip:focus { left: 0; }
@@ -278,12 +278,10 @@
   .sf-nav-toggle { margin-left: auto; }
   .sf-cart-page, .sf-checkout-page { grid-template-columns: 1fr; }
   .sf-cart-summary { position: static; }
-  .sf-footer-grid { grid-template-columns: 1fr 1fr; }
   .sf-hero-inner { padding: 48px 20px 40px; }
   .sf-hero-info { gap: 20px; }
 }
 @media (max-width: 480px) {
-  .sf-footer-grid { grid-template-columns: 1fr; }
   .sf-main { padding: 24px 16px calc(48px + var(--safe-area-bottom)); }
   .sf-container { padding: 0 16px; }
   .sf-header-inner { padding: 0 max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right)); }

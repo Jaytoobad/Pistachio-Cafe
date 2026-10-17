@@ -1,10 +1,10 @@
-﻿import { supabase } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 
 // src/admin/services/admin.js
 //
 // Single write/query layer for the admin panel. Talks to Supabase through the
 // shared client in src/lib/supabase.js. RLS + is_staff() enforce that only
-// signed-in staff can reach these rows ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â this file never checks membership
+// signed-in staff can reach these rows — this file never checks membership
 // itself, it just trusts the database.
 
 // --- Orders -----------------------------------------------------------------

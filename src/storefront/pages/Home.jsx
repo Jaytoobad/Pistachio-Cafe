@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchFeaturedDishes } from '../services/dishes.index';
 import { fetchApprovedReviews, submitReview } from '../services/reviews';
@@ -103,13 +103,13 @@ export default function Home() {
           <img
             className="sf-hero-bg"
             src={IMAGES.hero}
-            alt="Pistachio CafÃ© ambiance"
+            alt="Pistachio Café ambiance"
             loading="lazy"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.heroCoffee; }}
           />
         <div className="sf-hero-inner">
-          <p className="sf-hero-eyebrow" id="hero-eyebrow">{BRAND.location} Ãƒâ€šÃ‚Â· {BRAND.offerings.join(' Ãƒâ€šÃ‚Â· ')}</p>
+          <p className="sf-hero-eyebrow" id="hero-eyebrow">{BRAND.location} · {BRAND.offerings.join(' · ')}</p>
           <h1 id="hero-title">{BRAND.name}</h1>
           <p>{BRAND.tagline}</p>
           <div className="sf-hero-cta">
@@ -119,7 +119,7 @@ export default function Home() {
           <div className="sf-hero-info">
             <div>
               <strong>Opening hours</strong>
-              <span>Weekdays {HOURS.weekday.open} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ {HOURS.weekday.close} Ãƒâ€šÃ‚Â· Weekends {HOURS.weekend.open} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ {HOURS.weekend.close}</span>
+              <span>Weekdays {HOURS.weekday.open} – {HOURS.weekday.close} · Weekends {HOURS.weekend.open} – {HOURS.weekend.close}</span>
             </div>
             <div>
               <strong>Location</strong>
@@ -173,7 +173,7 @@ export default function Home() {
         )}
         <form className="sf-review-form" onSubmit={handleSubmit} aria-label="Leave a review">
           <h3>Leave a review</h3>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', margin: '0 0 18px' }}>Share your experience ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â it will appear once approved.</p>
+          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', margin: '0 0 18px' }}>Share your experience — it will appear once approved.</p>
           {formMessage && (
             <p style={{ margin: '0 0 12px', color: formMessage.type === 'error' ? 'var(--color-error)' : 'var(--color-success)', fontSize: '0.88rem', fontWeight: 600 }}>{formMessage.text}</p>
           )}
@@ -189,7 +189,7 @@ export default function Home() {
             <label htmlFor="home-review-comment">Your review</label>
             <textarea id="home-review-comment" value={reviewForm.comment} onChange={(e) => setReviewForm((f) => ({ ...f, comment: e.target.value }))} rows={4} placeholder="What did you enjoy?" required />
           </div>
-          <button type="submit" className="sf-btn sf-btn-primary" disabled={submitting}>{submitting ? 'SubmittingÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦' : 'Submit review'}</button>
+          <button type="submit" className="sf-btn sf-btn-primary" disabled={submitting}>{submitting ? 'Submitting…' : 'Submit review'}</button>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginTop: 10 }}>Reviews are moderated before they appear.</p>
         </form>
       </section>

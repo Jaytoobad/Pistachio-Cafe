@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { trackOrder } from '../services/tracking.index';
 import { TRACK_STATUSES } from '../config';
 import Stepper from '../components/Stepper';
@@ -16,6 +17,7 @@ export default function Track() {
   const [loading, setLoading] = useState(Boolean(code));
   const [error, setError] = useState(null);
   const [input, setInput] = useState('');
+  useDocumentTitle('Track Order | Pistachio Café');
 
   const load = useCallback((lookupCode, lookupPhone) => {
     let active = true;
@@ -115,7 +117,7 @@ export default function Track() {
           </div>
           <div>
             <h3 style={{ margin: '0 0 8px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-text-muted)' }}>Customer</h3>
-            <p style={{ margin: 0 }}>{order.customer_name || 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â'}</p>
+            <p style={{ margin: 0 }}>{order.customer_name || '—'}</p>
           </div>
           {order.estimated_minutes && (
             <div>
@@ -131,14 +133,14 @@ export default function Track() {
             {order.landmark && <p style={{margin:"0 0 4px", color:"var(--color-text-muted)", fontSize:"0.85rem"}}><strong>Landmark:</strong> {order.landmark}</p>}
             {order.rider && (
               <p style={{ margin: '4px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-                <strong>Rider:</strong> {order.rider.name}{order.rider.phone ? ` � ${order.rider.phone}` : ""}
+                <strong>Rider:</strong> {order.rider.name}{order.rider.phone ? ` — ${order.rider.phone}` : ""}
               </p>
             )}
           </div>
         )}
 
         {order.fulfilment !== 'delivery' && order.rider && (
-          <p style={{ marginTop: 16, color: 'var(--color-text-muted)', fontSize: '0.85rem' }}><strong>Rider:</strong> {order.rider.name}{order.rider.phone ? ` ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â ${order.rider.phone}` : ''}</p>
+          <p style={{ marginTop: 16, color: 'var(--color-text-muted)', fontSize: '0.85rem' }}><strong>Rider:</strong> {order.rider.name}{order.rider.phone ? ` — ${order.rider.phone}` : ''}</p>
         )}
 
         {order.items && order.items.length > 0 && (
@@ -147,7 +149,7 @@ export default function Track() {
             <ul className="sf-order-items" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {order.items.map((item, i) => (
                 <li key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--color-border)' }}>
-                  <span>{item.quantity} � {item.name}</span>
+                  <span>{item.quantity} &times; {item.name}</span>
                   <span style={{ color: 'var(--color-text-muted)' }}>{formatMoney(Number(item.subtotal || 0))}</span>
                 </li>
               ))}

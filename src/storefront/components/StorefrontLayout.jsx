@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import '../storefront.css';
 import { useCart } from '../context/CartContext';
