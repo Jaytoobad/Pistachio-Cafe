@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import '../storefront.css';
 import { useCart } from '../context/CartContext';
 import { subscribeNewsletter } from '../services/newsletter';
 import { useToast } from '../../context/ToastContext';
@@ -15,6 +16,7 @@ function hoursString() {
 export default function StorefrontLayout({ children }) {
   const { count } = useCart();
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = React.useState(false);
 
   const navLinks = [
@@ -76,7 +78,7 @@ export default function StorefrontLayout({ children }) {
           <button
             className="sf-cart-btn"
             aria-label="View cart"
-            onClick={() => (window.location.href = '/cart')}
+            onClick={() => navigate('/cart')}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20">
               <circle cx="9" cy="21" r="1" />

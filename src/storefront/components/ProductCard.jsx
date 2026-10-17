@@ -1,11 +1,12 @@
 import React from 'react';
-import { formatMoney } from '../../../lib/format';
+import { formatMoney } from '../../lib/format';
 import QuantityStepper from './QuantityStepper';
+import { IMAGES } from '../config';
 
 export default function ProductCard({ product, onAdd }) {
   const [qty, setQty] = React.useState(1);
   const price = Number(product.price || 0);
-  const image = product.image_url || '/images/placeholder-cup-pistachios.jpg';
+  const image = product.image_url || IMAGES.placeholder;
 
   return (
     <article className="sf-product-card">

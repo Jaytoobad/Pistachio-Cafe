@@ -11,7 +11,7 @@ export default function About() {
   return (
     <div className="sf-container">
       <section className="sf-section">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48px, alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center' }}>
           <div>
             <p className="sf-hero-eyebrow">About us</p>
             <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>A café in Spintex, Accra</h1>
@@ -37,7 +37,7 @@ export default function About() {
 
       <section className="sf-section">
         <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 1.9rem)', marginBottom: 20 }}>What we offer</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16px }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
           {[
             { title: 'Coffee', desc: 'Slow-brewed and carefully poured.' },
             { title: 'Desserts', desc: 'Handmade every morning.' },
@@ -53,7 +53,7 @@ export default function About() {
       </section>
 
       <section className="sf-section" style={{ background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', padding: '32px 28px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 28px }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '28px' }}>
           <div>
             <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Opening hours</h3>
             <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>Weekdays <strong>{HOURS.weekday.open} – {HOURS.weekday.close}</strong></p>

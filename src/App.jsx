@@ -2,9 +2,13 @@ import { lazy, Suspense, useCallback } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { CartProvider } from './storefront/context/CartContext';
+import { SettingsProvider } from './storefront/context/SettingsContext';
 import PageLoader from './components/PageLoader';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
+import StorefrontLayout from './storefront/components/StorefrontLayout';
 
+// Admin
 const AdminLogin = lazy(() => import('./admin/pages/Login'));
 const AdminLayout = lazy(() => import('./admin/layout/AdminLayout'));
 const AdminDashboard = lazy(() => import('./admin/pages/Dashboard'));
@@ -17,6 +21,17 @@ const AdminSubscribers = lazy(() => import('./admin/pages/Subscribers'));
 const AdminSettings = lazy(() => import('./admin/pages/Settings'));
 const AdminStaff = lazy(() => import('./admin/pages/Staff'));
 
+// Storefront (customer-facing)
+const StoreHome = lazy(() => import('./storefront/pages/Home'));
+const StoreMenu = lazy(() => import('./storefront/pages/Menu'));
+const StoreCart = lazy(() => import('./storefront/pages/Cart'));
+const StoreCheckout = lazy(() => import('./storefront/pages/Checkout'));
+const StoreTrack = lazy(() => import('./storefront/pages/Track'));
+const StoreAbout = lazy(() => import('./storefront/pages/About'));
+const StoreReviews = lazy(() => import('./storefront/pages/Reviews'));
+const StoreContact = lazy(() => import('./storefront/pages/Contact'));
+const StoreNotFound = lazy(() => import('./storefront/pages/NotFound'));
+
 export default function App() {
   const location = useLocation();
 
@@ -28,30 +43,46 @@ export default function App() {
   return (
     <AuthProvider>
       <ToastProvider>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminLayout />
-                </ProtectedAdminRoute>
-              }
-            >
-              <Route index element={<AdminDashboard />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="orders/:id" element={<AdminOrderDetail />} />
-              <Route path="menu" element={<AdminMenu />} />
-              <Route path="categories" element={<AdminCategories />} />
-              <Route path="reviews" element={<AdminReviews />} />
-              <Route path="subscribers" element={<AdminSubscribers />} />
-              <Route path="settings" element={<AdminSettings />} />
-              <Route path="staff" element={<AdminStaff />} />
-            </Route>
-            <Route path="*" element={<Navigate to={from().pathname} replace />} />
-          </Routes>
-        </Suspense>
+        <CartProvider>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Admin routes — unchanged */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedAdminRoute>
+                    <AdminLayout />
+                  </ProtectedAdminRoute>
+                }
+              >
+                <Route index element={<AdminDashboard />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="orders/:id" element={<AdminOrderDetail />} />
+                <Route path="menu" element={<AdminMenu />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="reviews" element={<AdminReviews />} />
+                <Route path="subscribers" element={<AdminSubscribers />} />
+                <Route path="settings" element={<AdminSettings />} />
+                <Route path="staff" element={<AdminStaff />} />
+              </Route>
+
+              {/* Storefront routes inside the shared storefront layout */}
+              <Route element={<SettingsProvider><StorefrontLayout /></SettingsProvider>}>
+                <Route index element={<StoreHome />} />
+                <Route path="menu" element={<StoreMenu />} />
+                <Route path="cart" element={<StoreCart />} />
+                <Route path="checkout" element={<StoreCheckout />} />
+                <Route path="track" element={<StoreTrack />} />
+                <Route path="track/:code" element={<StoreTrack />} />
+                <Route path="about" element={<StoreAbout />} />
+                <Route path="reviews" element={<StoreReviews />} />
+                <Route path="contact" element={<StoreContact />} />
+                <Route path="*" element={<StoreNotFound />} />
+              </Route>
+            </Routes>
+          </Suspense>
+        </CartProvider>
       </ToastProvider>
     </AuthProvider>
   );

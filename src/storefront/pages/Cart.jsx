@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import QuantityStepper from '../components/QuantityStepper';
 import { formatMoney } from '../../lib/format';
+import { IMAGES } from '../config';
 
 export default function Cart() {
   const { items, updateQty, remove, subtotal, count } = useCart();
@@ -37,11 +39,11 @@ export default function Cart() {
           <div className="sf-cart-items">
             {items.map((item) => (
               <div key={item.product_id} className="sf-cart-line">
-                <img src={item.image_url || '/images/placeholder-cup-pistachios.jpg'} alt="" className="sf-cart-line-img" />
+                <img src={item.image_url || IMAGES.placeholder} alt="" className="sf-cart-line-img" />
                 <div className="sf-cart-line-body">
                   <div className="sf-cart-line-name">{item.name}</div>
                   <div className="sf-cart-line-price">{formatMoney(item.price)} each</div>
-                  <QuantityStepperLocal value={item.qty} onChange={(q) => updateQty(item.product_id, q)} />
+                  <QuantityStepper value={item.qty} onChange={(q) => updateQty(item.product_id, q)} />
                 </div>
                 <button className="sf-remove" onClick={() => remove(item.product_id)}>Remove</button>
               </div>
@@ -71,12 +73,3 @@ export default function Cart() {
   );
 }
 
-function QuantityStepperLocal({ value, onChange }) {
-  return (
-    <span className="sf-qty">
-      <button type="button" className="sf-qty-btn" aria-label="Decrease" onClick={() => onChange(Math.max(1, value - 1))}>−</button>
-      <span className="sf-qty-val">{value}</span>
-      <button type="button" className="sf-qty-btn" aria-label="Increase" onClick={() => onChange(value + 1)}>+</button>
-    </span>
-  );
-}
