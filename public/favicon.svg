@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <title>Pistachio Café</title>
+  <rect width="32" height="32" rx="7" fill="#F7F3E8"/>
+  <g fill="#9EBE7E">
+    <path d="M16 5 C10 9 6 14 6 20 C6 25 10.5 29 16 29 C21.5 29 26 25 26 20 C26 14 22 9 16 5 Z"/>
+    <path d="M16 9 C12.5 12.5 9.5 16.5 9 20 C9.5 23.5 12.5 25.5 16 25.5 C19.5 25.5 22.5 23.5 23 20 C22.5 16.5 19.5 12.5 16 9 Z" fill="#2B3326" opacity="0.85"/>
+    <path d="M16 12 C14 14.5 12 17 11.5 20 C12.5 22 14.5 23 16 23 C17.5 23 19.5 22 20.5 20 C20 17 18 14.5 16 12 Z" fill="#2B3326"/>
+  </g>
+</svg>

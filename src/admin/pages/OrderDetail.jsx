@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fetchOrderById, updateOrderStatus, cancelOrder } from '../../services/admin';
+import { fetchOrderById, updateOrderStatus, cancelOrder } from '../services/admin';
 import { formatMoney, formatAccra } from '../../lib/format';
-import { useToast } from '../../context/ToastContext';
-import PageLoader from '../../components/PageLoader';
-import StatusPill from '../../components/StatusPill';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import { useToast } from '../../lib/context/ToastContext';
+import PageLoader from '../../lib/components/PageLoader';
+import StatusPill from '../../lib/components/StatusPill';
+import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
 const STATUS_ORDER = ['received', 'preparing', 'ready', 'completed'];
 

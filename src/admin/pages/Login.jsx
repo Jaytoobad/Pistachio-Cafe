@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { signIn } from '../../services/auth';
-import { useToast } from '../../context/ToastContext';
-import PasswordInput from '../../components/PasswordInput';
+import { signIn } from '../../lib/services/auth';
+import { useToast } from '../../lib/context/ToastContext';
+import PasswordInput from '../../lib/components/PasswordInput';
 
 export default function Login() {
   const [email, setEmail] = useState('');

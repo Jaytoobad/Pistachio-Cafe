@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchSubscribers, deleteSubscriber } from '../../services/admin';
-import { useToast } from '../../context/ToastContext';
-import PageLoader from '../../components/PageLoader';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import { fetchSubscribers, deleteSubscriber } from '../services/admin';
+import { useToast } from '../../lib/context/ToastContext';
+import PageLoader from '../../lib/components/PageLoader';
+import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
 export default function Subscribers() {
   const [subscribers, setSubscribers] = useState([]);

@@ -9,7 +9,7 @@ import SectionHeading from '../components/SectionHeading';
 import { useCart } from '../context/CartContext';
 import { BRAND, HOURS, CONTACT, IMAGES } from '../config';
 import { formatMoney } from '../../lib/format';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../lib/context/ToastContext';
 
 export default function Home() {
   const { add } = useCart();

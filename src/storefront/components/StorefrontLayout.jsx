@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import '../storefront.css';
 import { useCart } from '../context/CartContext';
 import { subscribeNewsletter } from '../services/newsletter';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../lib/context/ToastContext';
 import { BRAND, HOURS, CONTACT, IMAGES } from '../config';
 
 function hoursString() {

@@ -1,4 +1,4 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 
 export async function fetchOrders({ paymentStatus, status, search, dateFrom, dateTo } = {}) {
   let q = supabase.from('orders').select('*, order_items(*)').order('created_at', { ascending: false });

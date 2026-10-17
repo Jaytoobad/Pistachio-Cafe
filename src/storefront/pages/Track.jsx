@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { trackOrder } from '../services/tracking';
 import { TRACK_STATUSES } from '../config';
 import Stepper from '../components/Stepper';
-import StatusPill from '../../components/StatusPill';
+import StatusPill from '../../lib/components/StatusPill';
 import { formatMoney, formatAccra } from '../../lib/format';
 
 export default function Track() {

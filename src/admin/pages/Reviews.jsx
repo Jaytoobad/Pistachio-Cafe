@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchReviews, setReviewApproved, deleteReview } from '../../services/admin';
+import { fetchReviews, setReviewApproved, deleteReview } from '../services/admin';
 import { formatMoney } from '../../lib/format';
-import { useToast } from '../../context/ToastContext';
-import PageLoader from '../../components/PageLoader';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import { useToast } from '../../lib/context/ToastContext';
+import PageLoader from '../../lib/components/PageLoader';
+import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
 export default function Reviews() {
   const [reviews, setReviews] = useState([]);

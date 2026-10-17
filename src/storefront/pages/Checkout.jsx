@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useSettings } from '../context/SettingsContext';
 import { BRAND, CURRENCY_SYMBOL } from '../config';
 import { formatMoney } from '../../lib/format';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../lib/context/ToastContext';
 import SectionHeading from '../components/SectionHeading';
 
 const PHONE_REGEX = /^(?:\+?233|0)?[1-9][0-9]{7,9}$/;

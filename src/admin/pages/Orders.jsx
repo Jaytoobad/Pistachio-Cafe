@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchOrders, updateOrderStatus, cancelOrder } from '../../services/admin';
+import { fetchOrders, updateOrderStatus, cancelOrder } from '../services/admin';
 import { formatMoney, minutesAgo } from '../../lib/format';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../lib/context/ToastContext';
 import { supabase } from '../../lib/supabase';
-import PageLoader from '../../components/PageLoader';
-import StatusPill from '../../components/StatusPill';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import PageLoader from '../../lib/components/PageLoader';
+import StatusPill from '../../lib/components/StatusPill';
+import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
 const COLUMNS = ['received', 'preparing', 'ready', 'completed'];
 const COLUMN_LABELS = {

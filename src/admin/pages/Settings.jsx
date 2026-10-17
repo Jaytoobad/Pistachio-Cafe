@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchSettings, updateSettings } from '../../services/admin';
+import { fetchSettings, updateSettings } from '../services/admin';
 import { formatMoney } from '../../lib/format';
-import { useToast } from '../../context/ToastContext';
-import PageLoader from '../../components/PageLoader';
+import { useToast } from '../../lib/context/ToastContext';
+import PageLoader from '../../lib/components/PageLoader';
 
 export default function Settings() {
   const [settings, setSettings] = useState(null);

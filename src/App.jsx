@@ -1,11 +1,11 @@
 import { lazy, Suspense, useCallback } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { ToastProvider } from './context/ToastContext';
+import { AuthProvider } from './lib/context/AuthContext';
+import { ToastProvider } from './lib/context/ToastContext';
 import { CartProvider } from './storefront/context/CartContext';
 import { SettingsProvider } from './storefront/context/SettingsContext';
-import PageLoader from './components/PageLoader';
-import ProtectedAdminRoute from './components/ProtectedAdminRoute';
+import PageLoader from './lib/components/PageLoader';
+import ProtectedAdminRoute from './lib/components/ProtectedAdminRoute';
 import StorefrontLayout from './storefront/components/StorefrontLayout';
 
 // Admin
@@ -14,7 +14,6 @@ const AdminLayout = lazy(() => import('./admin/layout/AdminLayout'));
 const AdminDashboard = lazy(() => import('./admin/pages/Dashboard'));
 const AdminOrders = lazy(() => import('./admin/pages/Orders'));
 const AdminOrderDetail = lazy(() => import('./admin/pages/OrderDetail'));
-const AdminDishes = lazy(() => import('./admin/pages/Dishes'));
 const AdminMenuSections = lazy(() => import('./admin/pages/MenuSections'));
 const AdminReviews = lazy(() => import('./admin/pages/Reviews'));
 const AdminSubscribers = lazy(() => import('./admin/pages/Subscribers'));
@@ -56,10 +55,9 @@ export default function App() {
                   </ProtectedAdminRoute>
                 }
               >
-                <Route index element={<AdminDashboard />} />
+<Route index element={<AdminDashboard />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="orders/:id" element={<AdminOrderDetail />} />
-                <Route path="dishes" element={<AdminDishes />} />
                 <Route path="menu" element={<AdminMenuSections />} />
                 <Route path="reviews" element={<AdminReviews />} />
                 <Route path="subscribers" element={<AdminSubscribers />} />

@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabase';
-import { fetchMenu, fetchDishes } from '../../services/admin';
+import { fetchMenu, fetchDishes } from '../../admin/services/admin';
 
 export { fetchMenu, fetchDishes };
 

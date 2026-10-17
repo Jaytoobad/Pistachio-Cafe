@@ -1,46 +1,25 @@
-import { Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { signOut } from '../../services/auth';
-import PageLoader from '../../components/PageLoader';
-import Sidebar from './Sidebar';
-import MobileTabBar from './MobileTabBar';
+import { NavLink } from 'react-router-dom';
 
-const links = [
-  { to: '/admin', label: 'Dashboard' },
-  { to: '/admin/orders', label: 'Orders' },
-  { to: '/admin/menu', label: 'Menu Sections' },
-  { to: '/admin/reviews', label: 'Reviews' },
-  { to: '/admin/subscribers', label: 'Subscribers' },
-  { to: '/admin/settings', label: 'Settings' },
-  { to: '/admin/staff', label: 'Staff' },
-];
-
-export default function AdminLayout() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
-
-  if (loading) return <PageLoader />;
-
-  async function handleLogout() {
-    await signOut();
-    navigate('/admin/login', { replace: true });
-  }
-
+export default function Sidebar({ links, user, onLogout }) {
   return (
-    <div className="admin-shell">
-      <Sidebar links={links} user={user} onLogout={handleLogout} />
-      <main className="admin-main">
-        <header className="admin-header">
-          <button className="sidebar-toggle" aria-label="Toggle menu">☰</button>
-          <h1>Pistachio CafÃÂ© <span style={{ color: 'var(--color-primary)' }}>Admin</span></h1>
-          <div className="admin-header-actions">
-            <a className="admin-view-shop" href="/pistachio-cafe/index.html" target="_blank" rel="noopener noreferrer">View shop</a>
-            <button className="admin-logout" onClick={handleLogout}>Logout</button>
-          </div>
-        </header>
-        <Outlet />
-      </main>
-      <MobileTabBar links={links} />
-    </div>
+    <aside className="admin-sidebar" aria-label="Admin navigation">
+      <div className="admin-brand">Pistachio Café</div>
+      <nav>
+        {links.map((l) => (
+          <NavLink
+            key={l.to}
+            to={l.to}
+            end={l.to === '/admin'}
+            className={({ isActive }) => (isActive ? 'active' : '')}
+          >
+            {l.label}
+          </NavLink>
+        ))}
+      </nav>
+      <div className="admin-sidebar-footer">
+        <span className="user-email" title={user?.email || ''}>{user?.email || 'Signed in'}</span>
+        <button className="admin-logout" onClick={onLogout}>Logout</button>
+      </div>
+    </aside>
   );
 }

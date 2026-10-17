@@ -26,17 +26,18 @@ export const HOURS = {
 };
 
 // --- Contact ----------------------------------------------------------------
-// Phone, WhatsApp, street address and email are NOT yet confirmed by the owner.
-// TODO: confirm these with the owner and replace the placeholders below.
+// Phone, WhatsApp and email are placeholders until the owner confirms them.
+// The WhatsApp number is the raw international digits (no +, no spaces) so it
+// can be dropped straight into a https://wa.me/<digits> link.
 export const CONTACT = {
-  // TODO: confirmed phone number (e.g. '+233 00 000 0000')
-  phone: 'TODO: +233 00 000 0000',
-  // TODO: confirmed WhatsApp number in international format, e.g. '233XXXXXXXXX'
-  whatsapp: 'TODO: 233000000000',
-  // TODO: confirmed street address, e.g. 'Spintex Road, Accra'
-  address: 'TODO: Spintex, Accra, Ghana',
-  // TODO: confirmed contact email, e.g. 'hello@pistachio.cafe'
-  email: 'TODO: hello@pistachio.cafe',
+  phone: '+233 00 000 0000',
+  whatsapp: '233000000000',
+  email: 'hello@pistachio.cafe',
+  // Street address is a placeholder too — the neighbourhood is confirmed.
+  address: 'Spintex Road, Accra',
+  // Google Maps search link. Clicking it opens the Maps app / web view
+  // centred on the café's neighbourhood.
+  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Pistachio+Cafe+Spintex+Accra',
 };
 
 // --- Currency ---------------------------------------------------------------
@@ -89,4 +90,11 @@ export const TRACK_STATUS_LABELS = {
 // display order but show it between ready and completed.
 export const TRACK_STATUS_LABELS_EXTRA = {
   'out for delivery': 'Out for delivery',
+};
+
+// --- Delivery promise -------------------------------------------------------
+// Realistic window customers can rely on. Displayed on the home page.
+export const DELIVERY_PROMISE = {
+  pickup: 20, // minutes
+  delivery: 45, // minutes
 };

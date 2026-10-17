@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { fetchOrders } from '../../services/admin';
+import { fetchOrders } from '../services/admin';
 import { formatMoney, isTodayAccra } from '../../lib/format';
-import PageLoader from '../../components/PageLoader';
-import StatusPill from '../../components/StatusPill';
+import PageLoader from '../../lib/components/PageLoader';
+import StatusPill from '../../lib/components/StatusPill';
 
 export default function Dashboard() {
   const [orders, setOrders] = useState([]);

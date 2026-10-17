@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { fetchMenu, fetchAvailableDishes } from '../services/dishes';
 import DishCard from '../components/DishCard';
 import { useCart } from '../context/CartContext';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../../lib/context/ToastContext';
 import { formatMoney } from '../../lib/format';
 
 export default function Menu() {
