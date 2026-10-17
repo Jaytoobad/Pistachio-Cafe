@@ -39,7 +39,7 @@
   --transition-base: 250ms ease;
 
   --sidebar-width: 260px;
-  --header-height: 64px;
+  --header-height: 72px;
 
   /* Safe-area insets for notched devices */
   --safe-area-top: env(safe-area-inset-top, 0px);

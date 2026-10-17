@@ -1,60 +1,142 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import '../storefront.css';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { BRAND, HOURS, CONTACT, IMAGES, HAS_PHONE } from '../config';
 
-function hoursString() {
-  const d = new Date();
-  const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-  const h = isWeekend ? HOURS.weekend : HOURS.weekday;
-  return `${h.open} – ${h.close}`;
+const HEADER_BREAKPOINT = 1024;
+
+// --- Live open/closed status from HOURS, in Africa/Accra time ----------------
+
+function useStoreStatus() {
+  const [status, setStatus] = useState('Closed · opens 08:00');
+
+  useEffect(() => {
+    const compute = () => {
+      const accra = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Accra' }));
+      const isWeekend = accra.getDay() === 0 || accra.getDay() === 6;
+      const h = isWeekend ? HOURS.weekend : HOURS.weekday;
+
+      const [oh, om] = h.open.split(':').map(Number);
+      const [ch, cm] = h.close.split(':').map(Number);
+      const now = accra.getHours() * 60 + accra.getMinutes();
+      const open = oh * 60 + om;
+      let close = ch * 60 + cm;
+      if (close <= open) close = 24 * 60; // e.g. weekend close at midnight rolls to next day
+
+      const openNow = now >= open && now < close;
+      const closeLabel = ch === 0 && cm === 0 ? 'midnight' : h.close;
+      setStatus(openNow ? `Open now · closes ${closeLabel}` : `Closed · opens ${h.open}`);
+    };
+
+    compute();
+    const timer = setInterval(compute, 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return status;
+}
+
+const navLinks = [
+  { to: '/', label: 'Home' },
+  { to: '/menu', label: 'Menu' },
+  { to: '/track', label: 'Track order' },
+  { to: '/about', label: 'About' },
+  { to: '/contact', label: 'Contact' },
+];
+
+const DELIVERY_LINE = 'Delivery across Spintex & Accra';
+
+function NavLinkItem({ l, onClick }) {
+  return (
+    <NavLink
+      key={l.to}
+      to={l.to}
+      end={l.end !== false}
+      className={({ isActive }) => (isActive ? 'active' : '')}
+      onClick={onClick}
+    >
+      {l.label}
+    </NavLink>
+  );
 }
 
 export default function StorefrontLayout({ children }) {
   const { count } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = React.useState(false);
+  const status = useStoreStatus();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const navLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/menu', label: 'Menu' },
-    { to: '/about', label: 'About' },
-    { to: '/reviews', label: 'Reviews' },
-    { to: '/contact', label: 'Contact' },
-  ];
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 0);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <div className="sf-root">
       <a href="#main" className="sf-skip">Skip to content</a>
 
-      {/* Slim ticker with real facts only */}
+      {/* Top ticker: static line on desktop, seamless marquee on mobile */}
       <div className="sf-ticker" aria-hidden="true">
-        <div className="sf-ticker-track">
-          <span>Open {hoursString()}</span>
-          <span>{BRAND.offerings.join(' · ')}</span>
-          <span>{BRAND.location}</span>
-          <span>Open {hoursString()}</span>
-          <span>{BRAND.offerings.join(' · ')}</span>
-          <span>{BRAND.location}</span>
+        <span className={`sf-ticker-static ${status.open ? 'sf-ticker--open' : ''}`}>{status}</span>
+        <span className="sf-ticker-static sf-ticker-dot" aria-hidden="true">
+          ·
+        </span>
+        <span className="sf-ticker-static">{DELIVERY_LINE}</span>
+        <div className="sf-ticker-marquee">
+          <div className="sf-ticker-track">
+            <span>{status}</span>
+            <span>·</span>
+            <span>{DELIVERY_LINE}</span>
+            <span>{status}</span>
+            <span>·</span>
+            <span>{DELIVERY_LINE}</span>
+            <span>{status}</span>
+            <span>·</span>
+            <span>{DELIVERY_LINE}</span>
+            <span>{status}</span>
+            <span>·</span>
+            <span>{DELIVERY_LINE}</span>
+          </div>
         </div>
       </div>
 
-      <header className="sf-header">
+      <header className={`sf-header ${scrolled ? 'sf-header--scrolled' : ''}`}>
         <div className="sf-header-inner">
           <Link to="/" className="sf-brand" aria-label="Pistachio Café home">
-            <img src={IMAGES.logo} alt="Pistachio Café" className="sf-brand-logo" onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.logoPng; }} />
+            <img
+              src={IMAGES.logo}
+              alt=""
+              className="sf-brand-logo"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = IMAGES.logoPng;
+              }}
+            />
+            <span className="sf-brand-tag">{BRAND.tagline}</span>
           </Link>
 
-          <nav className="sf-nav" aria-label="Primary">
-            {navLinks.map((l) => (
-              <NavLink key={l.to} to={l.to} end={l.end !== false} className={({ isActive }) => isActive ? 'active' : ''}>
-                {l.label}
-              </NavLink>
-            ))}
-          </nav>
+          <div className="sf-header-center">
+            <nav className="sf-nav" aria-label="Primary">
+              {navLinks.map((l) => (
+                <NavLinkItem key={l.to} l={l} />
+              ))}
+            </nav>
+          </div>
 
           <button
             className="sf-cart-btn"
@@ -80,20 +162,15 @@ export default function StorefrontLayout({ children }) {
         </div>
 
         {menuOpen && (
-          <div className="sf-mobile-menu">
-            <div className="sf-mobile-menu-inner">
+          <div className={`sf-mobile-menu ${menuOpen ? 'open' : ''}`}>
+            <button className="sf-drawer-close" aria-label="Close menu" onClick={closeMenu}>
+              ✕
+            </button>
+            <nav className="sf-drawer-nav" aria-label="Primary">
               {navLinks.map((l) => (
-                <NavLink
-                  key={l.to}
-                  to={l.to}
-                  end={l.end !== false}
-                  className={({ isActive }) => isActive ? 'active' : ''}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {l.label}
-                </NavLink>
+                <NavLinkItem key={l.to} l={l} onClick={closeMenu} />
               ))}
-            </div>
+            </nav>
           </div>
         )}
       </header>

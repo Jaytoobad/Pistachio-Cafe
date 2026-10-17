@@ -33,8 +33,8 @@ export const CONTACT = {
   phone: '+233 00 000 0000',
   whatsapp: '233000000000',
   email: 'hello@pistachio.cafe',
-  // Street address is a placeholder too — the neighbourhood is confirmed.
-  address: 'Spintex Road, Accra',
+  // Street address — the neighbourhood is confirmed.
+  address: 'Spintex, Accra, Ghana',
   // Google Maps search link. Clicking it opens the Maps app / web view
   // centred on the café's neighbourhood.
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Pistachio+Cafe+Spintex+Accra',
