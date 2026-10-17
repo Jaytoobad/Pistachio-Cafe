@@ -1,4 +1,13 @@
-import { supabase } from '../../lib/supabase';
+﻿import { supabase } from '../../lib/supabase';
+
+// src/admin/services/admin.js
+//
+// Single write/query layer for the admin panel. Talks to Supabase through the
+// shared client in src/lib/supabase.js. RLS + is_staff() enforce that only
+// signed-in staff can reach these rows ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â this file never checks membership
+// itself, it just trusts the database.
+
+// --- Orders -----------------------------------------------------------------
 
 export async function fetchOrders({ paymentStatus, status, search, dateFrom, dateTo } = {}) {
   let q = supabase.from('orders').select('*, order_items(*)').order('created_at', { ascending: false });
@@ -32,7 +41,7 @@ export async function fetchOrderById(id) {
   return data;
 }
 
-// --- Menu ---
+// --- Menu / dishes ----------------------------------------------------------
 
 export async function fetchMenu() {
   const { data, error } = await supabase.from('menu').select('*').order('sort_order');
@@ -67,8 +76,8 @@ export async function deleteDish(id) {
   if (error) throw error;
 }
 
-export async function uploadProductImage(file, dishId) {
-  const bucket = supabase.storage.from('product-images');
+export async function uploadDishImage(file, dishId) {
+  const bucket = supabase.storage.from('dish-images');
   const ext = file.name.split('.').pop();
   const path = `dishes/${dishId}/${Date.now()}.${ext}`;
   const { error } = await bucket.upload(path, file, { upsert: false });
@@ -76,7 +85,7 @@ export async function uploadProductImage(file, dishId) {
   return bucket.getPublicUrl(path).data.publicUrl;
 }
 
-// --- Menu ---
+// --- Menu sections ----------------------------------------------------------
 
 export async function saveMenuSection(menuSection, id) {
   if (id) {
@@ -102,7 +111,7 @@ export async function reorderMenuSections(orderedIds) {
   if (failed) throw failed.error;
 }
 
-// --- Reviews ---
+// --- Reviews ----------------------------------------------------------------
 
 export async function fetchReviews() {
   const { data, error } = await supabase.from('reviews').select('*, dishes(name)').order('created_at', { ascending: false });
@@ -120,7 +129,7 @@ export async function deleteReview(id) {
   if (error) throw error;
 }
 
-// --- Newsletter subscribers ---
+// --- Newsletter subscribers -------------------------------------------------
 
 export async function fetchSubscribers() {
   const { data, error } = await supabase.from('newsletter_subscribers').select('*').order('created_at', { ascending: false });
@@ -133,7 +142,7 @@ export async function deleteSubscriber(id) {
   if (error) throw error;
 }
 
-// --- Settings ---
+// --- Settings ---------------------------------------------------------------
 
 export async function fetchSettings() {
   const { data, error } = await supabase.from('settings').select('*').eq('id', 1).single();
@@ -147,10 +156,10 @@ export async function updateSettings(settings) {
   return data;
 }
 
-// --- Staff ---
+// --- Staff ------------------------------------------------------------------
 
 export async function fetchStaff() {
-  const { data, error } = await supabase.from('staff').select('*, profiles(email)').order('created_at', { ascending: false });
+  const { data, error } = await supabase.from('staff').select('*, email').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
@@ -165,6 +174,8 @@ export async function removeStaff(id) {
   const { error } = await supabase.from('staff').delete().eq('id', id);
   if (error) throw error;
 }
+
+
 
 
 

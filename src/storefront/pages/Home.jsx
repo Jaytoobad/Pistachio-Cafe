@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+﻿import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchFeaturedDishes } from '../services/dishes';
+import { fetchFeaturedDishes } from '../services/dishes.index';
 import { fetchApprovedReviews, submitReview } from '../services/reviews';
 import DishCard from '../components/DishCard';
 import ReviewCard from '../components/ReviewCard';
@@ -17,20 +17,29 @@ export default function Home() {
   const [featured, setFeatured] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [reviewForm, setReviewForm] = useState({ customer_name: '', rating: 0, comment: '' });
+  const [error, setError] = useState(false);  const [reviewForm, setReviewForm] = useState({ customer_name: '', rating: 0, comment: '' });
   const [submitting, setSubmitting] = useState(false);
   const [formMessage, setFormMessage] = useState(null);
 
+  const load = useCallback(async () => {
+    let active = true;
+    setLoading(true);
+    setError(false);
+    try {
+      const [items, approved] = await Promise.all([fetchFeaturedDishes(), fetchApprovedReviews()]);
+      if (active) { setFeatured(items || []); setReviews(approved || []); }
+    } catch (e) {
+      if (active) { setError(true); setFeatured([]); setReviews([]); }
+    } finally {
+      if (active) setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     let active = true;
-    Promise.all([fetchFeaturedDishes(), fetchApprovedReviews()])
-      .then(([items, approved]) => {
-        if (active) { setFeatured(items || []); setReviews(approved || []); }
-      })
-      .catch(() => { if (active) { setFeatured([]); setReviews([]); } })
-      .finally(() => { if (active) setLoading(false); });
+    load();
     return () => { active = false; };
-  }, []);
+  }, [load]);
 
   const handleStar = useCallback((n) => setReviewForm((f) => ({ ...f, rating: n })), []);
 
@@ -62,27 +71,45 @@ export default function Home() {
     showToast(`${product.name} added to cart`);
   };
 
+  if (error) {
+    return (
+      <div className="sf-container">
+        <div className="sf-section">
+          <div className="sf-error" role="alert">
+            <h3>Something went wrong</h3>
+            <p>We couldn't load the content. Please try again.</p>
+            <button className="sf-btn sf-btn-primary" style={{ marginTop: 12 }} onClick={load}>
+              Try again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="sf-container" style={{ paddingTop: 60 }}>
-        <div className="sf-loading"><div className="sf-spinner" aria-label="Loading" /></div>
+        <div className="sf-loading">
+          <div className="sf-spinner" aria-label="Loading" />
+        </div>
       </div>
     );
   }
 
   return (
     <div className="sf-container">
-      <section className="sf-hero" aria-labelledby="hero-title">
-        <img
-          className="sf-hero-bg"
-          src={IMAGES.hero}
-          alt=""
-          loading="lazy"
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.heroCoffee; }}
-        />
+        <section className="sf-hero" aria-labelledby="hero-title">
+          <img
+            className="sf-hero-bg"
+            src={IMAGES.hero}
+            alt="Pistachio CafÃ© ambiance"
+            loading="lazy"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.heroCoffee; }}
+          />
         <div className="sf-hero-inner">
-          <p className="sf-hero-eyebrow" id="hero-eyebrow">{BRAND.location} · {BRAND.offerings.join(' · ')}</p>
+          <p className="sf-hero-eyebrow" id="hero-eyebrow">{BRAND.location} Ãƒâ€šÃ‚Â· {BRAND.offerings.join(' Ãƒâ€šÃ‚Â· ')}</p>
           <h1 id="hero-title">{BRAND.name}</h1>
           <p>{BRAND.tagline}</p>
           <div className="sf-hero-cta">
@@ -92,7 +119,7 @@ export default function Home() {
           <div className="sf-hero-info">
             <div>
               <strong>Opening hours</strong>
-              <span>Weekdays {HOURS.weekday.open} – {HOURS.weekday.close} · Weekends {HOURS.weekend.open} – {HOURS.weekend.close}</span>
+              <span>Weekdays {HOURS.weekday.open} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ {HOURS.weekday.close} Ãƒâ€šÃ‚Â· Weekends {HOURS.weekend.open} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ {HOURS.weekend.close}</span>
             </div>
             <div>
               <strong>Location</strong>
@@ -114,7 +141,7 @@ export default function Home() {
       )}
 
       <section className="sf-section">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center' }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: "clamp(24px, 6vw, 48px)", alignItems: "center" }}>
           <div>
             <p className="sf-hero-eyebrow">About Pistachio Café</p>
             <h2>A café in Spintex, Accra</h2>
@@ -128,7 +155,7 @@ export default function Home() {
             <Link to="/about" className="sf-btn sf-btn-ghost">Read more</Link>
           </div>
           <div style={{ aspectRatio: '4 / 3', borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--color-forest)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <img src={IMAGES.about} alt="Inside Pistachio Café" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }} />
+            <img src={IMAGES.about} alt="Inside Pistachio Café" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.85 }} />
           </div>
         </div>
       </section>
@@ -146,7 +173,7 @@ export default function Home() {
         )}
         <form className="sf-review-form" onSubmit={handleSubmit} aria-label="Leave a review">
           <h3>Leave a review</h3>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', margin: '0 0 18px' }}>Share your experience — it will appear once approved.</p>
+          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', margin: '0 0 18px' }}>Share your experience ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â it will appear once approved.</p>
           {formMessage && (
             <p style={{ margin: '0 0 12px', color: formMessage.type === 'error' ? 'var(--color-error)' : 'var(--color-success)', fontSize: '0.88rem', fontWeight: 600 }}>{formMessage.text}</p>
           )}
@@ -162,7 +189,7 @@ export default function Home() {
             <label htmlFor="home-review-comment">Your review</label>
             <textarea id="home-review-comment" value={reviewForm.comment} onChange={(e) => setReviewForm((f) => ({ ...f, comment: e.target.value }))} rows={4} placeholder="What did you enjoy?" required />
           </div>
-          <button type="submit" className="sf-btn sf-btn-primary" disabled={submitting}>{submitting ? 'Submitting…' : 'Submit review'}</button>
+          <button type="submit" className="sf-btn sf-btn-primary" disabled={submitting}>{submitting ? 'SubmittingÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦' : 'Submit review'}</button>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginTop: 10 }}>Reviews are moderated before they appear.</p>
         </form>
       </section>
@@ -172,8 +199,8 @@ export default function Home() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 28 }}>
           <div>
             <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Opening hours</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>Weekdays <strong>{HOURS.weekday.open} – {HOURS.weekday.close}</strong></p>
-            <p style={{ margin: '4px 0 0', color: 'var(--color-text-muted)' }}>Weekends <strong>{HOURS.weekend.open} – {HOURS.weekend.close}</strong></p>
+            <p style={{ margin: 0, color: "var(--color-text-muted)" }}>Weekdays <strong>{HOURS.weekday.open} – {HOURS.weekday.close}</strong></p>
+            <p style={{ margin: "4px 0 0", color: "var(--color-text-muted)" }}>Weekends <strong>{HOURS.weekend.open} – {HOURS.weekend.close}</strong></p>
           </div>
           <div>
             <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Location</h3>
@@ -190,5 +217,10 @@ export default function Home() {
     </div>
   );
 }
+
+
+
+
+
 
 

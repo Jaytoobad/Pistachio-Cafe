@@ -1,0 +1,30 @@
+﻿export const MOCK_MENU_SECTIONS = [
+  { id: 'sec-wraps', name: 'Wraps & Sandwiches', sort_order: 0, description: 'Freshly made to order.' },
+  { id: 'sec-waffles', name: 'Waffles & Desserts', sort_order: 1, description: 'Sweet treats baked with love.' },
+  { id: 'sec-icecream', name: 'Ice Cream', sort_order: 2, description: 'Cool and creamy.' },
+  { id: 'sec-drinks', name: 'Drinks & Coffee', sort_order: 3, description: 'Hot and cold favourites.' },
+  { id: 'sec-shisha', name: 'Shisha Combos', sort_order: 4, description: 'Relax and unwind.' },
+];
+
+export const MOCK_DISHES = [
+  { id: 'd1', menu_id: 'sec-wraps', name: 'Chicken Shawarma Wrap', description: 'Grilled chicken, garlic sauce, lettuce, tomato in pita wrap.', price: 40, is_available: true, is_featured: true, sort_order: 0, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Wraps & Sandwiches' },
+  { id: 'd2', menu_id: 'sec-wraps', name: 'Beef Shawarma Wrap', description: 'Spicy beef shawarma with veggies and tahini sauce.', price: 40, is_available: true, is_featured: true, sort_order: 1, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Wraps & Sandwiches' },
+  { id: 'd3', menu_id: 'sec-wraps', name: 'Club Sandwich', description: 'Triple-layered with chicken, bacon, egg, lettuce, tomato.', price: 38, is_available: true, sort_order: 2, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Wraps & Sandwiches' },
+  { id: 'd4', menu_id: 'sec-wraps', name: 'Tuna Sandwich', description: 'Creamy tuna mix with cucumber and fresh herbs.', price: 35, is_available: true, sort_order: 3, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Wraps & Sandwiches' },
+  { id: 'd5', menu_id: 'sec-waffles', name: 'Belgian Waffle with Ice Cream', description: 'Crispy waffle topped with a scoop of vanilla ice cream.', price: 45, is_available: true, is_featured: true, sort_order: 0, image_url: '/images/hero-flatlay.jpg', menu_name: 'Waffles & Desserts' },
+  { id: 'd6', menu_id: 'sec-waffles', name: 'Chocolate Waffle', description: 'Drizzled with Belgian chocolate sauce and whipped cream.', price: 40, is_available: true, sort_order: 1, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Waffles & Desserts' },
+  { id: 'd7', menu_id: 'sec-waffles', name: 'Caramel Waffle', description: 'Sweet caramel sauce, nuts and whipped cream.', price: 42, is_available: true, sort_order: 2, image_url: '/images/menu-marble-closeup.jpg', menu_name: 'Waffles & Desserts' },
+  { id: 'd8', menu_id: 'sec-waffles', name: 'Brownie Slice', description: 'Rich fudgy brownie served warm.', price: 25, is_available: true, sort_order: 3, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Waffles & Desserts' },
+  { id: 'd9', menu_id: 'sec-icecream', name: 'Vanilla Scoop', description: 'Classic creamy vanilla.', price: 15, is_available: true, sort_order: 0, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Ice Cream' },
+  { id: 'd10', menu_id: 'sec-icecream', name: 'Chocolate Scoop', description: 'Rich Belgian chocolate.', price: 15, is_available: true, sort_order: 1, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Ice Cream' },
+  { id: 'd11', menu_id: 'sec-icecream', name: 'Strawberry Scoop', description: 'Fresh strawberry flavour.', price: 15, is_available: true, sort_order: 2, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Ice Cream' },
+  { id: 'd12', menu_id: 'sec-icecream', name: 'Pistachio Scoop', description: 'Nutty house favourite.', price: 18, is_available: true, is_featured: true, sort_order: 3, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Ice Cream' },
+  { id: 'd13', menu_id: 'sec-drinks', name: 'Espresso', description: 'Single shot of bold espresso.', price: 18, is_available: true, sort_order: 0, image_url: '/images/hero-coffee-beans.jpg', menu_name: 'Drinks & Coffee' },
+  { id: 'd14', menu_id: 'sec-drinks', name: 'Cappuccino', description: 'Espresso with steamed milk foam.', price: 24, is_available: true, sort_order: 1, image_url: '/images/hero-coffee-beans.jpg', menu_name: 'Drinks & Coffee' },
+  { id: 'd15', menu_id: 'sec-drinks', name: 'Latte', description: 'Smooth espresso with silky steamed milk.', price: 26, is_available: true, is_featured: true, sort_order: 2, image_url: '/images/hero-coffee-beans.jpg', menu_name: 'Drinks & Coffee' },
+  { id: 'd16', menu_id: 'sec-drinks', name: 'Iced Coffee', description: 'Chilled coffee over ice with cream.', price: 28, is_available: true, sort_order: 3, image_url: '/images/hero-flatlay.jpg', menu_name: 'Drinks & Coffee' },
+  { id: 'd17', menu_id: 'sec-drinks', name: 'Fresh Juice', description: 'Seasonal fruit juice.', price: 20, is_available: true, sort_order: 4, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Drinks & Coffee' },
+  { id: 'd18', menu_id: 'sec-shisha', name: 'Shisha Combo Classic', description: 'Classic flavour with premium coal, perfect for sharing.', price: 90, is_available: true, is_featured: true, sort_order: 0, image_url: '/images/poster-three-cups-wide.jpg', menu_name: 'Shisha Combos' },
+  { id: 'd19', menu_id: 'sec-shisha', name: 'Shisha Combo Mint', description: 'Refreshing mint blend for a smooth session.', price: 95, is_available: true, sort_order: 1, image_url: '/images/poster-three-cups.jpg', menu_name: 'Shisha Combos' },
+  { id: 'd20', menu_id: 'sec-shisha', name: 'Shisha Combo Fruit Mix', description: 'Tropical fruit medley for a sweet vibe.', price: 95, is_available: true, sort_order: 2, image_url: '/images/poster-three-cups-wide.jpg', menu_name: 'Shisha Combos' },
+];
