@@ -15,7 +15,7 @@ export default function QuantityStepper({ value, onChange, min = 1, max, disable
       <span className="sf-qty-val">{value}</span>
       <button
         type="button"
-        +
+        className="sf-qty-btn"
         disabled={disabled || (max && value >= max)}
         aria-label="Increase quantity"
         onClick={() => onChange(max ? Math.min(max, value + 1) : value + 1)}
@@ -25,6 +25,8 @@ export default function QuantityStepper({ value, onChange, min = 1, max, disable
     </span>
   );
 }
+
+
 
 
 

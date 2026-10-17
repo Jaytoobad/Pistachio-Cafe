@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { fetchMenu, saveMenuSection, deleteMenuSection, reorderMenuSections, fetchDishes } from '../services/admin';
 
@@ -112,7 +112,7 @@ async function handleSave(e) {
     reorderMenuSections(list.map((x) => x.id))
 
       .then(() => load())
-      .catch(() => { showToast('Could not reorder categories.', 'error'); load(); })
+      .catch(() => { showToast('Could not reorder menus.', 'error'); load(); })
       .finally(() => setReordering(false));
 
 
@@ -153,7 +153,7 @@ async function handleSave(e) {
 
     } catch (err) {
 
-      showToast(err?.message || 'Could not delete category.', 'error');
+      showToast(err?.message || 'Could not delete menu.', 'error');
 
 
 
@@ -175,7 +175,7 @@ async function handleSave(e) {
 
         <div className="page-header"><h1>Menus</h1></div>
 
-        <p className="empty-state">Could not load categories. <button className="btn btn-outline" onClick={load}>Try again</button></p>
+        <p className="empty-state">Could not load menus. <button className="btn btn-outline" onClick={load}>Try again</button></p>
 
       </div>
 
@@ -187,7 +187,7 @@ async function handleSave(e) {
 
   return (
 
-    <div className="page categories-page">
+    <div className="page menus-page">
 
       <div className="page-header">
 
@@ -195,11 +195,11 @@ async function handleSave(e) {
 
           <h1>Menus</h1>
 
-          <p className="page-sub">Add, rename and reorder menu categories</p>
+          <p className="page-sub">Add, rename and reorder menus</p>
 
         </div>
 
-        <button className="btn btn-primary" onClick={() => setEditing({ ...emptyMenu })}>+ Add category</button>
+        <button className="btn btn-primary" onClick={() => setEditing({ ...emptyMenu })}>+ Add menu</button>
 
       </div>
 
@@ -211,7 +211,7 @@ async function handleSave(e) {
 
           <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-error)' }}>
 
-            Cannot delete &ldquo;${blockedTarget.name}&rdquo; â€” it has ${dishCounts[blockedTarget.id] || 0} dish(s). Move those dishes to another category first.
+            Cannot delete &ldquo;${blockedTarget.name}&rdquo; — it has ${dishCounts[blockedTarget.id] || 0} dish(s). Move those dishes to another menu first.
 
           </p>
 
@@ -227,7 +227,7 @@ async function handleSave(e) {
 
         open={!!deleteTarget}
 
-        title="Delete category?"
+        title="Delete menu?"
 
         message={`Delete "${deleteTarget.name}"? This cannot be undone.`}
 
@@ -255,7 +255,7 @@ async function handleSave(e) {
 
           <tbody>
 
-            {categories.map((c, index) => (
+            {menus.map((c, index) => (
 
               <tr key={c.id}>
 
@@ -267,7 +267,7 @@ async function handleSave(e) {
 
                     <button className="btn btn-xs btn-outline" onClick={() => moveMenu(c, 'up')} disabled={index === 0 || reordering}>&uarr;</button>
 
-                    <button className="btn btn-xs btn-outline" onClick={() => moveMenu(c, 'down')} disabled={index === categories.length - 1 || reordering}>&darr;</button>
+                    <button className="btn btn-xs btn-outline" onClick={() => moveMenu(c, 'down')} disabled={index === menus.length - 1 || reordering}>&darr;</button>
 
                   </div>
 
@@ -297,7 +297,7 @@ async function handleSave(e) {
 
       </div>
 
-      {categories.length === 0 && <p className="empty-state">No categories yet.</p>}
+      {menus.length === 0 && <p className="empty-state">No menus yet.</p>}
 
 
 
@@ -307,7 +307,7 @@ async function handleSave(e) {
 
           <div className="modal" onClick={(e) => e.stopPropagation()}>
 
-            <h3 style={{ marginBottom: 16 }}>{editing.id ? 'Edit category' : 'New category'}</h3>
+            <h3 style={{ marginBottom: 16 }}>{editing.id ? 'Edit menu' : 'New menu'}</h3>
 
             <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
