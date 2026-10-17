@@ -1,5 +1,5 @@
 import React from 'react';
-import { BRAND, HOURS, CONTACT } from '../config';
+import { BRAND, HOURS, CONTACT, HAS_PHONE, HAS_WHATSAPP } from '../config';
 
 export default function Contact() {
   return (
@@ -13,11 +13,14 @@ export default function Contact() {
       </section>
 
        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: 32 }}>
+        {HAS_PHONE && (
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
           <h3 style={{ margin: '0 0 8px' }}>Phone</h3>
           <a href={`tel:${CONTACT.phone}`} style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }}>{CONTACT.phone}</a>
           <p style={{ margin: '6px 0 0', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>TODO: confirm this number with the owner.</p>
         </div>
+        )}
+        {HAS_WHATSAPP && (
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
           <h3 style={{ margin: '0 0 8px' }}>WhatsApp</h3>
           <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }}>
@@ -25,6 +28,7 @@ export default function Contact() {
           </a>
           <p style={{ margin: '6px 0 0', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>TODO: confirm this WhatsApp number with the owner.</p>
         </div>
+        )}
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
           <h3 style={{ margin: '0 0 8px' }}>Email</h3>
           <a href={`mailto:${CONTACT.email}`} style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }}>{CONTACT.email}</a>

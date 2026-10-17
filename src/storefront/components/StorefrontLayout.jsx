@@ -2,20 +2,17 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import '../storefront.css';
 import { useCart } from '../context/CartContext';
-import { subscribeNewsletter } from '../services/newsletter';
 import { useToast } from '../../lib/context/ToastContext';
-import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
-import { BRAND, HOURS, CONTACT, IMAGES } from '../config';
+import { BRAND, HOURS, CONTACT, IMAGES, HAS_PHONE } from '../config';
 
 function hoursString() {
   const d = new Date();
   const isWeekend = d.getDay() === 0 || d.getDay() === 6;
   const h = isWeekend ? HOURS.weekend : HOURS.weekday;
-  return `${h.open} â€“ ${h.close}`;
+  return `${h.open} – ${h.close}`;
 }
 
 export default function StorefrontLayout({ children }) {
-  useDocumentTitle();
   const { count } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -28,20 +25,6 @@ export default function StorefrontLayout({ children }) {
     { to: '/reviews', label: 'Reviews' },
     { to: '/contact', label: 'Contact' },
   ];
-
-  async function handleNewsletter(e) {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const email = form.querySelector('input')?.value?.trim();
-    if (!email) return;
-    try {
-      const result = await subscribeNewsletter(email);
-      form.reset();
-      showToast(result.alreadySubscribed ? 'You are already subscribed.' : 'Welcome — check your inbox to confirm.');
-    } catch (err) {
-      showToast(err?.message || 'Could not subscribe. Try again.', 'error');
-    }
-  }
 
   return (
     <div className="sf-root">
@@ -92,7 +75,7 @@ export default function StorefrontLayout({ children }) {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
           >
-            {menuOpen ? 'âœ•' : 'â˜°'}
+            {menuOpen ? '✕' : '☰'}
           </button>
         </div>
 
@@ -121,47 +104,51 @@ export default function StorefrontLayout({ children }) {
 
       <footer className="sf-footer" id="contact">
         <div className="sf-footer-inner">
-          <div className="sf-footer-grid">
-            <div>
+          <div className="sf-footer-top">
+            <div className="sf-footer-brand-block">
               <div className="sf-footer-brand">{BRAND.name}</div>
               <span className="sf-footer-tag">{BRAND.tagline}</span>
-              <p>{BRAND.offerings.join(' · ')}. {BRAND.location}.</p>
-              <div className="sf-footer-social">
-                <a href={BRAND.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label={`Instagram ${BRAND.instagram}`}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
-                </a>
+            </div>
+            <nav className="sf-footer-links" aria-label="Footer links">
+              <Link to="/">Home</Link>
+              <Link to="/menu">Menu</Link>
+              <Link to="/track">Track an order</Link>
+              <Link to="/contact">Contact</Link>
+            </nav>
+            <a
+              href={BRAND.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Instagram ${BRAND.instagram}`}
+              className="sf-footer-instagram"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <rect x="2" y="2" width="20" height="20" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" />
+              </svg>
+            </a>
+          </div>
+          <div className="sf-footer-details">
+            <div className="sf-footer-detail">
+              <strong>Hours</strong>
+              <span>
+                Weekdays {HOURS.weekday.open} – {HOURS.weekday.close} · Weekends {HOURS.weekend.open} – {HOURS.weekend.close}
+              </span>
+            </div>
+            <div className="sf-footer-detail">
+              <strong>Address</strong>
+              <span>{CONTACT.address}</span>
+            </div>
+            {HAS_PHONE && (
+              <div className="sf-footer-detail">
+                <strong>Phone</strong>
+                <a href={`tel:${CONTACT.phone}`}>{CONTACT.phone}</a>
               </div>
-            </div>
-            <div>
-              <h4>Explore</h4>
-              <ul>
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/menu">Menu</Link></li>
-                <li><Link to="/cart">Your cart</Link></li>
-                <li><Link to="/track">Track an order</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4>Visit</h4>
-              <ul>
-                <li><a href={`tel:${CONTACT.phone}`}>{CONTACT.phone}</a></li>
-                <li>{CONTACT.address}</li>
-                <li>Weekdays {HOURS.weekday.open} â€“ {HOURS.weekday.close}</li>
-                <li>Weekends {HOURS.weekend.open} â€“ {HOURS.weekend.close}</li>
-              </ul>
-            </div>
-            <div>
-              <h4>Stay in the loop</h4>
-              <p>New dishes first, straight to your inbox.</p>
-              <form className="sf-newsletter-form" id="footer-newsletter-form" onSubmit={handleNewsletter}>
-                <input type="email" id="footer-newsletter-email" placeholder="you@email.com" required aria-label="Newsletter email" />
-                <button type="submit">Join</button>
-              </form>
-            </div>
+            )}
           </div>
           <div className="sf-footer-bottom">
-            <span>Â© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</span>
-            <span>Made with care, one plate at a time.</span>
+            <span>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</span>
           </div>
         </div>
       </footer>

@@ -7,7 +7,7 @@ import ReviewCard from '../components/ReviewCard';
 import StarRating from '../components/StarRating';
 import SectionHeading from '../components/SectionHeading';
 import { useCart } from '../context/CartContext';
-import { BRAND, HOURS, CONTACT, IMAGES } from '../config';
+import { BRAND, HOURS, CONTACT, IMAGES, HAS_PHONE } from '../config';
 import { formatMoney } from '../../lib/format';
 import { useToast } from '../../lib/context/ToastContext';
 
@@ -209,7 +209,9 @@ export default function Home() {
           </div>
           <div>
             <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Contact</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)' }}><a href={`tel:${CONTACT.phone}`}>{CONTACT.phone}</a></p>
+            {HAS_PHONE && (
+              <p style={{ margin: 0, color: 'var(--color-text-muted)' }}><a href={`tel:${CONTACT.phone}`}>{CONTACT.phone}</a></p>
+            )}
             <p style={{ margin: '4px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>TODO: confirm phone with owner.</p>
           </div>
         </div>

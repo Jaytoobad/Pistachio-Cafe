@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND, HOURS, CONTACT, IMAGES } from '../config';
+import { BRAND, HOURS, CONTACT, IMAGES, HAS_PHONE } from '../config';
 import { formatMoney } from '../../lib/format';
 import { useSettings } from '../context/SettingsContext';
 
@@ -76,7 +76,7 @@ export default function About() {
         </div>
         <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           <Link to="/menu" className="sf-btn sf-btn-primary">Order now</Link>
-          <a href={`tel:${CONTACT.phone}`} className="sf-btn sf-btn-ghost">Call us</a>
+          {HAS_PHONE && <a href={`tel:${CONTACT.phone}`} className="sf-btn sf-btn-ghost">Call us</a>}
         </div>
       </section>
     </div>

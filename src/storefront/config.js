@@ -40,6 +40,25 @@ export const CONTACT = {
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Pistachio+Cafe+Spintex+Accra',
 };
 
+// --- Contact visibility -----------------------------------------------------
+// Phone/WhatsApp are placeholders until the owner confirms real digits.
+// A value is treated as a placeholder when it is empty or looks like
+// 00 000 0000 (digits-only check so both '+233 00 000 0000' and
+// '233000000000' are caught). Components must gate on HAS_PHONE /
+// HAS_WHATSAPP so nothing renders (links, tel:, wa:, buttons) until real
+// values are placed in CONTACT above.
+
+const PLACEHOLDER_DIGITS = '0000000000';
+
+export function isPlaceholderContact(value) {
+  if (!value) return true;
+  const digits = String(value).replace(/\D/g, '');
+  return !digits || digits.includes(PLACEHOLDER_DIGITS);
+}
+
+export const HAS_PHONE = !isPlaceholderContact(CONTACT.phone);
+export const HAS_WHATSAPP = !isPlaceholderContact(CONTACT.whatsapp);
+
 // --- Currency ---------------------------------------------------------------
 // Products are stored in Ghana cedis (GHS). Paystack wants the amount in
 // pesewas (kobo), so multiply by 100 when talking to Paystack.
