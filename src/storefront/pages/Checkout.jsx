@@ -145,7 +145,7 @@ export default function Checkout() {
             <aside className="sf-cart-summary">
               <h3>Order summary</h3>
               {items.map((item) => (
-                <div className="sf-summary-row" key={item.product_id} style={{ fontSize: '0.88rem' }}>
+                <div className="sf-summary-row" key={item.dish_id} style={{ fontSize: '0.88rem' }}>
                   <span>{item.qty}× {item.name}</span>
                   <span>{formatMoney(Number(item.price) * item.qty)}</span>
                 </div>

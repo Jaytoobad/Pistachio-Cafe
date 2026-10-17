@@ -38,14 +38,14 @@ export default function Cart() {
         <div className="sf-cart-page">
           <div className="sf-cart-items">
             {items.map((item) => (
-              <div key={item.product_id} className="sf-cart-line">
+              <div key={item.dish_id} className="sf-cart-line">
                 <img src={item.image_url || IMAGES.placeholder} alt="" className="sf-cart-line-img" />
                 <div className="sf-cart-line-body">
                   <div className="sf-cart-line-name">{item.name}</div>
                   <div className="sf-cart-line-price">{formatMoney(item.price)} each</div>
-                  <QuantityStepper value={item.qty} onChange={(q) => updateQty(item.product_id, q)} />
+                  <QuantityStepper value={item.qty} onChange={(q) => updateQty(item.dish_id, q)} />
                 </div>
-                <button className="sf-remove" onClick={() => remove(item.product_id)}>Remove</button>
+                <button className="sf-remove" onClick={() => remove(item.dish_id)}>Remove</button>
               </div>
             ))}
           </div>

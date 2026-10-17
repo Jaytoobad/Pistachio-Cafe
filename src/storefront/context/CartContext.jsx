@@ -24,16 +24,16 @@ export function CartProvider({ children }) {
 
   const add = useCallback((product, qty = 1) => {
     setItems((cur) => {
-      const existing = cur.find((i) => i.product_id === product.id);
+      const existing = cur.find((i) => i.dish_id === product.id);
       if (existing) {
         return cur.map((i) =>
-          i.product_id === product.id ? { ...i, qty: i.qty + qty } : i,
+          i.dish_id === product.id ? { ...i, qty: i.qty + qty } : i,
         );
       }
       return [
         ...cur,
         {
-          product_id: product.id,
+          dish_id: product.id,
           qty,
           name: product.name,
           price: Number(product.price),
@@ -43,16 +43,16 @@ export function CartProvider({ children }) {
     });
   }, []);
 
-  const updateQty = useCallback((product_id, qty) => {
+  const updateQty = useCallback((dish_id, qty) => {
     setItems((cur) =>
       cur
-        .map((i) => (i.product_id === product_id ? { ...i, qty: Math.max(1, qty) } : i))
+        .map((i) => (i.dish_id === dish_id ? { ...i, qty: Math.max(1, qty) } : i))
         .filter((i) => i.qty > 0),
     );
   }, []);
 
-  const remove = useCallback((product_id) => {
-    setItems((cur) => cur.filter((i) => i.product_id !== product_id));
+  const remove = useCallback((dish_id) => {
+    setItems((cur) => cur.filter((i) => i.dish_id !== dish_id));
   }, []);
 
   const clear = useCallback(() => setItems([]), []);

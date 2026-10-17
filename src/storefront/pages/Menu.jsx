@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchCategories, fetchAvailableProducts } from '../services/products';
-import ProductCard from '../components/ProductCard';
+import { fetchMenu, fetchAvailableDishes } from '../services/dishes';
+import DishCard from '../components/DishCard';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../context/ToastContext';
 import { formatMoney } from '../../lib/format';
@@ -19,7 +19,7 @@ export default function Menu() {
     setLoading(true);
     setError(false);
     try {
-      const [cats, prods] = await Promise.all([fetchCategories(), fetchAvailableProducts()]);
+      const [cats, prods] = await Promise.all([fetchMenu(), fetchAvailableDishes()]);
       setCategories(cats);
       setProducts(prods);
     } catch {
@@ -31,7 +31,7 @@ export default function Menu() {
 
   useEffect(() => { load(); }, []);
 
-  const filtered = activeCat ? products.filter((p) => p.category_id === activeCat) : products;
+  const filtered = activeCat ? products.filter((p) => p.menu_id === activeCat) : products;
 
   if (loading) {
     return (
@@ -96,9 +96,9 @@ export default function Menu() {
         ) : (
           <div className="sf-grid">
             {filtered.map((p) => (
-              <ProductCard
+              <DishCard
                 key={p.id}
-                product={p}
+                dish={p}
                 onAdd={(product, qty) => {
                   add(product, qty);
                   showToast(`${product.name} added to cart`);
@@ -111,3 +111,4 @@ export default function Menu() {
     </div>
   );
 }
+

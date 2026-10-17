@@ -3,7 +3,7 @@ import StarRating from './StarRating';
 
 export default function ReviewCard({ review }) {
   const name = review.customer_name || 'A guest';
-  const product = review.product_name || review.products?.name || null;
+  const product = review.product_name || review.dishes?.name || null;
 
   return (
     <article className="sf-review-card">
