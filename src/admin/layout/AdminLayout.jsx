@@ -33,7 +33,7 @@ export default function AdminLayout() {
       <main className="admin-main">
         <header className="admin-header">
           <button className="sidebar-toggle" aria-label="Toggle menu">☰</button>
-          <h1>Pistachio CafÃÂ© <span style={{ color: 'var(--color-primary)' }}>Admin</span></h1>
+          <h1>Pistachio Café <span style={{ color: 'var(--color-primary)' }}>Admin</span></h1>
           <div className="admin-header-actions">
             <a className="admin-view-shop" href="/pistachio-cafe/index.html" target="_blank" rel="noopener noreferrer">View shop</a>
             <button className="admin-logout" onClick={handleLogout}>Logout</button>
