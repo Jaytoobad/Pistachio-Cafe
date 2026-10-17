@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    const { items, customer_name, phone, email, fulfilment, address, notes } = await req.json();
+    const { items, customer_name, phone, email, fulfilment, address, notes, delivery_zone_id, landmark, lat, lng } = await req.json();
 
 if (!Array.isArray(items) || items.length === 0) {
       return json({ error: 'Cart is empty.' }, 400, corsHeaders);
@@ -126,7 +126,7 @@ if (!Array.isArray(items) || items.length === 0) {
       deliveryFee = Number(settingsRow?.delivery_fee || 0);
 
       // If the browser sent a delivery_zone_id, look up its fee + estimate.
-      const requestedZone = item?.delivery_zone_id ?? null;
+      const requestedZone = delivery_zone_id ?? null;
       if (requestedZone) {
         const { data: zone } = await supabase
           .from('delivery_zones')
@@ -139,14 +139,16 @@ if (!Array.isArray(items) || items.length === 0) {
           estimatedMinutes = Number(zone.estimated_minutes ?? null);
         }
       }
-      if (item?.landmark) landmark = String(item.landmark).slice(0, 200);
-      if (item?.lat != null) {
-        const n = Number(item.lat);
+      if (landmark) landmark = String(landmark).slice(0, 200);
+      if (lat != null) {
+        const n = Number(lat);
         if (Number.isFinite(n) && n >= -90 && n <= 90) lat = n;
+        else lat = null;
       }
-      if (item?.lng != null) {
-        const n = Number(item.lng);
+      if (lng != null) {
+        const n = Number(lng);
         if (Number.isFinite(n) && n >= -180 && n <= 180) lng = n;
+        else lng = null;
       }
     }
     const grandTotal = total + deliveryFee;
