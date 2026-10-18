@@ -37,28 +37,26 @@ export default function Menu() {
   const { dishes, loading } = useDishes(category !== 'all' ? category : null);
   const { menus } = useMenus();
 
-  // Mock-first: dishes render immediately; never return null while loading.
-  // useDishes already filters by menu_id when a category slug is passed.
   const filtered = dishes;
 
   return (
-    <div className="old-container">
+    <div className="old-container min-h-dvh px-4 py-6">
       <main id="main">
-        <section className="old-page-hero">
+        <section className="old-page-hero page-hero">
           <div className="old-container">
-            <p className="old-page-hero-eyebrow">The full spread</p>
-            <h1>Breakfast, brunch &amp; dessert</h1>
-            <p>Everything's made fresh in-house. Add whatever catches your eye — you can review your order before you pay.</p>
+            <p className="old-page-hero-eyebrow page-hero-eyebrow text-muted">The full spread</p>
+            <h1 className="page-hero-title text-charcoal font-serif">Breakfast, brunch &amp; dessert</h1>
+            <p className="page-hero-desc text-muted">Everything's made fresh in-house. Add whatever catches your eye — you can review your order before you pay.</p>
           </div>
         </section>
 
-        <section className="old-section">
+        <section className="old-section py-6">
           <div className="old-container">
             <div className="old-filter-row">
               {FILTERS.map((f) => (
                 <button
                   key={f.value}
-                  className="old-filter-pill"
+                  className="old-filter-pill filter-pill"
                   aria-pressed={activeFilter === f.value}
                   onClick={() => {
                     setActiveFilter(f.value);
@@ -70,7 +68,7 @@ export default function Menu() {
                 </button>
               ))}
             </div>
-            <div className="old-card-grid">
+            <div className="grid-cols-2" data-menu-grid>
               {filtered.map((dish) => (
                 <DishCard
                   key={dish.id}
@@ -83,7 +81,7 @@ export default function Menu() {
                 />
               ))}
               {filtered.length === 0 && (
-                <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', width: '100%' }}>
+                <p className="text-muted text-sm" style={{ gridColumn: '1 / -1', textAlign: 'center', width: '100%' }}>
                   No items in this category yet — check back soon.
                 </p>
               )}

@@ -6,7 +6,7 @@ import { CONTACT_INTRO, CONTACT_EMAIL_PLACEHOLDER_NOTE } from '../data/content';
 export default function Contact() {
   useDocumentTitle('Contact | Pistachio Café');
   return (
-    <div className="sf-container">
+    <div className="sf-container min-h-dvh px-4 py-6">
       <section className="sf-section">
         <p className="sf-hero-eyebrow">Get in touch</p>
         <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>Contact us</h1>

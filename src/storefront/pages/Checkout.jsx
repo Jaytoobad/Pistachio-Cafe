@@ -17,8 +17,6 @@ export default function Checkout() {
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  // PLACEHOLDER: delivery fee comes from the selected zone (default Spintex
-  // GHS 15), not the old flat GHS 10 from settings/delivery_fee.
   const [form, setForm] = useState({
     fullname: '', phone: '', email: '', fulfilment: 'pickup',
     address: '', landmark: '', notes: '', zone: DEFAULT_DELIVERY_ZONE.id,
@@ -28,6 +26,7 @@ export default function Checkout() {
   const [orderId, setOrderId] = useState(null);
   const [trackerStatus, setTrackerStatus] = useState(0);
   const formRef = useRef(null);
+  const payBtnRef = useRef(null);
 
   const zone = getDeliveryZone(form.zone);
   const deliveryFee = form.fulfilment === 'delivery' ? zone.fee : 0;
@@ -99,8 +98,6 @@ export default function Checkout() {
     }
   };
 
-  const payBtnRef = useRef(null);
-
   const completeOrder = (name, email, phone, code) => {
     const order = {
       id: code,
@@ -130,7 +127,7 @@ export default function Checkout() {
     ));
   };
 
-  useEffect(() => {
+  const simulateProgress = (code) => {
     if (!orderId || trackerStatus >= ORDER_STEPS.length - 1) return;
     const interval = setInterval(() => {
       setTrackerStatus((prev) => {
@@ -151,7 +148,7 @@ export default function Checkout() {
       });
     }, 4000);
     return () => clearInterval(interval);
-  }, [orderId, trackerStatus]);
+  };
 
   const initOrderLookup = () => {
     const formEl = document.querySelector('[data-lookup-form]');
@@ -178,192 +175,175 @@ export default function Checkout() {
   }, []);
 
   return (
-    <div className="old-container">
+    <div className="old-container min-h-dvh px-4 py-6">
       <main id="main">
-        <section className="old-page-hero">
+        <section className="old-page-hero page-hero">
           <div className="old-container">
-            <p className="old-page-hero-eyebrow">Last step</p>
-            <h1>Checkout &amp; order tracking</h1>
-            <p>Pay securely with Paystack, then watch your order move from kitchen to counter in real time.</p>
+            <p className="old-page-hero-eyebrow page-hero-eyebrow text-muted">Last step</p>
+            <h1 className="page-hero-title text-charcoal font-serif">Checkout &amp; order tracking</h1>
+            <p className="page-hero-desc text-muted">Pay securely with Paystack, then watch your order move from kitchen to counter in real time.</p>
           </div>
         </section>
 
-        <section className="old-section">
+        <section className="old-section py-6">
           <div className="old-container">
-            <div className="old-checkout-layout">
-              <div ref={formRef} data-checkout-form-wrap>
-                <form onSubmit={handlePay} data-checkout-form>
-                  <div className="old-checkout-section">
-                    <h3>Your details</h3>
-                    <div className="old-form-grid-2">
-                      <div className="old-form-row">
-                        <label htmlFor="fullname">Full name</label>
-                        <input type="text" id="fullname" name="fullname" required value={form.fullname} onChange={(e) => setForm((f) => ({ ...f, fullname: e.target.value }))} />
-                        {errors.fullname && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.fullname}</span>}
-                      </div>
-                      <div className="old-form-row">
-                        <label htmlFor="phone">Phone number</label>
-                        <input type="tel" id="phone" name="phone" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
-                        {errors.phone && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.phone}</span>}
-                      </div>
+            <div ref={formRef} data-checkout-form-wrap>
+              <form onSubmit={handlePay} data-checkout-form>
+                <div className="old-checkout-section checkout-section">
+                  <h3 className="text-charcoal font-serif">Your details</h3>
+                  <div className="old-form-grid-2 form-grid-2">
+                    <div className="old-form-row form-row">
+                      <label htmlFor="fullname" className="block text-xs text-muted uppercase tracking-wider mb-1">Full name</label>
+                      <input type="text" id="fullname" name="fullname" required value={form.fullname} onChange={(e) => setForm((f) => ({ ...f, fullname: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
+                      {errors.fullname && <span className="block text-xs" style={{ color: '#A8434B', marginTop: '4px' }}>{errors.fullname}</span>}
                     </div>
-                    <div className="old-form-row">
-                      <label htmlFor="email">Email address</label>
-                      <input type="email" id="email" name="email" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
-                      {errors.email && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.email}</span>}
+                    <div className="old-form-row form-row">
+                      <label htmlFor="phone" className="block text-xs text-muted uppercase tracking-wider mb-1">Phone number</label>
+                      <input type="tel" id="phone" name="phone" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
+                      {errors.phone && <span className="block text-xs" style={{ color: '#A8434B', marginTop: '4px' }}>{errors.phone}</span>}
                     </div>
                   </div>
-
-                  <div className="old-checkout-section">
-                    <h3>Pickup or delivery?</h3>
-                    <div className="old-fulfil-toggle">
-                      <button
-                        type="button"
-                        data-fulfil="pickup"
-                        aria-pressed={form.fulfilment === 'pickup'}
-                        onClick={() => {
-                          setForm((f) => ({ ...f, fulfilment: 'pickup' }));
-                        }}
-                      >
-                        Pickup in store
-                      </button>
-                      <button
-                        type="button"
-                        data-fulfil="delivery"
-                        aria-pressed={form.fulfilment === 'delivery'}
-                        onClick={() => {
-                          setForm((f) => ({ ...f, fulfilment: 'delivery' }));
-                        }}
-                      >
-                        Delivery
-                      </button>
-                    </div>
-                    <div className="old-form-row" data-address-row style={{ display: form.fulfilment === 'delivery' ? 'block' : 'none' }}>
-                      <label htmlFor="address">Delivery address</label>
-                      <textarea id="address" name="address" rows="2" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} />
-                      {errors.address && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.address}</span>}
-                    </div>
-                    <div className="old-form-row" data-address-row style={{ display: form.fulfilment === 'delivery' ? 'block' : 'none' }}>
-                      <label htmlFor="landmark">Landmark (optional)</label>
-                      <input type="text" id="landmark" name="landmark" placeholder="e.g. near the Shell station" value={form.landmark} onChange={(e) => setForm((f) => ({ ...f, landmark: e.target.value }))} />
-                    </div>
-                    <div className="old-form-row" data-address-row style={{ display: form.fulfilment === 'delivery' ? 'block' : 'none' }}>
-                      <label htmlFor="zone">Delivery zone</label>
-                      <select
-                        id="zone"
-                        name="zone"
-                        value={form.zone}
-                        onChange={(e) => setForm((f) => ({ ...f, zone: e.target.value }))}
-                        style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff' }}
-                      >
-                        {DELIVERY_ZONES.map((z) => (
-                          <option key={z.id} value={z.id}>{z.name} — {formatMoney(z.fee)}</option>
-                        ))}
-                      </select>
-                      <span style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', marginTop: '4px', display: 'block' }}>
-                        PLACEHOLDER: fee comes from the selected zone (default Spintex GHS 15).
-                      </span>
-                    </div>
-                    <div className="old-form-row">
-                      <label htmlFor="notes">Order notes (optional)</label>
-                      <textarea id="notes" name="notes" rows="2" placeholder="Allergies, extra napkins, anything we should know" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} />
-                    </div>
-                  </div>
-
-                  <div className="old-checkout-section">
-                    <h3>Payment</h3>
-                    <p style={{ fontSize: '0.9rem', color: '#4B5A4E' }}>You'll be securely redirected to Paystack to complete payment by card, mobile money, or bank transfer.</p>
-                    <button
-                      type="submit"
-                      className="old-btn old-btn-accent old-btn-block"
-                      data-pay-btn
-                      ref={payBtnRef}
-                      disabled={processing}
-                    >
-                      {processing ? 'Processing payment…' : 'Pay now'}
-                    </button>
-                    <div className="old-pay-note">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                        <rect x="3" y="11" width="18" height="10" rx="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                      <span>Payments are processed by Paystack. Pistachio never sees or stores your card details.</span>
-                    </div>
-                  </div>
-                </form>
-              </div>
-
-              <aside>
-                <div className="old-summary-card" style={{ position: 'static' }} data-checkout-summary-wrap>
-                  <h3>Order summary</h3>
-                  <div data-checkout-summary>
-                    {items.length === 0 ? (
-                      <p>Your cart is empty. <Link to="/menu">Browse the menu</Link> to add something delicious first.</p>
-                    ) : (
-                      <>
-                        {items.map((item) => (
-                          <div key={item.dish_id} className="old-order-line">
-                            <span>{item.qty} × {item.name}</span>
-                            <span>{formatMoney(item.price * item.qty)}</span>
-                          </div>
-                        ))}
-                        <div className="old-order-line" style={{ fontWeight: 700, borderTop: '1px solid #E1D7BD', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
-                          <span>Total due</span>
-                          <span data-checkout-total>{formatMoney(total)}</span>
-                        </div>
-                      </>
-                    )}
+                  <div className="old-form-row form-row">
+                    <label htmlFor="email" className="block text-xs text-muted uppercase tracking-wider mb-1">Email address</label>
+                    <input type="email" id="email" name="email" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
+                    {errors.email && <span className="block text-xs" style={{ color: '#A8434B', marginTop: '4px' }}>{errors.email}</span>}
                   </div>
                 </div>
 
-                {orderId ? (
-                  <div className="old-summary-card old-tracker is-active" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
-                    <h3>Order tracking</h3>
-                    <p className="old-tracker-id">Order <strong data-order-id>{orderId}</strong></p>
-                    <div className="old-steps" data-steps>
-                      {renderSteps(trackerStatus)}
-                    </div>
-                    <p style={{ fontSize: '0.85rem', color: '#4B5A4E', marginTop: '1.5rem' }}>We'll text you when it's ready. Thanks for ordering with us!</p>
-                  </div>
-                ) : (
-                  <div className="old-summary-card old-tracker" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
-                    <h3>Order tracking</h3>
-                    <p className="old-tracker-id">Order <strong data-order-id>—</strong></p>
-                    <div className="old-steps" data-steps>
-                      {renderSteps(0)}
-                    </div>
-                    <p style={{ fontSize: '0.85rem', color: '#4B5A4E', marginTop: '1.5rem' }}>We'll text you when it's ready. Thanks for ordering with us!</p>
-                  </div>
-                )}
-
-                <div className="old-summary-card" style={{ position: 'static', marginTop: '1.5rem' }}>
-                  <h3>Track an existing order</h3>
-                  <form className="old-lookup-row" data-lookup-form>
-                    <label htmlFor="lookup-id" className="old-skip-link">Order ID</label>
-                    <input type="text" id="lookup-id" placeholder="e.g. PI482913" required />
-                    <button type="submit" className="old-btn old-btn-outline">Track</button>
-                  </form>
-                </div>
-              </aside>
-
-              {!orderId && (
-                <div className="old-checkout-sticky-pay">
-                  <div className="old-checkout-sticky-pay-inner">
-                    <span className="old-checkout-sticky-total">Total {formatMoney(total)}</span>
+                <div className="old-checkout-section checkout-section">
+                  <h3 className="text-charcoal font-serif">Pickup or delivery?</h3>
+                  <div className="old-fulfil-toggle fulfil-toggle" style={{ gap: '0.5rem' }}>
                     <button
                       type="button"
-                      className="old-btn old-btn-accent old-btn-block"
-                      onClick={() => {
-                        payBtnRef.current?.click();
-                      }}
-                      disabled={processing}
+                      data-fulfil="pickup"
+                      aria-pressed={form.fulfilment === 'pickup'}
+                      className={form.fulfilment === 'pickup' ? 'btn-cafe btn-cafe-primary' : 'btn-cafe btn-cafe-outline btn-cafe-sm'}
+                      onClick={() => { setForm((f) => ({ ...f, fulfilment: 'pickup' })); }}
                     >
-                      {processing ? 'Processing…' : 'Pay now'}
+                      Pickup in store
+                    </button>
+                    <button
+                      type="button"
+                      data-fulfil="delivery"
+                      aria-pressed={form.fulfilment === 'delivery'}
+                      className={form.fulfilment === 'delivery' ? 'btn-cafe btn-cafe-primary' : 'btn-cafe btn-cafe-outline btn-cafe-sm'}
+                      onClick={() => { setForm((f) => ({ ...f, fulfilment: 'delivery' })); }}
+                    >
+                      Delivery
                     </button>
                   </div>
+                  {form.fulfilment === 'delivery' && (
+                    <>
+                      <div className="old-form-row form-row">
+                        <label htmlFor="address" className="block text-xs text-muted uppercase tracking-wider mb-1">Delivery address</label>
+                        <textarea id="address" name="address" rows="2" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
+                        {errors.address && <span className="block text-xs" style={{ color: '#A8434B', marginTop: '4px' }}>{errors.address}</span>}
+                      </div>
+                      <div className="old-form-row form-row">
+                        <label htmlFor="landmark" className="block text-xs text-muted uppercase tracking-wider mb-1">Landmark (optional)</label>
+                        <input type="text" id="landmark" name="landmark" placeholder="e.g. near the Shell station" value={form.landmark} onChange={(e) => setForm((f) => ({ ...f, landmark: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
+                      </div>
+                      <div className="old-form-row form-row">
+                        <label htmlFor="zone" className="block text-xs text-muted uppercase tracking-wider mb-1">Delivery zone</label>
+                        <select
+                          id="zone"
+                          name="zone"
+                          value={form.zone}
+                          onChange={(e) => setForm((f) => ({ ...f, zone: e.target.value }))}
+                          className="w-full"
+                          style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }}
+                        >
+                          {DELIVERY_ZONES.map((z) => (
+                            <option key={z.id} value={z.id}>{z.name} — {formatMoney(z.fee)}</option>
+                          ))}
+                        </select>
+                        <span className="block text-xs text-muted" style={{ marginTop: '4px' }}>
+                          PLACEHOLDER: fee comes from the selected zone (default Spintex GHS 15).
+                        </span>
+                      </div>
+                    </>
+                  )}
+                  <div className="old-form-row form-row">
+                    <label htmlFor="notes" className="block text-xs text-muted uppercase tracking-wider mb-1">Order notes (optional)</label>
+                    <textarea id="notes" name="notes" rows="2" placeholder="Allergies, extra napkins, anything we should know" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
+                  </div>
+                </div>
+
+                <div className="old-checkout-section checkout-section">
+                  <h3 className="text-charcoal font-serif">Payment</h3>
+                  <p className="text-muted text-sm">You'll be securely redirected to Paystack to complete payment by card, mobile money, or bank transfer.</p>
+                  <button
+                    type="submit"
+                    className="old-btn old-btn-accent old-btn-block btn-cafe btn-cafe-primary"
+                    data-pay-btn
+                    ref={payBtnRef}
+                    disabled={processing}
+                  >
+                    {processing ? 'Processing payment…' : 'Pay now'}
+                  </button>
+                  <div className="old-pay-note pay-note" style={{ marginTop: '1rem' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true" style={{ width: '18px', height: '18px', flexShrink: 0, marginTop: '0.1rem' }}>
+                      <rect x="3" y="11" width="18" height="10" rx="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    <span className="text-muted text-sm">Payments are processed by Paystack. Pistachio never sees or stores your card details.</span>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <aside className="order-summary-wrap" style={{ marginTop: '1.5rem' }}>
+              <div className="old-summary-card cart-summary" data-checkout-summary-wrap>
+                <h3 className="text-charcoal font-serif">Order summary</h3>
+                <div data-checkout-summary>
+                  {items.length === 0 ? (
+                    <p>Your cart is empty. <Link to="/menu">Browse the menu</Link> to add something delicious first.</p>
+                  ) : (
+                    <>
+                      {items.map((item) => (
+                        <div key={item.dish_id} className="old-order-line order-line">
+                          <span className="text-muted">{item.qty} × {item.name}</span>
+                          <span className="text-charcoal">{formatMoney(item.price * item.qty)}</span>
+                        </div>
+                      ))}
+                      <div className="old-order-line order-line order-line-total" style={{ fontWeight: 700, borderTop: '1px solid #E1D7BD', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
+                        <span className="text-charcoal">Total due</span>
+                        <span data-checkout-total className="text-charcoal">{formatMoney(total)}</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {orderId ? (
+                <div className="old-summary-card old-tracker is-active" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
+                  <h3 className="text-charcoal font-serif">Order tracking</h3>
+                  <p className="old-tracker-id text-charcoal">Order <strong data-order-id>{orderId}</strong></p>
+                  <div className="old-steps" data-steps>
+                    {renderSteps(trackerStatus)}
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--color-muted)', marginTop: '1.5rem' }}>We'll text you when it's ready. Thanks for ordering with us!</p>
+                </div>
+              ) : (
+                <div className="old-summary-card old-tracker" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
+                  <h3 className="text-charcoal font-serif">Order tracking</h3>
+                  <p className="old-tracker-id text-muted">Order <strong data-order-id>—</strong></p>
+                  <div className="old-steps" data-steps>
+                    {renderSteps(0)}
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--color-muted)', marginTop: '1.5rem' }}>We'll text you when it's ready. Thanks for ordering with us!</p>
                 </div>
               )}
-            </div>
+
+              <div className="old-summary-card" style={{ position: 'static', marginTop: '1.5rem' }}>
+                <h3 className="text-charcoal font-serif">Track an existing order</h3>
+                <form className="old-lookup-row lookup-row" data-lookup-form style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <label htmlFor="lookup-id" className="old-skip-link" style={{ display: 'none' }}>Order ID</label>
+                  <input type="text" id="lookup-id" placeholder="e.g. PI482913" required className="flex-1" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
+                  <button type="submit" className="old-btn old-btn-outline btn-cafe btn-cafe-outline btn-cafe-sm">Track</button>
+                </form>
+              </div>
+            </aside>
           </div>
         </section>
       </main>

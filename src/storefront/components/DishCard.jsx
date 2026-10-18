@@ -1,54 +1,91 @@
 import React from 'react';
 import { formatMoney } from '../../lib/format';
-import QuantityStepper from './QuantityStepper';
 import { IMAGES } from '../config';
+
+const FOOD_ICON = '🍽️';
 
 export default function DishCard({ dish, onAdd, onQuickView }) {
   const [qty, setQty] = React.useState(1);
+  const [editingQty, setEditingQty] = React.useState(false);
   const price = Number(dish.price || 0);
+  const hasImage = Boolean(dish.image_url);
   const image = dish.image_url || IMAGES.placeholder;
 
   return (
-    <article className="sf-product-card">
-      <div className="sf-product-media" onClick={() => onQuickView?.(dish)} style={{ cursor: onQuickView ? 'pointer' : 'default' }}>
-        <img
-          src={image}
-          alt={dish.name || 'Dish'}
-          loading="lazy"
-          data-name={dish.name || 'Dish'}
-          onError={(e) => {
-            const media = e.currentTarget.closest('.sf-product-media');
-            if (media) {
-              media.style.display = 'flex';
-              media.style.alignItems = 'center';
-              media.style.justifyContent = 'center';
-              const span = document.createElement('span');
-              span.className = 'old-placeholder-block';
-              span.textContent = (e.currentTarget.getAttribute('data-name') || dish.name || 'Dish') + ' photo coming soon';
-              e.currentTarget.replaceWith(span);
-            }
-          }}
-        />
+    <article className="sf-product-card dish-card">
+      <div className="sf-product-media dish-media aspect-square object-cover overflow-hidden rounded-t-xl" onClick={() => onQuickView?.(dish)} style={{ cursor: onQuickView ? 'pointer' : 'default', background: '#EFE8D6' }}>
+        {hasImage ? (
+          <img
+            src={image}
+            alt={dish.name || 'Dish'}
+            loading="lazy"
+            data-name={dish.name || 'Dish'}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const media = e.currentTarget.closest('.dish-media');
+              if (media) {
+                media.innerHTML = '';
+                const span = document.createElement('span');
+                span.className = 'dish-placeholder';
+                span.innerHTML = `<span style="font-size:1.25rem; line-height:1; display:block; margin-bottom:0.25rem;">${FOOD_ICON}</span>${(e.currentTarget.getAttribute('data-name') || dish.name || 'Dish')} photo coming soon`;
+                media.appendChild(span);
+              }
+            }}
+          />
+        ) : (
+          <span className="dish-placeholder">
+            <span style="font-size:1.25rem; line-height:1; display:block; margin-bottom:0.25rem;">{FOOD_ICON}</span>
+            {dish.name} photo coming soon
+          </span>
+        )}
         {dish.menu_name || (dish.menu && dish.menu.name) ? (
-          <span className="sf-product-tag">{dish.menu_name || dish.menu.name}</span>
+          <span className="sf-product-tag dish-tag">{dish.menu_name || dish.menu.name}</span>
         ) : null}
       </div>
-      <div className="sf-product-body">
-        <h3 className="sf-product-name">{dish.name}</h3>
-        {dish.description && <p className="sf-product-desc">{dish.description}</p>}
-        <div className="sf-product-foot">
-          <span className="sf-product-price">{formatMoney(price)}</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <QuantityStepper value={qty} onChange={setQty} aria-label="Quantity" />
+      <div className="sf-product-body dish-body">
+        <h3 className="sf-product-name dish-name line-clamp-2 leading-tight">{dish.name}</h3>
+        {dish.description && <p className="sf-product-desc dish-desc line-clamp-2">{dish.description}</p>}
+        <div className="sf-product-foot dish-foot">
+          <span className="sf-product-price dish-price whitespace-nowrap font-semibold text-sm sm:text-base">{formatMoney(price)}</span>
+          {editingQty ? (
+            <div className="dish-controls">
+              <div className="micro-stepper">
+                <button
+                  type="button"
+                  disabled={qty <= 1}
+                  aria-label="Decrease quantity"
+                  onClick={() => setQty(qty - 1)}
+                >
+                  −
+                </button>
+                <span>{qty}</span>
+                <button
+                  type="button"
+                  aria-label="Increase quantity"
+                  onClick={() => setQty(qty + 1)}
+                >
+                  +
+                </button>
+              </div>
+              <button
+                type="button"
+                className="sf-btn sf-btn-primary sf-add-btn dish-add-btn"
+                onClick={() => { onAdd(dish, qty); setEditingQty(false); }}
+                aria-label={`Add ${dish.name} to cart`}
+              >
+                Add
+              </button>
+            </div>
+          ) : (
             <button
               type="button"
-              className="sf-btn sf-btn-primary sf-add-btn"
-              onClick={() => onAdd(dish, qty)}
-              aria-label={`Add ${dish.name} to cart`}
+              className="sf-btn sf-btn-primary sf-add-btn dish-add-btn dish-add-simple"
+              onClick={() => { setEditingQty(true); }}
+              aria-label={`Set quantity for ${dish.name}`}
             >
-              Add to cart
+              Add
             </button>
-          </div>
+          )}
         </div>
       </div>
     </article>

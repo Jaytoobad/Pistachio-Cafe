@@ -1,27 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap');
 
 :root {
-  --color-pistachio: #9EBE7E;
-  --color-pistachio-dark: #7FA356;
-  --color-forest: #1B3022;
-  --color-forest-soft: #3D5A45;
-  --color-cream: #F7F3E8;
-  --color-cream-dim: #E8DDB8;
-  --color-surface: #FFFFFF;
-  --color-ink: #222B24;
-  --color-ink-soft: #5E6A5F;
-  --color-line: #D9D4BF;
-  --color-warn: #C7862A;
-  --color-error: #A8434B;
-  --color-success: #4E704A;
+  /* --- earthy cafe palette (WCAG 2.1 AA) --- */
+  --color-charcoal: #1A1A1A;      /* text primary */
+  --color-espresso: #201614;      /* text primary (deep espresso) */
+  --color-muted: #5A554E;         /* text muted (warm olive/slate) */
+  --color-ochre: #D97706;         /* accent/action (warm ochre) */
+  --color-ochre-dark: #B45309;    /* accent hover */
+  --color-sage: #5B7052;          /* sage/olive green accent */
+  --color-sage-dark: #4A5B42;     /* sage hover */
+  --color-surface: #FAF8F5;       /* warm cream cards */
+  --color-bg: #F5F2EB;            /* neutral background */
+  --color-border: #E7E2D8;        /* subtle borders */
 
-  --color-bg: var(--color-cream);
-  --color-text: var(--color-ink);
-  --color-text-muted: var(--color-ink-soft);
-  --color-primary: var(--color-pistachio);
-  --color-primary-hover: var(--color-pistachio-dark);
-  --color-accent: var(--color-forest);
-  --color-border: var(--color-line);
+  --color-text: var(--color-charcoal);
+  --color-text-muted: var(--color-muted);
+  --color-primary: var(--color-ochre);
+  --color-primary-hover: var(--color-ochre-dark);
+  --color-accent: var(--color-sage);
+  --color-success: var(--color-sage-dark);
+  --color-error: #A8434B;
+  --color-warn: var(--color-ochre-dark);
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -29,6 +28,7 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
+  --radius-xl: 20px;
 
   --shadow-sm: 0 1px 3px rgba(27, 48, 34, 0.08);
   --shadow-md: 0 6px 20px rgba(27, 48, 34, 0.10);

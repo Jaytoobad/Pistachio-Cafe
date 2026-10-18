@@ -3,20 +3,20 @@ import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { useReviews } from '../hooks/useReviews';
 import ReviewCard from '../components/ReviewCard';
 import SectionHeading from '../components/SectionHeading';
+import '../../styles/storefront.css';
 
 export default function Reviews() {
   const { reviews, loading } = useReviews();
   useDocumentTitle('Reviews | Pistachio Café');
 
-  // Mock-first: pages never return null while loading and are never blank.
   return (
-    <div className="sf-container">
+    <div className="sf-container min-h-dvh px-4 py-6">
       <section className="sf-section">
         <SectionHeading title="Customer reviews" subtitle="What our guests are saying" />
         {reviews.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)', textAlign: 'center' }}>No approved reviews yet.</p>
+          <p className="text-muted text-sm" style={{ textAlign: 'center' }}>No approved reviews yet.</p>
         ) : (
-          <div className="sf-review-grid">
+          <div className="review-carousel">
             {reviews.map((r) => (
               <ReviewCard key={r.id} review={r} />
             ))}

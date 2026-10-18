@@ -57,13 +57,13 @@ export default function Home() {
 
   const renderReviews = () => {
     return reviews.map((r, idx) => (
-      <article key={`${r.customer_name}-${r.rating}-${idx}`} className="old-review-card">
-        <div className="old-review-stars" aria-label={`${r.rating} out of 5 stars`}>
+      <article key={`${r.customer_name}-${r.rating}-${idx}`} className="review-card-snap sf-review-card-snap">
+        <div className="sf-review-stars" aria-label={`${r.rating} out of 5 stars`}>
           {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
         </div>
-        <p className="old-review-quote">"{escapeHtml(r.comment)}"</p>
-        <p className="old-review-name old-mt-0">{escapeHtml(r.customer_name)}</p>
-        <p className="old-review-role">{escapeHtml(r.dish_name || 'Customer')}</p>
+        <p className="sf-review-quote">"{escapeHtml(r.comment)}"</p>
+        <p className="sf-review-name">{escapeHtml(r.customer_name)}</p>
+        {r.dish_name && <p className="sf-review-role">{escapeHtml(r.dish_name)}</p>}
       </article>
     ));
   };
@@ -74,13 +74,11 @@ export default function Home() {
 
     setSubmitting(true);
 
-    // Save to localStorage immediately so it shows on this device.
     const stored = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
     const newReview = { name: reviewForm.name.trim(), role: reviewForm.role.trim() || 'Customer', rating: reviewForm.rating, quote: reviewForm.quote.trim() };
     stored.unshift(newReview);
     localStorage.setItem(REVIEWS_KEY, JSON.stringify(stored));
 
-    // Insert into public.reviews with is_approved = false (pending moderation).
     try {
       await submitReview({
         customer_name: reviewForm.name.trim(),
@@ -103,22 +101,22 @@ export default function Home() {
   };
 
   return (
-    <div className="old-container">
+    <div className="old-container min-h-dvh">
       <main id="main" className="old-main">
 
         {/* ============ HERO ============ */}
-        <section className="old-hero" aria-labelledby="hero-title">
-          <div className="old-hero-inner">
-            <p className="old-hero-eyebrow">Good mornings, done properly</p>
-            <h1 id="hero-title">Breakfast, brunch, and the good kind of slow.</h1>
-            <p className="old-hero-sub">Handmade pastries, slow-brewed coffee, and plates built for lingering. Order ahead, or come sit with us a while.</p>
-            <div className="old-hero-cta">
-              <Link to="/menu" className="old-btn old-btn-accent">See the menu</Link>
-              <Link to="/about" className="old-btn old-btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>Our story</Link>
+        <section className="old-hero hero-section hero-full" aria-labelledby="hero-title">
+          <div className="old-hero-inner hero-inner hero-inner-full">
+            <p className="old-hero-eyebrow hero-eyebrow text-amber-700">Good mornings, done properly</p>
+            <h1 id="hero-title" className="hero-title font-serif text-charcoal leading-tight">Breakfast, brunch, and the good kind of slow.</h1>
+            <p className="old-hero-sub hero-sub text-muted max-w-prose leading-relaxed">Handmade pastries, slow-brewed coffee, and plates built for lingering. Order ahead, or come sit with us a while.</p>
+            <div className="old-hero-cta hero-cta gap-3">
+              <Link to="/menu" className="old-btn old-btn-accent btn-cafe btn-cafe-primary">See the menu</Link>
+              <Link to="/about" className="old-btn old-btn-outline btn-cafe btn-cafe-outline">Our story</Link>
             </div>
-            <div className="old-hero-info-strip">
-              <div><strong>Mon–Fri 8AM–11PM · Sat–Sun 8AM–12AM</strong>Opening hours</div>
-              <div><strong>Pickup &amp; delivery</strong>Order online, ready in 20 min</div>
+            <div className="old-hero-info-strip hero-hours mt-8 mb-4">
+              <div><strong>Mon–Fri 8AM–11PM</strong> · <strong>Sat–Sun 8AM–12AM</strong></div>
+              <div><strong>Pickup &amp; delivery</strong> · Ready in 20 min</div>
               <div><strong>{BRAND.location}</strong></div>
             </div>
           </div>
@@ -126,7 +124,7 @@ export default function Home() {
 
         {/* ============ FEATURED MENU ============ */}
         <section className="old-section">
-          <div className="old-container">
+          <div className="old-container px-4 py-6">
             <div className="old-section-head">
               <div>
                 <h2>What's on today</h2>
@@ -134,60 +132,38 @@ export default function Home() {
               </div>
               <Link to="/menu" className="old-btn old-btn-outline">Full menu</Link>
             </div>
-            <div className="old-card-grid" data-featured-grid>
+            <div className="grid-cols-2" data-featured-grid>
               {renderFeatured()}
             </div>
           </div>
         </section>
 
-        {/* ============ ABOUT TEASER ============ */}
-        <section className="old-section old-section-alt">
-          <div className="old-container old-about-intro">
-            <div>
+        {/* ============ ABOUT TEASER (premium story card) ============ */}
+        <section className="old-section old-section-alt py-6">
+          <div className="old-container px-4">
+            <div className="story-card">
               <h2>A neighbourhood table, done with care</h2>
-              <p>Pistachio started as a single espresso cart and grew into a full kitchen — but the goal never changed: make people feel properly looked after over a good plate of food.</p>
-              <p>We bake daily, source from growers we know by name, and treat every table — regulars and first-timers alike — like they're the reason we opened the doors.</p>
-              <Link to="/about" className="old-btn old-btn-primary">Read our story</Link>
-            </div>
-            <div className="old-about-intro-media">
-              <img
-                src="images/about-cafe.jpg"
-                alt="Inside Pistachio Café"
-                loading="lazy"
-                onError={(e) => {
-                  const parent = e.currentTarget.parentElement;
-                  if (parent) {
-                    parent.style.display = 'flex';
-                    parent.style.alignItems = 'center';
-                    parent.style.justifyContent = 'center';
-                    const span = document.createElement('span');
-                    span.textContent = 'Add photo: images/about-cafe.jpg';
-                    span.style.fontSize = '0.8rem';
-                    span.style.color = '#8b8570';
-                    span.style.padding = '1rem';
-                    span.style.textAlign = 'center';
-                    e.currentTarget.replaceWith(span);
-                  }
-                }}
-              />
+              <p className="text-muted leading-relaxed mb-4">Pistachio started as a single espresso cart and grew into a full kitchen — but the goal never changed: make people feel properly looked after over a good plate of food.</p>
+              <p className="text-muted leading-relaxed mb-4">We bake daily, source from growers we know by name, and treat every table — regulars and first-timers alike — like they're the reason we opened the doors.</p>
+              <Link to="/about" className="old-btn old-btn-primary btn-cafe btn-cafe-primary">Read our story</Link>
             </div>
           </div>
         </section>
 
         {/* ============ REVIEWS ============ */}
         <section className="old-section" id="reviews">
-          <div className="old-container">
+          <div className="old-container px-4 py-6">
             <div className="old-section-head">
               <div>
                 <h2>What people are saying</h2>
                 <p>Real notes from real tables.</p>
               </div>
             </div>
-            <div className="old-review-grid" data-review-grid>
+            <div className="review-carousel" data-review-grid>
               {renderReviews()}
             </div>
 
-            <div className="old-review-form">
+            <div className="old-review-form mt-8">
               <h3>Leave a review</h3>
               <p>Tell us what you loved, or what we could do better.</p>
               <form onSubmit={handleReviewSubmit} data-review-form>
