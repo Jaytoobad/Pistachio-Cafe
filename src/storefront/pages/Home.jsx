@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
-import { PRODUCTS, findProduct, formatMoney } from '../data/products';
-import { BRAND } from '../config';
-import { STARTER_REVIEWS } from '../data/content';
-import { isSupabaseConfigured } from '../../lib/supabase';
-import { fetchApprovedReviews, submitReview } from '../services/reviews';
+import { useDishes } from '../hooks/useDishes';
+import { useMenus } from '../hooks/useMenus';
+import { useReviews } from '../hooks/useReviews';
+import { submitReview } from '../services/reviews';
+import DishCard from '../components/DishCard';
+import DishDetailModal from '../components/DishDetailModal';
 import '../old-static.css';
 
 const REVIEWS_KEY = 'pi_reviews';
@@ -20,107 +21,48 @@ function escapeHtml(str){
 export default function Home() {
   const { add } = useCart();
   const { showToast } = useToast();
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [reviewForm, setReviewForm] = useState({ name: '', role: '', rating: 5, quote: '' });
   const [submitting, setSubmitting] = useState(false);
-  const formRef = useRef(null);
+  const [quickView, setQuickView] = useState(null);
 
-  const addToCart = (productId) => {
-    const product = findProduct(productId);
-    if (!product) return;
-    add({ id: product.id, name: product.name, price: product.price, image_url: product.image || null }, 1);
-    showToast(`${product.name} added to cart`);
+  const { dishes } = useDishes();
+  const { menus } = useMenus();
+  const { reviews, loading } = useReviews();
+
+  const menuNameForDish = (dish) => {
+    if (dish.menu_name) return dish.menu_name;
+    if (dish.menu && dish.menu.name) return dish.menu.name;
+    const m = menus.find((x) => x.id === dish.menu_id);
+    return m ? m.name : '';
   };
 
-  const loadReviews = useCallback(async () => {
-    let approved = [];
-    if (isSupabaseConfigured) {
-      try {
-        approved = await fetchApprovedReviews();
-      } catch (err) {
-        console.error('Failed to fetch approved reviews', err);
-      }
-    }
+  const featured = dishes.filter((d) => d.is_featured);
 
-    if (approved && approved.length > 0) {
-      setReviews(approved.map(r => ({
-        name: r.customer_name,
-        role: r.dish_name || 'Customer',
-        rating: r.rating,
-        quote: r.comment,
-      })));
-    } else {
-      // Demo mode / no approved reviews yet: show localStorage + starter fallback.
-      try {
-        const stored = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
-        const merged = Array.isArray(stored) ? [...stored, ...STARTER_REVIEWS] : STARTER_REVIEWS;
-        setReviews(merged);
-      } catch {
-        setReviews(STARTER_REVIEWS);
-      }
-    }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    loadReviews();
-  }, [loadReviews]);
+  const addToCart = (dish, qty = 1) => {
+    add({ id: dish.id, name: dish.name, price: dish.price, image_url: dish.image_url || null }, qty);
+    showToast(`${dish.name} added to cart`);
+  };
 
   const renderFeatured = () => {
-    const categories = ['breakfast', 'brunch', 'dessert'];
-    const featured = categories.map(cat => findProduct(cat)).filter(Boolean);
-    return featured.map(p => (
-      <article key={p.id} className="old-product-card">
-        <div className="old-product-card-media">
-          <span className="old-product-tag">{p.category.charAt(0).toUpperCase() + p.category.slice(1)}</span>
-          <img
-            src={p.image}
-            alt={p.name}
-            loading="lazy"
-            onError={(e) => {
-              const media = e.currentTarget.closest('.old-product-card-media');
-              if (media) {
-                media.style.display = 'flex';
-                media.style.alignItems = 'center';
-                media.style.justifyContent = 'center';
-                const span = document.createElement('span');
-                span.textContent = 'Add photo: ' + p.image;
-                span.style.fontSize = '0.75rem';
-                span.style.color = '#8b8570';
-                span.style.padding = '0 1rem';
-                span.style.textAlign = 'center';
-                e.currentTarget.replaceWith(span);
-              }
-            }}
-          />
-        </div>
-        <div className="old-product-card-body">
-          <h3>{p.name}</h3>
-          <p>{p.desc}</p>
-          <div className="old-product-card-foot">
-            <span className="old-price">{formatMoney(p.price)}</span>
-            <button
-              className="old-add-btn"
-              onClick={() => addToCart(p.id)}
-            >
-              Add to cart
-            </button>
-          </div>
-        </div>
-      </article>
+    return featured.map((p) => (
+      <DishCard
+        key={p.id}
+        dish={p}
+        onAdd={addToCart}
+        onQuickView={setQuickView}
+      />
     ));
   };
 
   const renderReviews = () => {
     return reviews.map((r, idx) => (
-      <article key={`${r.name}-${r.rating}-${idx}`} className="old-review-card">
+      <article key={`${r.customer_name}-${r.rating}-${idx}`} className="old-review-card">
         <div className="old-review-stars" aria-label={`${r.rating} out of 5 stars`}>
           {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
         </div>
-        <p className="old-review-quote">"{escapeHtml(r.quote)}"</p>
-        <p className="old-review-name old-mt-0">{escapeHtml(r.name)}</p>
-        <p className="old-review-role">{escapeHtml(r.role)}</p>
+        <p className="old-review-quote">"{escapeHtml(r.comment)}"</p>
+        <p className="old-review-name old-mt-0">{escapeHtml(r.customer_name)}</p>
+        <p className="old-review-role">{escapeHtml(r.dish_name || 'Customer')}</p>
       </article>
     ));
   };
@@ -136,21 +78,18 @@ export default function Home() {
     const newReview = { name: reviewForm.name.trim(), role: reviewForm.role.trim() || 'Customer', rating: reviewForm.rating, quote: reviewForm.quote.trim() };
     stored.unshift(newReview);
     localStorage.setItem(REVIEWS_KEY, JSON.stringify(stored));
-    setReviews([newReview, ...reviews]);
 
     // Insert into public.reviews with is_approved = false (pending moderation).
-    if (isSupabaseConfigured) {
-      try {
-        await submitReview({
-          customer_name: reviewForm.name.trim(),
-          dish_id: null,
-          dish_name: null,
-          rating: reviewForm.rating,
-          comment: reviewForm.quote.trim(),
-        });
-      } catch (err) {
-        console.error('Failed to submit review to Supabase', err);
-      }
+    try {
+      await submitReview({
+        customer_name: reviewForm.name.trim(),
+        dish_id: null,
+        dish_name: null,
+        rating: reviewForm.rating,
+        comment: reviewForm.quote.trim(),
+      });
+    } catch (err) {
+      if (import.meta.env.DEV) console.error('Failed to submit review to Supabase', err);
     }
 
     setReviewForm({ name: '', role: '', rating: 5, quote: '' });
@@ -244,11 +183,7 @@ export default function Home() {
               </div>
             </div>
             <div className="old-review-grid" data-review-grid>
-              {loading ? (
-                <p>Loading reviews…</p>
-              ) : (
-                renderReviews()
-              )}
+              {renderReviews()}
             </div>
 
             <div className="old-review-form">
@@ -296,6 +231,18 @@ export default function Home() {
         </section>
 
       </main>
+
+      {quickView && (
+        <DishDetailModal
+          open={!!quickView}
+          dish={quickView}
+          menuName={menuNameForDish(quickView, menus)}
+          onClose={() => setQuickView(null)}
+          onAdd={(d, qty) => {
+            addToCart(d, qty);
+          }}
+        />
+      )}
     </div>
   );
 }

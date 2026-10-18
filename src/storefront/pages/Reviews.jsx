@@ -1,28 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
-import { fetchApprovedReviews } from '../services/reviews';
+import { useReviews } from '../hooks/useReviews';
 import ReviewCard from '../components/ReviewCard';
 import SectionHeading from '../components/SectionHeading';
 
 export default function Reviews() {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { reviews, loading } = useReviews();
   useDocumentTitle('Reviews | Pistachio Café');
 
-  const load = useCallback(() => {
-    fetchApprovedReviews().then((r) => setReviews(r || [])).catch(() => setReviews([])).finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => { load(); }, [load]);
-
-  if (loading) {
-    return (
-      <div className="sf-container">
-        <div className="sf-loading"><div className="sf-spinner" aria-label="Loading" /></div>
-      </div>
-    );
-  }
-
+  // Mock-first: pages never return null while loading and are never blank.
   return (
     <div className="sf-container">
       <section className="sf-section">

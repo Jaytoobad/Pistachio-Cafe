@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BRAND } from '../config';
 import { ABOUT_HERO, ABOUT_STATS, ABOUT_FAQ_DELIVERY } from '../data/content';
-import '../old-static.css';
+import '../../styles/storefront.css';
 
 export default function About() {
   return (

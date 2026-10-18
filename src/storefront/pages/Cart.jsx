@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { formatMoney } from '../data/products';
 import { DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE } from '../config';
-import '../old-static.css';
+import '../../styles/storefront.css';
 
 export default function Cart() {
   const { items, updateQty, remove, subtotal, count } = useCart();

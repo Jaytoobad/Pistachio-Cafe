@@ -1,5 +1,5 @@
 ﻿import { isSupabaseConfigured, supabase } from '../supabase';
-import { MOCK_DISHES, MOCK_MENU_SECTIONS } from '../../storefront/data/mockData';
+import { MOCK_MENUS, MOCK_DISHES } from '../../storefront/data/mockData';
 
 function toSafeResult(data) {
   return data || [];
@@ -7,7 +7,7 @@ function toSafeResult(data) {
 
 export async function fetchMenu() {
   if (!isSupabaseConfigured || !supabase) {
-    return toSafeResult(MOCK_MENU_SECTIONS);
+    return toSafeResult(MOCK_MENUS);
   }
   try {
     const { data, error } = await supabase.from('menus').select('*').order('sort_order');
@@ -18,7 +18,7 @@ export async function fetchMenu() {
     if (import.meta.env.DEV) {
       console.warn('fetchMenu failed, using mock data:', err);
     }
-    return toSafeResult(MOCK_MENU_SECTIONS);
+    return toSafeResult(MOCK_MENUS);
   }
 }
 
@@ -71,7 +71,7 @@ export async function fetchAvailableDishes(menuId = null) {
 
 export async function fetchFeaturedDishes() {
   if (!isSupabaseConfigured || !supabase) {
-    const cats = MOCK_MENU_SECTIONS;
+    const cats = MOCK_MENUS;
     const dishes = MOCK_DISHES.filter((d) => d.is_available !== false);
     const byCat = {};
     (dishes || []).forEach((p) => {
@@ -108,7 +108,7 @@ export async function fetchFeaturedDishes() {
     if (import.meta.env.DEV) {
       console.warn('fetchFeaturedDishes failed, using mock data:', err);
     }
-    const cats = MOCK_MENU_SECTIONS;
+    const cats = MOCK_MENUS;
     const dishes = MOCK_DISHES.filter((d) => d.is_available !== false);
     const byCat = {};
     (dishes || []).forEach((p) => {

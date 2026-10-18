@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { CONTACT, BRAND } from '../config';
+import { BRAND, CONTACT } from '../config';
+import { MOCK_SETTINGS } from '../data/mockData';
 
 const DEFAULTS = {
   cafe_name: BRAND.name,
@@ -11,9 +12,12 @@ const DEFAULTS = {
   whatsapp: CONTACT.whatsapp,
   email: CONTACT.email,
   is_open: true,
-  accepting_orders: true,
+  accepting_order: true,
 };
 
+// Mock-first settings: render immediately with defaults, then silently merge
+// real rows from Supabase only if the request succeeds. On any error the
+// defaults stay and a warning is logged. Empty-string values are ignored.
 const SettingsContext = createContext({ settings: DEFAULTS, loading: false });
 
 export function SettingsProvider({ children }) {
@@ -21,6 +25,7 @@ export function SettingsProvider({ children }) {
 
   useEffect(() => {
     let active = true;
+    if (!supabase) return () => { active = false; };
     supabase
       .from('site_settings')
       .select('key,value')
@@ -36,7 +41,9 @@ export function SettingsProvider({ children }) {
         }
         if (active) setSettings(merged);
       })
-      .catch(() => {});
+      .catch((err) => {
+        if (import.meta.env.DEV) console.warn('SettingsContext: keeping defaults:', err);
+      });
     return () => { active = false; };
   }, []);
 

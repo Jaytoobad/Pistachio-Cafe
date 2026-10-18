@@ -2,87 +2,44 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
-import { PRODUCTS, findProduct, formatMoney, CATEGORIES } from '../data/products';
-import '../old-static.css';
+import { useDishes } from '../hooks/useDishes';
+import { useMenus } from '../hooks/useMenus';
+import { formatMoney } from '../../lib/format';
+import { IMAGES } from '../config';
+import DishCard from '../components/DishCard';
+import DishDetailModal from '../components/DishDetailModal';
+import '../../styles/storefront.css';
 
 const FILTERS = [
   { label: 'All', value: 'all' },
   { label: 'Breakfast', value: 'breakfast' },
   { label: 'Brunch', value: 'brunch' },
-  { label: 'Dessert', value: 'dessert' },
+  { label: 'Desserts', value: 'desserts' },
+  { label: 'Shisha Combos', value: 'combos' },
 ];
 
-function capitalize(s){
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-function escapeAttr(s){
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
+function menuNameForDish(dish, menus) {
+  if (dish.menu_name) return dish.menu_name;
+  if (dish.menu && dish.menu.name) return dish.menu.name;
+  const m = menus.find((x) => x.id === dish.menu_id);
+  return m ? m.name : '';
 }
 
 export default function Menu() {
-  const { add, subtotal } = useCart();
+  const { add } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [category, setCategory] = useState(searchParams.get('category') || 'all');
   const [activeFilter, setActiveFilter] = useState(category);
-  const productGridRef = useRef(null);
+  const [quickView, setQuickView] = useState(null);
 
-  const renderProducts = useCallback((cat) => {
-    const grid = productGridRef.current;
-    if (!grid) return;
-    const items = cat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === cat);
-    if (items.length === 0) {
-      grid.innerHTML = '<p>No items in this category yet — check back soon.</p>';
-      return;
-    }
-    grid.innerHTML = items.map(p => `
-      <article class="old-product-card">
-        <div class="old-product-card-media">
-          <span class="old-product-tag">${capitalize(p.category)}</span>
-          <img src="${p.image}" alt="${escapeAttr(p.name)}" loading="lazy" data-name="${escapeAttr(p.name)}"
-            onerror="this.closest('.old-product-card-media').style.display='flex';this.closest('.old-product-card-media').style.alignItems='center';this.closest('.old-product-card-media').style.justifyContent='center';this.replaceWith(Object.assign(document.createElement('span'),{className:'old-placeholder-block',textContent:this.getAttribute('data-name')+' photo coming soon'}))">
-        </div>
-        <div class="old-product-card-body">
-          <h3>${escapeAttr(p.name)}</h3>
-          <p>${escapeAttr(p.desc)}</p>
-          <div class="old-product-card-foot">
-            <span class="old-price">${formatMoney(p.price)}</span>
-            <button class="old-add-btn" data-add="${p.id}">Add to cart</button>
-          </div>
-        </div>
-      </article>
-    `).join('');
+  const { dishes, loading } = useDishes(category !== 'all' ? category : null);
+  const { menus } = useMenus();
 
-    grid.querySelectorAll('[data-add]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.add;
-        add(findProduct(id), 1);
-        const original = btn.textContent;
-        btn.textContent = 'Added ✓';
-        btn.classList.add('is-added');
-        const product = findProduct(id);
-        if (product) showToast(`${product.name} added to cart`);
-        setTimeout(() => {
-          btn.textContent = original;
-          btn.classList.remove('is-added');
-        }, 1200);
-      });
-    });
-  }, [add, showToast]);
-
-  useEffect(() => {
-    renderProducts(category);
-  }, [category, renderProducts]);
-
-  const handleFilter = (value) => {
-    setActiveFilter(value);
-    setCategory(value);
-    navigate(`?category=${value === 'all' ? '' : value}`, { replace: true });
-  };
+  // Mock-first: dishes render immediately; never return null while loading.
+  // useDishes already filters by menu_id when a category slug is passed.
+  const filtered = dishes;
 
   return (
     <div className="old-container">
@@ -103,110 +60,50 @@ export default function Menu() {
                   key={f.value}
                   className="old-filter-pill"
                   aria-pressed={activeFilter === f.value}
-                  onClick={() => handleFilter(f.value)}
+                  onClick={() => {
+                    setActiveFilter(f.value);
+                    setCategory(f.value);
+                    navigate(`?category=${f.value === 'all' ? '' : f.value}`, { replace: true });
+                  }}
                 >
                   {f.label}
                 </button>
               ))}
             </div>
-            <div className="old-card-grid" data-product-grid ref={productGridRef}>
-              {category === 'all' ? PRODUCTS.map(p => (
-                <article key={p.id} className="old-product-card">
-                  <div className="old-product-card-media">
-                    <span className="old-product-tag">{capitalize(p.category)}</span>
-                      <img
-                        src={p.image}
-                        alt={p.name}
-                        loading="lazy"
-                        data-name={p.name}
-                        onError={(e) => {
-                          const media = e.currentTarget.closest('.old-product-card-media');
-                          if (media) {
-                            media.style.display = 'flex';
-                            media.style.alignItems = 'center';
-                            media.style.justifyContent = 'center';
-                            const span = document.createElement('span');
-                            span.className = 'old-placeholder-block';
-                            span.textContent = (e.currentTarget.getAttribute('data-name') || p.name) + ' photo coming soon';
-                            e.currentTarget.replaceWith(span);
-                          }
-                        }}
-                      />
-                  </div>
-                  <div className="old-product-card-body">
-                    <h3>{p.name}</h3>
-                    <p>{p.desc}</p>
-                    <div className="old-product-card-foot">
-                      <span className="old-price">{formatMoney(p.price)}</span>
-                      <button
-                        className="old-add-btn"
-                        onClick={() => {
-                          add(p, 1);
-                          showToast(`${p.name} added to cart`);
-                        }}
-                      >
-                        Add to cart
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              )) : PRODUCTS.filter(p => p.category === category).map(p => (
-                <article key={p.id} className="old-product-card">
-                  <div className="old-product-card-media">
-                    <span className="old-product-tag">{capitalize(p.category)}</span>
-                      <img
-                        src={p.image}
-                        alt={p.name}
-                        loading="lazy"
-                        data-name={p.name}
-                        onError={(e) => {
-                          const media = e.currentTarget.closest('.old-product-card-media');
-                          if (media) {
-                            media.style.display = 'flex';
-                            media.style.alignItems = 'center';
-                            media.style.justifyContent = 'center';
-                            const span = document.createElement('span');
-                            span.className = 'old-placeholder-block';
-                            span.textContent = (e.currentTarget.getAttribute('data-name') || p.name) + ' photo coming soon';
-                            e.currentTarget.replaceWith(span);
-                          }
-                        }}
-                      />
-                  </div>
-                  <div className="old-product-card-body">
-                    <h3>{p.name}</h3>
-                    <p>{p.desc}</p>
-                    <div className="old-product-card-foot">
-                      <span className="old-price">{formatMoney(p.price)}</span>
-                      <button
-                        className="old-add-btn"
-                        onClick={() => {
-                          add(p, 1);
-                          showToast(`${p.name} added to cart`);
-                        }}
-                      >
-                        Add to cart
-                      </button>
-                    </div>
-                  </div>
-                </article>
+            <div className="old-card-grid">
+              {filtered.map((dish) => (
+                <DishCard
+                  key={dish.id}
+                  dish={dish}
+                  onAdd={(d, qty) => {
+                    add({ id: d.id, name: d.name, price: d.price, image_url: d.image_url || null }, qty);
+                    showToast(`${d.name} added to cart`);
+                  }}
+                  onQuickView={setQuickView}
+                />
               ))}
+              {filtered.length === 0 && (
+                <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', width: '100%' }}>
+                  No items in this category yet — check back soon.
+                </p>
+              )}
             </div>
           </div>
         </section>
-
-        {count > 0 && (
-          <div className="old-sticky-cart-bar">
-            <div className="old-sticky-info">
-              <div className="old-sticky-items">{count} item{count === 1 ? '' : 's'}</div>
-              <div className="old-sticky-total">{formatMoney(subtotal)}</div>
-            </div>
-            <Link to="/cart" className="old-btn old-btn-primary old-btn-block">
-              View cart
-            </Link>
-          </div>
-        )}
       </main>
+
+      {quickView && (
+        <DishDetailModal
+          open={!!quickView}
+          dish={quickView}
+          menuName={menuNameForDish(quickView, menus)}
+          onClose={() => setQuickView(null)}
+          onAdd={(d, qty) => {
+            add({ id: d.id, name: d.name, price: d.price, image_url: d.image_url || null }, qty);
+            showToast(`${d.name} added to cart`);
+          }}
+        />
+      )}
     </div>
   );
 }
