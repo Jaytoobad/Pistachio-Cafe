@@ -21,7 +21,7 @@ export default function Checkout() {
   // GHS 15), not the old flat GHS 10 from settings/delivery_fee.
   const [form, setForm] = useState({
     fullname: '', phone: '', email: '', fulfilment: 'pickup',
-    address: '', notes: '', zone: DEFAULT_DELIVERY_ZONE.id,
+    address: '', landmark: '', notes: '', zone: DEFAULT_DELIVERY_ZONE.id,
   });
   const [errors, setErrors] = useState({});
   const [processing, setProcessing] = useState(false);
@@ -59,6 +59,7 @@ export default function Checkout() {
         email: form.email.trim() || undefined,
         fulfilment: form.fulfilment,
         address: form.address.trim() || undefined,
+        landmark: form.landmark.trim() || undefined,
         notes: form.notes.trim() || undefined,
         delivery_fee: form.fulfilment === 'delivery' ? deliveryFee : 0,
       });
@@ -243,6 +244,10 @@ export default function Checkout() {
                       {errors.address && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.address}</span>}
                     </div>
                     <div className="old-form-row" data-address-row style={{ display: form.fulfilment === 'delivery' ? 'block' : 'none' }}>
+                      <label htmlFor="landmark">Landmark (optional)</label>
+                      <input type="text" id="landmark" name="landmark" placeholder="e.g. near the Shell station" value={form.landmark} onChange={(e) => setForm((f) => ({ ...f, landmark: e.target.value }))} />
+                    </div>
+                    <div className="old-form-row" data-address-row style={{ display: form.fulfilment === 'delivery' ? 'block' : 'none' }}>
                       <label htmlFor="zone">Delivery zone</label>
                       <select
                         id="zone"
@@ -340,6 +345,24 @@ export default function Checkout() {
                   </form>
                 </div>
               </aside>
+
+              {!orderId && (
+                <div className="old-checkout-sticky-pay">
+                  <div className="old-checkout-sticky-pay-inner">
+                    <span className="old-checkout-sticky-total">Total {formatMoney(total)}</span>
+                    <button
+                      type="button"
+                      className="old-btn old-btn-accent old-btn-block"
+                      onClick={() => {
+                        payBtnRef.current?.click();
+                      }}
+                      disabled={processing}
+                    >
+                      {processing ? 'Processing…' : 'Pay now'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </section>

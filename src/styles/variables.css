@@ -41,22 +41,6 @@
   --sidebar-width: 260px;
   --header-height: 72px;
 
-  /* --- Old static site design tokens (ported from reference/old-static/css/style.css) --- */
-  --old-ink: #1F2A22;
-  --old-ink-soft: #4B5A4E;
-  --old-paper: #F7F2E6;
-  --old-paper-dim: #EFE8D6;
-  --old-line: #E1D7BD;
-  --old-marigold: #E7A33E;
-  --old-marigold-dark: #C7862A;
-  --old-sage: #6E8563;
-  --old-berry: #A8434B;
-  --old-cream: #FFFDF8;
-  --old-max-width: 1200px;
-  --old-radius-sm: 4px;
-  --old-radius-md: 10px;
-  --old-gutter: clamp(1.25rem, 4vw, 3rem);
-
   /* Safe-area insets for notched devices */
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);

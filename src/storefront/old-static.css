@@ -604,3 +604,189 @@ button, input, textarea, select{ font-family: inherit; font-size: inherit; color
 
 .old-lookup-row{ display: flex; gap: 0.6rem; }
 .old-lookup-row input{ flex-grow: 1; padding: 0.7em 0.9em; border: 1.5px solid var(--old-line); border-radius: var(--old-radius-sm); }
+
+/* =========================================================
+   Mobile-first storefront polish (old-* components)
+   Targets: 320, 360, 390, 414, 768, 1024, 1440px viewports
+   ========================================================= */
+
+/* Guard against horizontal scroll; dynamic viewport height */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+body {
+  min-height: 100dvh;
+}
+
+/* 16px inputs prevent iOS Safari zoom on focus */
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* Minimum 44px tap targets */
+.old-btn, .old-add-btn, .old-filter-pill, .old-cart-item-remove,
+.old-qty-stepper button, .old-fulfil-toggle button,
+.old-promo-row button {
+  min-height: var(--tap-min);
+  min-width: var(--tap-min);
+}
+.old-btn { display: inline-flex; align-items: center; justify-content: center; }
+.old-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* clamp() typography */
+h1 { font-size: clamp(1.5rem, 6vw, 2.2rem); line-height: 1.12; }
+h2 { font-size: clamp(1.25rem, 5vw, 1.8rem); line-height: 1.15; }
+h3 { font-size: clamp(1.1rem, 4vw, 1.4rem); line-height: 1.2; }
+
+.old-hero h1 { font-size: clamp(2.4rem, 8vw, 5rem); max-width: min(14ch, 94vw); }
+.old-hero-eyebrow { font-size: clamp(0.9rem, 3vw, 1.05rem); }
+.old-hero-sub { font-size: clamp(1rem, 4.5vw, 1.15rem); max-width: min(46ch, 94vw); }
+.old-page-hero h1 { font-size: clamp(2rem, 6vw, 3.4rem); max-width: min(18ch, 94vw); }
+.old-page-hero p { font-size: clamp(0.95rem, 3vw, 1.05rem); max-width: min(56ch, 94vw); }
+
+/* No clipped text */
+*, *::before, *::after {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Product grid: 2 columns on phones, 1 column under 360px */
+.old-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 359px) {
+  .old-card-grid { grid-template-columns: 1fr; }
+}
+@media (min-width: 768px) {
+  .old-card-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .old-card-grid { grid-template-columns: repeat(4, 1fr); gap: 1.75rem; }
+}
+
+/* Fixed aspect-ratio image boxes */
+.old-product-card-media {
+  aspect-ratio: 4 / 3;
+  min-height: 0;
+}
+
+/* Soft green placeholder block for missing images — never a broken icon */
+.old-placeholder-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--old-sage);
+  color: var(--old-cream);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: var(--old-radius-md);
+}
+
+/* Filter pills: horizontal scroll with snap */
+.old-filter-row {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 8px;
+  margin-bottom: 1.75rem;
+}
+.old-filter-row::-webkit-scrollbar { display: none; }
+.old-filter-pill {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Cart page: tighter columns on narrow screens */
+.old-cart-item-name { min-width: 0; }
+@media (max-width: 480px) {
+  .old-cart-item { grid-template-columns: 64px 1fr auto; gap: 8px; padding: 0.9rem 0; }
+  .old-cart-item-media { width: 64px; height: 64px; }
+  .old-cart-item-right { align-items: flex-end; }
+  .old-qty-stepper button { width: 44px; height: 44px; }
+}
+
+/* Sticky "View cart" bar — menu page, mobile only */
+.old-sticky-cart-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--old-cream);
+  border-top: 1.5px solid var(--old-line);
+  padding: 10px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  box-shadow: 0 -6px 20px rgba(31, 42, 34, 0.08);
+  z-index: 900;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+.old-sticky-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.old-sticky-items {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--old-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.old-sticky-total {
+  color: var(--old-ink-soft);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.old-sticky-cart-bar .old-btn { flex-shrink: 0; padding: 10px 16px; font-size: 0.9rem; }
+@media (min-width: 720px) {
+  .old-sticky-cart-bar { display: none; }
+}
+
+/* Sticky total + Pay button — checkout, mobile only */
+.old-checkout-sticky-pay {
+  position: sticky;
+  bottom: 0;
+  background: var(--old-cream);
+  border-top: 1.5px solid var(--old-line);
+  padding: 10px max(16px, env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  box-shadow: 0 -6px 20px rgba(31, 42, 34, 0.08);
+  z-index: 800;
+  display: none;
+}
+.old-checkout-sticky-pay-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.old-checkout-sticky-total {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--old-ink);
+  white-space: nowrap;
+}
+@media (max-width: 719px) {
+  .old-checkout-sticky-pay { display: block; }
+}
+
+/* Responsive tweaks for narrow phones */
+@media (max-width: 640px) {
+  .old-hero-info-strip { grid-template-columns: 1fr; gap: 0.9rem; }
+  .old-section-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .old-fulfil-toggle button { min-height: 48px; }
+  .old-stat-strip { grid-template-columns: 1fr; }
+}

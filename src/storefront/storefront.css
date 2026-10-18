@@ -78,13 +78,15 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   border-radius: var(--radius-sm);
   cursor: pointer;
   color: var(--color-ink);
+  min-height: 44px;
+  min-width: 44px;
 }
 .sf-cart-badge {
   position: absolute;

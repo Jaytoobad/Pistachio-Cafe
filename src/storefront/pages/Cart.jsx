@@ -69,7 +69,19 @@ export default function Cart() {
                           src={item.image_url || '/images/placeholder-cup-pistachios.jpg'}
                           alt=""
                           loading="lazy"
-                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          data-name={item.name}
+                          onError={(e) => {
+                            const media = e.currentTarget.closest('.old-cart-item-media');
+                            if (media) {
+                              media.style.display = 'flex';
+                              media.style.alignItems = 'center';
+                              media.style.justifyContent = 'center';
+                              const span = document.createElement('span');
+                              span.className = 'old-placeholder-block';
+                              span.textContent = (e.currentTarget.getAttribute('data-name') || item.name);
+                              e.currentTarget.replaceWith(span);
+                            }
+                          }}
                         />
                       </div>
                       <div>

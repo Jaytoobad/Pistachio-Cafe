@@ -1,28 +1,15 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { PRODUCTS, findProduct, formatMoney } from '../data/products';
 import { BRAND } from '../config';
 import { STARTER_REVIEWS } from '../data/content';
+import { isSupabaseConfigured } from '../../lib/supabase';
+import { fetchApprovedReviews, submitReview } from '../services/reviews';
 import '../old-static.css';
 
-const REVIEWS_KEY = 'pistachio_reviews';
-
-// STARTER_REVIEWS (../data/content.js) are SAMPLE reviews — invented for demo
-// purposes only. They are labelled `sample: true` and render ONLY in demo
-// mode, i.e. when no approved (real, user-submitted) reviews exist yet.
-
-function getReviews(){
-  try {
-    const stored = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
-    // Demo mode: no approved reviews exist yet → show the sample starter set.
-    if (!Array.isArray(stored) || stored.length === 0) return STARTER_REVIEWS;
-    return stored;
-  } catch {
-    return STARTER_REVIEWS;
-  }
-}
+const REVIEWS_KEY = 'pi_reviews';
 
 function escapeHtml(str){
   const div = document.createElement('div');
@@ -33,7 +20,8 @@ function escapeHtml(str){
 export default function Home() {
   const { add } = useCart();
   const { showToast } = useToast();
-  const [reviews, setReviews] = useState(getReviews());
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [reviewForm, setReviewForm] = useState({ name: '', role: '', rating: 5, quote: '' });
   const [submitting, setSubmitting] = useState(false);
   const formRef = useRef(null);
@@ -44,6 +32,40 @@ export default function Home() {
     add({ id: product.id, name: product.name, price: product.price, image_url: product.image || null }, 1);
     showToast(`${product.name} added to cart`);
   };
+
+  const loadReviews = useCallback(async () => {
+    let approved = [];
+    if (isSupabaseConfigured) {
+      try {
+        approved = await fetchApprovedReviews();
+      } catch (err) {
+        console.error('Failed to fetch approved reviews', err);
+      }
+    }
+
+    if (approved && approved.length > 0) {
+      setReviews(approved.map(r => ({
+        name: r.customer_name,
+        role: r.dish_name || 'Customer',
+        rating: r.rating,
+        quote: r.comment,
+      })));
+    } else {
+      // Demo mode / no approved reviews yet: show localStorage + starter fallback.
+      try {
+        const stored = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
+        const merged = Array.isArray(stored) ? [...stored, ...STARTER_REVIEWS] : STARTER_REVIEWS;
+        setReviews(merged);
+      } catch {
+        setReviews(STARTER_REVIEWS);
+      }
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadReviews();
+  }, [loadReviews]);
 
   const renderFeatured = () => {
     const categories = ['breakfast', 'brunch', 'dessert'];
@@ -99,21 +121,38 @@ export default function Home() {
         <p className="old-review-quote">"{escapeHtml(r.quote)}"</p>
         <p className="old-review-name old-mt-0">{escapeHtml(r.name)}</p>
         <p className="old-review-role">{escapeHtml(r.role)}</p>
-        {r.sample && <p className="old-review-role" style={{ fontStyle: 'italic', opacity: 0.6 }}>Sample review — for demo purposes only</p>}
       </article>
     ));
   };
 
-  const handleReviewSubmit = (e) => {
+  const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!reviewForm.name.trim() || !reviewForm.quote.trim()) return;
 
     setSubmitting(true);
+
+    // Save to localStorage immediately so it shows on this device.
     const stored = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
     const newReview = { name: reviewForm.name.trim(), role: reviewForm.role.trim() || 'Customer', rating: reviewForm.rating, quote: reviewForm.quote.trim() };
     stored.unshift(newReview);
     localStorage.setItem(REVIEWS_KEY, JSON.stringify(stored));
     setReviews([newReview, ...reviews]);
+
+    // Insert into public.reviews with is_approved = false (pending moderation).
+    if (isSupabaseConfigured) {
+      try {
+        await submitReview({
+          customer_name: reviewForm.name.trim(),
+          dish_id: null,
+          dish_name: null,
+          rating: reviewForm.rating,
+          comment: reviewForm.quote.trim(),
+        });
+      } catch (err) {
+        console.error('Failed to submit review to Supabase', err);
+      }
+    }
+
     setReviewForm({ name: '', role: '', rating: 5, quote: '' });
     showToast('Thanks for your review!');
     setSubmitting(false);
@@ -205,7 +244,11 @@ export default function Home() {
               </div>
             </div>
             <div className="old-review-grid" data-review-grid>
-              {renderReviews()}
+              {loading ? (
+                <p>Loading reviews…</p>
+              ) : (
+                renderReviews()
+              )}
             </div>
 
             <div className="old-review-form">

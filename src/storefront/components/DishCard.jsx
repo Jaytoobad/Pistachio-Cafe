@@ -11,7 +11,24 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
   return (
     <article className="sf-product-card">
       <div className="sf-product-media" onClick={() => onQuickView?.(dish)} style={{ cursor: onQuickView ? 'pointer' : 'default' }}>
-        <img src={image} alt={dish.name || 'Dish'} loading="lazy" />
+        <img
+          src={image}
+          alt={dish.name || 'Dish'}
+          loading="lazy"
+          data-name={dish.name || 'Dish'}
+          onError={(e) => {
+            const media = e.currentTarget.closest('.sf-product-media');
+            if (media) {
+              media.style.display = 'flex';
+              media.style.alignItems = 'center';
+              media.style.justifyContent = 'center';
+              const span = document.createElement('span');
+              span.className = 'old-placeholder-block';
+              span.textContent = (e.currentTarget.getAttribute('data-name') || dish.name || 'Dish') + ' photo coming soon';
+              e.currentTarget.replaceWith(span);
+            }
+          }}
+        />
         {dish.menu_name || (dish.menu && dish.menu.name) ? (
           <span className="sf-product-tag">{dish.menu_name || dish.menu.name}</span>
         ) : null}

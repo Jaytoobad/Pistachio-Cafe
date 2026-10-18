@@ -23,7 +23,7 @@ function escapeAttr(s){
 }
 
 export default function Menu() {
-  const { add } = useCart();
+  const { add, subtotal } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -43,8 +43,8 @@ export default function Menu() {
       <article class="old-product-card">
         <div class="old-product-card-media">
           <span class="old-product-tag">${capitalize(p.category)}</span>
-          <img src="${p.image}" alt="${escapeAttr(p.name)}" loading="lazy"
-            onerror="this.closest('.old-product-card-media').style.display='flex';this.closest('.old-product-card-media').style.alignItems='center';this.closest('.old-product-card-media').style.justifyContent='center';this.replaceWith(Object.assign(document.createElement('span'),{textContent:'Add photo: ${escapeAttr(p.image)}',style:'font-size:0.75rem;color:#8b8570;padding:0 1rem;text-align:center'}))">
+          <img src="${p.image}" alt="${escapeAttr(p.name)}" loading="lazy" data-name="${escapeAttr(p.name)}"
+            onerror="this.closest('.old-product-card-media').style.display='flex';this.closest('.old-product-card-media').style.alignItems='center';this.closest('.old-product-card-media').style.justifyContent='center';this.replaceWith(Object.assign(document.createElement('span'),{className:'old-placeholder-block',textContent:this.getAttribute('data-name')+' photo coming soon'}))">
         </div>
         <div class="old-product-card-body">
           <h3>${escapeAttr(p.name)}</h3>
@@ -114,26 +114,24 @@ export default function Menu() {
                 <article key={p.id} className="old-product-card">
                   <div className="old-product-card-media">
                     <span className="old-product-tag">{capitalize(p.category)}</span>
-                    <img
-                      src={p.image}
-                      alt={p.name}
-                      loading="lazy"
-                      onError={(e) => {
-                        const media = e.currentTarget.closest('.old-product-card-media');
-                        if (media) {
-                          media.style.display = 'flex';
-                          media.style.alignItems = 'center';
-                          media.style.justifyContent = 'center';
-                          const span = document.createElement('span');
-                          span.textContent = 'Add photo: ' + p.image;
-                          span.style.fontSize = '0.75rem';
-                          span.style.color = '#8b8570';
-                          span.style.padding = '0 1rem';
-                          span.style.textAlign = 'center';
-                          e.currentTarget.replaceWith(span);
-                        }
-                      }}
-                    />
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        loading="lazy"
+                        data-name={p.name}
+                        onError={(e) => {
+                          const media = e.currentTarget.closest('.old-product-card-media');
+                          if (media) {
+                            media.style.display = 'flex';
+                            media.style.alignItems = 'center';
+                            media.style.justifyContent = 'center';
+                            const span = document.createElement('span');
+                            span.className = 'old-placeholder-block';
+                            span.textContent = (e.currentTarget.getAttribute('data-name') || p.name) + ' photo coming soon';
+                            e.currentTarget.replaceWith(span);
+                          }
+                        }}
+                      />
                   </div>
                   <div className="old-product-card-body">
                     <h3>{p.name}</h3>
@@ -156,26 +154,24 @@ export default function Menu() {
                 <article key={p.id} className="old-product-card">
                   <div className="old-product-card-media">
                     <span className="old-product-tag">{capitalize(p.category)}</span>
-                    <img
-                      src={p.image}
-                      alt={p.name}
-                      loading="lazy"
-                      onError={(e) => {
-                        const media = e.currentTarget.closest('.old-product-card-media');
-                        if (media) {
-                          media.style.display = 'flex';
-                          media.style.alignItems = 'center';
-                          media.style.justifyContent = 'center';
-                          const span = document.createElement('span');
-                          span.textContent = 'Add photo: ' + p.image;
-                          span.style.fontSize = '0.75rem';
-                          span.style.color = '#8b8570';
-                          span.style.padding = '0 1rem';
-                          span.style.textAlign = 'center';
-                          e.currentTarget.replaceWith(span);
-                        }
-                      }}
-                    />
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        loading="lazy"
+                        data-name={p.name}
+                        onError={(e) => {
+                          const media = e.currentTarget.closest('.old-product-card-media');
+                          if (media) {
+                            media.style.display = 'flex';
+                            media.style.alignItems = 'center';
+                            media.style.justifyContent = 'center';
+                            const span = document.createElement('span');
+                            span.className = 'old-placeholder-block';
+                            span.textContent = (e.currentTarget.getAttribute('data-name') || p.name) + ' photo coming soon';
+                            e.currentTarget.replaceWith(span);
+                          }
+                        }}
+                      />
                   </div>
                   <div className="old-product-card-body">
                     <h3>{p.name}</h3>
@@ -198,6 +194,18 @@ export default function Menu() {
             </div>
           </div>
         </section>
+
+        {count > 0 && (
+          <div className="old-sticky-cart-bar">
+            <div className="old-sticky-info">
+              <div className="old-sticky-items">{count} item{count === 1 ? '' : 's'}</div>
+              <div className="old-sticky-total">{formatMoney(subtotal)}</div>
+            </div>
+            <Link to="/cart" className="old-btn old-btn-primary old-btn-block">
+              View cart
+            </Link>
+          </div>
+        )}
       </main>
     </div>
   );

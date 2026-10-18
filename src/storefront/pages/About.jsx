@@ -63,11 +63,8 @@ export default function About() {
                     parent.style.alignItems = 'center';
                     parent.style.justifyContent = 'center';
                     const span = document.createElement('span');
-                    span.textContent = 'Add photo: images/about-team.jpg';
-                    span.style.fontSize = '0.8rem';
-                    span.style.color = '#8b8570';
-                    span.style.padding = '1rem';
-                    span.style.textAlign = 'center';
+                    span.className = 'old-placeholder-block';
+                    span.textContent = 'Team photo coming soon';
                     e.currentTarget.replaceWith(span);
                   }
                 }}

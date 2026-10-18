@@ -1,30 +1,37 @@
-﻿export const MOCK_MENU_SECTIONS = [
-  { id: 'sec-wraps', name: 'Wraps & Sandwiches', sort_order: 0, description: 'Freshly made to order.' },
-  { id: 'sec-waffles', name: 'Waffles & Desserts', sort_order: 1, description: 'Sweet treats baked with love.' },
-  { id: 'sec-icecream', name: 'Ice Cream', sort_order: 2, description: 'Cool and creamy.' },
-  { id: 'sec-drinks', name: 'Drinks & Coffee', sort_order: 3, description: 'Hot and cold favourites.' },
-  { id: 'sec-shisha', name: 'Shisha Combos', sort_order: 4, description: 'Relax and unwind.' },
+﻿export const MOCK_MENUS = [
+  { id: 'm-breakfast', slug: 'breakfast', name: 'Breakfast', sort_order: 0, is_visible: true },
+  { id: 'm-brunch', slug: 'brunch', name: 'Brunch', sort_order: 1, is_visible: true },
+  { id: 'm-desserts', slug: 'desserts', name: 'Desserts', sort_order: 2, is_visible: true },
+  { id: 'm-combos', slug: 'combos', name: 'Shisha Combos', sort_order: 3, is_visible: true },
 ];
 
 export const MOCK_DISHES = [
-  { id: 'd1', menu_id: 'sec-wraps', name: 'Chicken Shawarma Wrap', description: 'Grilled chicken, garlic sauce, lettuce, tomato in pita wrap.', price: 40, is_available: true, is_featured: true, sort_order: 0, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Wraps & Sandwiches' },
-  { id: 'd2', menu_id: 'sec-wraps', name: 'Beef Shawarma Wrap', description: 'Spicy beef shawarma with veggies and tahini sauce.', price: 40, is_available: true, is_featured: true, sort_order: 1, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Wraps & Sandwiches' },
-  { id: 'd3', menu_id: 'sec-wraps', name: 'Club Sandwich', description: 'Triple-layered with chicken, bacon, egg, lettuce, tomato.', price: 38, is_available: true, sort_order: 2, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Wraps & Sandwiches' },
-  { id: 'd4', menu_id: 'sec-wraps', name: 'Tuna Sandwich', description: 'Creamy tuna mix with cucumber and fresh herbs.', price: 35, is_available: true, sort_order: 3, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Wraps & Sandwiches' },
-  { id: 'd5', menu_id: 'sec-waffles', name: 'Belgian Waffle with Ice Cream', description: 'Crispy waffle topped with a scoop of vanilla ice cream.', price: 45, is_available: true, is_featured: true, sort_order: 0, image_url: '/images/hero-flatlay.jpg', menu_name: 'Waffles & Desserts' },
-  { id: 'd6', menu_id: 'sec-waffles', name: 'Chocolate Waffle', description: 'Drizzled with Belgian chocolate sauce and whipped cream.', price: 40, is_available: true, sort_order: 1, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Waffles & Desserts' },
-  { id: 'd7', menu_id: 'sec-waffles', name: 'Caramel Waffle', description: 'Sweet caramel sauce, nuts and whipped cream.', price: 42, is_available: true, sort_order: 2, image_url: '/images/menu-marble-closeup.jpg', menu_name: 'Waffles & Desserts' },
-  { id: 'd8', menu_id: 'sec-waffles', name: 'Brownie Slice', description: 'Rich fudgy brownie served warm.', price: 25, is_available: true, sort_order: 3, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Waffles & Desserts' },
-  { id: 'd9', menu_id: 'sec-icecream', name: 'Vanilla Scoop', description: 'Classic creamy vanilla.', price: 15, is_available: true, sort_order: 0, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Ice Cream' },
-  { id: 'd10', menu_id: 'sec-icecream', name: 'Chocolate Scoop', description: 'Rich Belgian chocolate.', price: 15, is_available: true, sort_order: 1, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Ice Cream' },
-  { id: 'd11', menu_id: 'sec-icecream', name: 'Strawberry Scoop', description: 'Fresh strawberry flavour.', price: 15, is_available: true, sort_order: 2, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Ice Cream' },
-  { id: 'd12', menu_id: 'sec-icecream', name: 'Pistachio Scoop', description: 'Nutty house favourite.', price: 18, is_available: true, is_featured: true, sort_order: 3, image_url: '/images/placeholder-cup-pistachios.jpg', menu_name: 'Ice Cream' },
-  { id: 'd13', menu_id: 'sec-drinks', name: 'Espresso', description: 'Single shot of bold espresso.', price: 18, is_available: true, sort_order: 0, image_url: '/images/hero-coffee-beans.jpg', menu_name: 'Drinks & Coffee' },
-  { id: 'd14', menu_id: 'sec-drinks', name: 'Cappuccino', description: 'Espresso with steamed milk foam.', price: 24, is_available: true, sort_order: 1, image_url: '/images/hero-coffee-beans.jpg', menu_name: 'Drinks & Coffee' },
-  { id: 'd15', menu_id: 'sec-drinks', name: 'Latte', description: 'Smooth espresso with silky steamed milk.', price: 26, is_available: true, is_featured: true, sort_order: 2, image_url: '/images/hero-coffee-beans.jpg', menu_name: 'Drinks & Coffee' },
-  { id: 'd16', menu_id: 'sec-drinks', name: 'Iced Coffee', description: 'Chilled coffee over ice with cream.', price: 28, is_available: true, sort_order: 3, image_url: '/images/hero-flatlay.jpg', menu_name: 'Drinks & Coffee' },
-  { id: 'd17', menu_id: 'sec-drinks', name: 'Fresh Juice', description: 'Seasonal fruit juice.', price: 20, is_available: true, sort_order: 4, image_url: '/images/placeholder-cup-tile.jpg', menu_name: 'Drinks & Coffee' },
-  { id: 'd18', menu_id: 'sec-shisha', name: 'Shisha Combo Classic', description: 'Classic flavour with premium coal, perfect for sharing.', price: 90, is_available: true, is_featured: true, sort_order: 0, image_url: '/images/poster-three-cups-wide.jpg', menu_name: 'Shisha Combos' },
-  { id: 'd19', menu_id: 'sec-shisha', name: 'Shisha Combo Mint', description: 'Refreshing mint blend for a smooth session.', price: 95, is_available: true, sort_order: 1, image_url: '/images/poster-three-cups.jpg', menu_name: 'Shisha Combos' },
-  { id: 'd20', menu_id: 'sec-shisha', name: 'Shisha Combo Fruit Mix', description: 'Tropical fruit medley for a sweet vibe.', price: 95, is_available: true, sort_order: 2, image_url: '/images/poster-three-cups-wide.jpg', menu_name: 'Shisha Combos' },
+  { id: 'd-pancake-stack', slug: 'pancake-stack', menu_id: 'm-breakfast', name: 'Buttermilk Pancake Stack', description: 'Three fluffy pancakes, maple syrup, whipped butter.', price: 35.00, image_url: '/images/products/pancake-stack.jpg', is_available: true, is_featured: true, is_hidden: false, sort_order: 0, tags: [] },
+  { id: 'd-avocado-toast', slug: 'avocado-toast', menu_id: 'm-breakfast', name: 'Avocado & Poached Egg Toast', description: 'Sourdough, smashed avocado, chilli flakes, two eggs.', price: 32.00, image_url: '/images/products/avocado-toast.jpg', is_available: true, is_featured: false, is_hidden: false, sort_order: 1, tags: [] },
+  { id: 'd-shakshuka', slug: 'shakshuka', menu_id: 'm-breakfast', name: 'Pistachio Shakshuka', description: 'Eggs simmered in spiced tomato sauce, warm pita.', price: 38.00, image_url: '/images/products/shakshuka.jpg', is_available: true, is_featured: false, is_hidden: false, sort_order: 2, tags: [] },
+  { id: 'd-brunch-board', slug: 'brunch-board', menu_id: 'm-brunch', name: 'Weekend Brunch Board', description: 'A shared spread of pastries, fruit, cheese, and eggs.', price: 65.00, image_url: '/images/products/brunch-board.jpg', is_available: true, is_featured: true, is_hidden: false, sort_order: 0, tags: [] },
+  { id: 'd-eggs-benedict', slug: 'eggs-benedict', menu_id: 'm-brunch', name: 'Classic Eggs Benedict', description: 'Poached eggs, hollandaise, smoked bacon, muffin.', price: 42.00, image_url: '/images/products/eggs-benedict.jpg', is_available: true, is_featured: false, is_hidden: false, sort_order: 1, tags: [] },
+  { id: 'd-chicken-waffles', slug: 'chicken-waffles', menu_id: 'm-brunch', name: 'Fried Chicken & Waffles', description: 'Buttermilk waffle, crisp chicken, hot honey drizzle.', price: 48.00, image_url: '/images/products/chicken-waffles.jpg', is_available: true, is_featured: false, is_hidden: false, sort_order: 2, tags: [] },
+  { id: 'd-carrot-cake', slug: 'carrot-cake', menu_id: 'm-desserts', name: 'Spiced Carrot Cake', description: 'Walnuts, cream cheese frosting, cinnamon.', price: 24.00, image_url: '/images/products/carrot-cake.jpg', is_available: true, is_featured: true, is_hidden: false, sort_order: 0, tags: [] },
+  { id: 'd-lemon-tart', slug: 'lemon-tart', menu_id: 'm-desserts', name: 'Meyer Lemon Tart', description: 'Buttery shortcrust, silky lemon curd, torched meringue.', price: 26.00, image_url: '/images/products/lemon-tart.jpg', is_available: true, is_featured: false, is_hidden: false, sort_order: 1, tags: [] },
+  { id: 'd-chocolate-fondant', slug: 'chocolate-fondant', menu_id: 'm-desserts', name: 'Dark Chocolate Fondant', description: 'Warm molten centre, vanilla bean ice cream.', price: 28.00, image_url: '/images/products/chocolate-fondant.jpg', is_available: true, is_featured: false, is_hidden: false, sort_order: 2, tags: [] },
+  { id: 'd-shisha-combo', slug: 'shisha-sandwich-drink-combo', menu_id: 'm-combos', name: 'Shisha, Sandwich & Drink Combo', description: 'A relaxed shisha session with a sandwich and a drink of your choice.', price: 250, image_url: null, is_available: true, is_featured: true, is_hidden: false, sort_order: 0, tags: [] },
 ];
+
+export const MOCK_REVIEWS = [
+  { id: 'r1', customer_name: 'Ama Owusu', user_email: null, dish_id: 'd-shakshuka', dish_name: 'Pistachio Shakshuka', rating: 5, comment: 'The shakshuka is unreal and the staff remember my order. My weekend does not start without this place.', is_approved: true, created_at: '2026-10-10T08:00:00Z' },
+  { id: 'r2', customer_name: 'Kwabena Asante', user_email: null, dish_id: 'd-brunch-board', dish_name: 'Weekend Brunch Board', rating: 5, comment: 'Walked in for coffee, stayed two hours for the brunch board. Genuinely one of the best in the city.', is_approved: true, created_at: '2026-10-11T09:30:00Z' },
+  { id: 'r3', customer_name: 'Linda Mensah', user_email: null, dish_id: null, dish_name: null, rating: 4, comment: 'My go-to for a working lunch. Would love a few more vegan dessert options, but the coffee alone keeps me coming back.', is_approved: true, created_at: '2026-10-12T12:00:00Z' },
+];
+
+export const MOCK_SETTINGS = {
+  cafe_name: 'Pistachio Cafe',
+  tagline: 'Elegance you can taste',
+  address: 'Spintex, Accra, Ghana',
+  instagram: '@pistachio.ghana',
+  phone: '',
+  whatsapp: '',
+  email: 'hello@pistachio.cafe',
+  is_open: true,
+  accepting_order: true,
+};

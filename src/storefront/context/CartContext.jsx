@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-const CART_KEY = 'pistachio_cart';
+const CART_KEY = 'pi_cart';
 
 function loadCart() {
   try {

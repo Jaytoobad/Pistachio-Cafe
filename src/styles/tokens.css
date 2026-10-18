@@ -1,88 +1,28 @@
 /* ============================================================================
-   Pistachio Café — design tokens
-   Palette derived from the brand logo (pistachio/sage green), the warm cream
-   of the café interiors, a deep green-brown for text, and soft gold accents.
-   Every colour is checked against WCAG 2.1 AA: body text on cream ≥ 4.5:1,
-   large text / UI controls on cream ≥ 3:1.
+   Pistachio Café — old static site design tokens
+   Ported from reference/old-static/css/style.css.
+   Kept as --old-* variables so they never collide with the current design
+   system in variables.css.
    ============================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
-
 :root {
-  /* --- Brand palette ------------------------------------------------------ */
+  /* --- color --- */
+  --old-ink:            #1F2A22;   /* deep forest-black, primary text */
+  --old-ink-soft:       #4B5A4E;   /* secondary text */
+  --old-paper:          #F7F2E6;   /* parchment background */
+  --old-paper-dim:      #EFE8D6;   /* slightly deeper panel background */
+  --old-line:           #E1D7BD;   /* hairline borders */
+  --old-marigold:       #E7A33E;   /* primary accent — buttons, prices, highlights */
+  --old-marigold-dark:  #C7862A;
+  --old-sage:           #6E8563;   /* secondary accent — tags, success */
+  --old-berry:          #A8434B;   /* cart / alerts / remove actions */
+  --old-cream:          #FFFDF8;   /* card surfaces */
 
-  /* Pistachio / sage green — the logo green. */
-  --color-pistachio:       #9EBE7E;
-  --color-pistachio-soft:  #B7C9A8;
-  --color-pistachio-deep:  #7E9E63;
-
-  /* Sage — a cooler green used for surfaces and muted elements. */
-  --color-sage:            #7A8E6A;
-  --color-sage-soft:       #D4DFC9;
-
-  /* Warm cream — the background of the café and the site. */
-  --color-cream:           #F7F3E8;
-  --color-cream-warm:      #F1EADC;
-  --color-cream-deep:      #E8DDB8;
-
-  /* Deep green-brown — primary text and the darkest brand tone. */
-  --color-forest:          #2B3326;
-  --color-forest-soft:     #3D4A3C;
-  --color-ink:             #2B3326;
-  --color-ink-soft:        #5A6356;
-  --color-ink-muted:       #7A8276;
-
-  /* Soft gold — accent for highlights, stars, key lines. */
-  --color-gold:            #C9A96A;
-  --color-gold-deep:        #A8874A;
-  --color-gold-soft:        #E8D9B0;
-
-  /* Pure surfaces and lines. */
-  --color-surface:         #FFFFFF;
-  --color-line:            #E2DCC9;
-  --color-line-strong:     #D2C8AE;
-
-  /* --- Semantic ----------------------------------------------------------- */
-  --color-bg:              var(--color-cream);
-  --color-text:            var(--color-ink);
-  --color-text-muted:      var(--color-ink-soft);
-  --color-primary:         var(--color-pistachio);
-  --color-primary-hover:   var(--color-pistachio-deep);
-  --color-accent:          var(--color-gold);
-  --color-accent-hover:     var(--color-gold-deep);
-  --color-border:          var(--color-line);
-  --color-success:         #4E704A;
-  --color-error:           #A8434B;
-  --color-warn:            #C7862A;
-
-  /* --- Typography --------------------------------------------------------- */
-  /* Cormorant Garamond — one elegant serif for headings only. */
-  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  /* Inter — one clean geometric sans for everything else. */
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-               'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'SF Mono', 'Fira Code', Consolas, monospace;
-
-  /* --- Scale & spacing ---------------------------------------------------- */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-
-  --shadow-sm: 0 1px 3px rgba(43, 51, 38, 0.08);
-  --shadow-md: 0 6px 20px rgba(43, 51, 38, 0.10);
-  --shadow-lg: 0 12px 40px rgba(43, 51, 38, 0.14);
-  /* Sticky header shadow — appears once the page scrolls. */
-  --shadow-header: 0 4px 18px rgba(43, 51, 38, 0.12);
-
-  --container-width: 1240px;
-  --header-height: 68px;
-
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-
-  /* --- Motion ------------------------------------------------------------ */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* --- layout --- */
+  --old-max-width:      1200px;
+  --old-radius-sm:      4px;
+  --old-radius-md:      10px;
+  --old-gutter:         clamp(1.25rem, 4vw, 3rem);
 }
 
 @media (prefers-reduced-motion: reduce) {

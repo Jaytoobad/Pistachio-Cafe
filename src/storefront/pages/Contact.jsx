@@ -48,7 +48,16 @@ export default function Contact() {
         </div>
       </div>
 
-      <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 24 }}>
+      <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
+          <h3 style={{ margin: '0 0 8px' }}>Map</h3>
+          <a href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }}>
+            Open in Google Maps
+          </a>
+          <p style={{ margin: '6px 0 0', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>
+            {CONTACT.address}
+          </p>
+        </div>
+        <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 24 }}>
         <h3 style={{ margin: '0 0 16px' }}>Opening hours</h3>
         <p style={{ margin: 0 }}>Weekdays: <strong>{HOURS.weekday.open} – {HOURS.weekday.close}</strong></p>
         <p style={{ margin: '4px 0 0' }}>Weekends: <strong>{HOURS.weekend.open} – {HOURS.weekend.close}</strong></p>

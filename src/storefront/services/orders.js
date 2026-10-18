@@ -6,7 +6,7 @@ const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-order`;
 // Create an order and start Paystack payment.
 // The edge function recomputes the total from the dishes table — the browser
 // only ever sends dish IDs and quantities.
-export async function createOrder({ items, customer_name, phone, email, fulfilment, address, notes, delivery_fee }) {
+export async function createOrder({ items, customer_name, phone, email, fulfilment, address, landmark, notes, delivery_fee }) {
   const session = await supabase.auth.getSession();
   const token = session?.data?.session?.access_token;
 
@@ -24,6 +24,7 @@ export async function createOrder({ items, customer_name, phone, email, fulfilme
       email: email || undefined,
       fulfilment,
       address: address || undefined,
+      landmark: landmark || undefined,
       notes: notes || undefined,
       delivery_fee: Number(delivery_fee || 0),
     }),
