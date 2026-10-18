@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabase';
 export async function fetchApprovedReviews() {
   const { data, error } = await supabase
     .from('reviews')
-    .select('*, dishes(name)')
+    .select('*')
     .eq('is_approved', true)
     .order('created_at', { ascending: false });
   if (error) throw error;

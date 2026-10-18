@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import '../storefront.css';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
@@ -176,7 +176,7 @@ export default function StorefrontLayout({ children }) {
       </header>
 
       <main id="main" className="sf-main">
-        {children}
+        <Outlet />
       </main>
 
       <footer className="sf-footer" id="contact">
