@@ -1,228 +1,270 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchFeaturedDishes } from '../services/dishes.index';
-import { fetchApprovedReviews, submitReview } from '../services/reviews';
-import DishCard from '../components/DishCard';
-import ReviewCard from '../components/ReviewCard';
-import StarRating from '../components/StarRating';
-import SectionHeading from '../components/SectionHeading';
 import { useCart } from '../context/CartContext';
-import { BRAND, HOURS, CONTACT, IMAGES, HAS_PHONE } from '../config';
-import { formatMoney } from '../../lib/format';
 import { useToast } from '../../lib/context/ToastContext';
+import { PRODUCTS, findProduct, formatMoney } from '../data/products';
+import '../old-static.css';
+
+const REVIEWS_KEY = 'pistachio_reviews';
+
+const STARTER_REVIEWS = [
+  {
+    name: 'Ama Owusu',
+    role: 'Regular, Saturday brunch',
+    rating: 5,
+    quote: 'The shakshuka is unreal and the staff remember my order. My weekend does not start without this place.'
+  },
+  {
+    name: 'Kwabena Asante',
+    role: 'First-time visitor',
+    rating: 5,
+    quote: 'Walked in for coffee, stayed two hours for the brunch board. Genuinely one of the best in the city.'
+  },
+  {
+    name: 'Linda Mensah',
+    role: 'Works nearby',
+    rating: 4,
+    quote: 'My go-to for a working lunch. Would love a few more vegan dessert options, but the coffee alone keeps me coming back.'
+  }
+];
+
+function getReviews(){
+  try {
+    const stored = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
+    return Array.isArray(stored) ? [...stored, ...STARTER_REVIEWS] : STARTER_REVIEWS;
+  } catch {
+    return STARTER_REVIEWS;
+  }
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
 
 export default function Home() {
   const { add } = useCart();
   const { showToast } = useToast();
-  const [featured, setFeatured] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);  const [reviewForm, setReviewForm] = useState({ customer_name: '', rating: 0, comment: '' });
+  const [reviews, setReviews] = useState(getReviews());
+  const [reviewForm, setReviewForm] = useState({ name: '', role: '', rating: 5, quote: '' });
   const [submitting, setSubmitting] = useState(false);
-  const [formMessage, setFormMessage] = useState(null);
+  const formRef = useRef(null);
 
-  const load = useCallback(async () => {
-    let active = true;
-    setLoading(true);
-    setError(false);
-    try {
-      const [items, approved] = await Promise.all([fetchFeaturedDishes(), fetchApprovedReviews()]);
-      if (active) { setFeatured(items || []); setReviews(approved || []); }
-    } catch (e) {
-      if (active) { setError(true); setFeatured([]); setReviews([]); }
-    } finally {
-      if (active) setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    let active = true;
-    load();
-    return () => { active = false; };
-  }, [load]);
-
-  const handleStar = useCallback((n) => setReviewForm((f) => ({ ...f, rating: n })), []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFormMessage(null);
-    if (!reviewForm.customer_name.trim()) { setFormMessage({ text: 'Please enter your name.', type: 'error' }); return; }
-    if (!reviewForm.rating) { setFormMessage({ text: 'Please select a rating.', type: 'error' }); return; }
-    if (!reviewForm.comment.trim()) { setFormMessage({ text: 'Please write your review.', type: 'error' }); return; }
-    setSubmitting(true);
-    try {
-      await submitReview({
-        customer_name: reviewForm.customer_name.trim(),
-        rating: reviewForm.rating,
-        comment: reviewForm.comment.trim(),
-      });
-      setReviewForm({ customer_name: '', rating: 0, comment: '' });
-      setFormMessage({ text: 'Thank you — your review will appear once it is approved.', type: 'success' });
-      fetchApprovedReviews().then((r) => setReviews(r || []));
-    } catch (err) {
-      setFormMessage({ text: err?.message || 'Could not submit your review. Try again.', type: 'error' });
-    } finally {
-      setSubmitting(false);
-    }
+  const addToCart = (productId) => {
+    const product = findProduct(productId);
+    if (!product) return;
+    add({ id: product.id, name: product.name, price: product.price, image_url: product.image || null }, 1);
+    showToast(`${product.name} added to cart`);
   };
 
-  const addToCart = (dish) => {
-    add(dish, 1);
-    showToast(`${dish.name} added to cart`);
-  };
-
-  if (error) {
-    return (
-      <div className="sf-container">
-        <div className="sf-section">
-          <div className="sf-error" role="alert">
-            <h3>Something went wrong</h3>
-            <p>We couldn't load the content. Please try again.</p>
-            <button className="sf-btn sf-btn-primary" style={{ marginTop: 12 }} onClick={load}>
-              Try again
+  const renderFeatured = () => {
+    const categories = ['breakfast', 'brunch', 'dessert'];
+    const featured = categories.map(cat => findProduct(cat)).filter(Boolean);
+    return featured.map(p => (
+      <article key={p.id} className="old-product-card">
+        <div className="old-product-card-media">
+          <span className="old-product-tag">{p.category.charAt(0).toUpperCase() + p.category.slice(1)}</span>
+          <img
+            src={p.image}
+            alt={p.name}
+            loading="lazy"
+            onError={(e) => {
+              const media = e.currentTarget.closest('.old-product-card-media');
+              if (media) {
+                media.style.display = 'flex';
+                media.style.alignItems = 'center';
+                media.style.justifyContent = 'center';
+                const span = document.createElement('span');
+                span.textContent = 'Add photo: ' + p.image;
+                span.style.fontSize = '0.75rem';
+                span.style.color = '#8b8570';
+                span.style.padding = '0 1rem';
+                span.style.textAlign = 'center';
+                e.currentTarget.replaceWith(span);
+              }
+            }}
+          />
+        </div>
+        <div className="old-product-card-body">
+          <h3>{p.name}</h3>
+          <p>{p.desc}</p>
+          <div className="old-product-card-foot">
+            <span className="old-price">{formatMoney(p.price)}</span>
+            <button
+              className="old-add-btn"
+              onClick={() => addToCart(p.id)}
+            >
+              Add to cart
             </button>
           </div>
         </div>
-      </div>
-    );
-  }
+      </article>
+    ));
+  };
 
-  if (loading) {
-    return (
-      <div className="sf-container" style={{ paddingTop: 60 }}>
-        <div className="sf-loading">
-          <div className="sf-spinner" aria-label="Loading" />
+  const renderReviews = () => {
+    return reviews.map(r => (
+      <article key={`${r.name}-${r.rating}`} className="old-review-card">
+        <div className="old-review-stars" aria-label={`${r.rating} out of 5 stars`}>
+          {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
         </div>
-      </div>
-    );
-  }
+        <p className="old-review-quote">"{escapeHtml(r.quote)}"</p>
+        <p className="old-review-name old-mt-0">{escapeHtml(r.name)}</p>
+        <p className="old-review-role">{escapeHtml(r.role)}</p>
+      </article>
+    ));
+  };
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!reviewForm.name.trim() || !reviewForm.quote.trim()) return;
+
+    setSubmitting(true);
+    const stored = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
+    const newReview = { name: reviewForm.name.trim(), role: reviewForm.role.trim() || 'Customer', rating: reviewForm.rating, quote: reviewForm.quote.trim() };
+    stored.unshift(newReview);
+    localStorage.setItem(REVIEWS_KEY, JSON.stringify(stored));
+    setReviews([newReview, ...reviews]);
+    setReviewForm({ name: '', role: '', rating: 5, quote: '' });
+    showToast('Thanks for your review!');
+    setSubmitting(false);
+  };
+
+  const handleStar = (n) => {
+    setReviewForm((f) => ({ ...f, rating: n }));
+  };
 
   return (
-    <div className="sf-container">
-        <section className="sf-hero" aria-labelledby="hero-title">
-          <img
-            className="sf-hero-bg"
-            src={IMAGES.hero}
-            alt="Pistachio Café ambiance"
-            loading="lazy"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.heroCoffee; }}
-          />
-        <div className="sf-hero-inner">
-          <p className="sf-hero-eyebrow" id="hero-eyebrow">{BRAND.location} · {BRAND.offerings.join(' · ')}</p>
-          <h1 id="hero-title">{BRAND.name}</h1>
-          <p>{BRAND.tagline}</p>
-          <div className="sf-hero-cta">
-            <Link to="/menu" className="sf-btn sf-btn-primary">See the menu</Link>
-            <Link to="/track" className="sf-btn sf-btn-ghost">Track an order</Link>
-          </div>
-          <div className="sf-hero-info">
-            <div>
-              <strong>Opening hours</strong>
-              <span>Weekdays {HOURS.weekday.open} – {HOURS.weekday.close} · Weekends {HOURS.weekend.open} – {HOURS.weekend.close}</span>
-            </div>
-            <div>
-              <strong>Location</strong>
-              <span>{BRAND.location}</span>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="old-container">
+      <main id="main" className="old-main">
 
-      {featured.length > 0 && (
-        <section className="sf-section">
-          <SectionHeading title="Featured" subtitle="Fresh from the kitchen" />
-          <div className="sf-grid">
-            {featured.map((dish) => (
-              <DishCard key={dish.id} dish={dish} onAdd={addToCart} />
-            ))}
+        {/* ============ HERO ============ */}
+        <section className="old-hero" aria-labelledby="hero-title">
+          <div className="old-hero-inner">
+            <p className="old-hero-eyebrow">Good mornings, done properly</p>
+            <h1 id="hero-title">Breakfast, brunch, and the good kind of slow.</h1>
+            <p className="old-hero-sub">Handmade pastries, slow-brewed coffee, and plates built for lingering. Order ahead, or come sit with us a while.</p>
+            <div className="old-hero-cta">
+              <Link to="/menu" className="old-btn old-btn-accent">See the menu</Link>
+              <Link to="/about" className="old-btn old-btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>Our story</Link>
+            </div>
+            <div className="old-hero-info-strip">
+              <div><strong>7am – 4pm</strong>Tuesday to Sunday</div>
+              <div><strong>Pickup &amp; delivery</strong>Order online, ready in 20 min</div>
+              <div><strong>12 Palm Grove Ave</strong>East Legon, Accra</div>
+            </div>
           </div>
         </section>
-      )}
 
-      <section className="sf-section">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))", gap: "clamp(24px, 6vw, 48px)", alignItems: "center" }}>
-          <div>
-            <p className="sf-hero-eyebrow">About Pistachio Café</p>
-            <h2>A café in Spintex, Accra</h2>
-            <p style={{ color: 'var(--color-text-muted)', marginTop: 16 }}>
-              {BRAND.offerings.join(', ').toLowerCase()} in the heart of {BRAND.location}. {BRAND.tagline}.
-            </p>
-            <p style={{ color: 'var(--color-text-muted)', marginTop: 14 }}>
-              Open early until late — drop by for coffee, linger over dessert, or unwind with shisha.
-              Order online for pickup or delivery.
-            </p>
-            <Link to="/about" className="sf-btn sf-btn-ghost">Read more</Link>
+        {/* ============ FEATURED MENU ============ */}
+        <section className="old-section">
+          <div className="old-container">
+            <div className="old-section-head">
+              <div>
+                <h2>What's on today</h2>
+                <p>A few favourites from our breakfast, brunch, and dessert menu.</p>
+              </div>
+              <Link to="/menu" className="old-btn old-btn-outline">Full menu</Link>
+            </div>
+            <div className="old-card-grid" data-featured-grid>
+              {renderFeatured()}
+            </div>
           </div>
-          <div style={{ aspectRatio: '4 / 3', borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--color-forest)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <img src={IMAGES.about} alt="Inside Pistachio Café" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.85 }} />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="sf-section">
-        <SectionHeading title="Customer reviews" subtitle="What our guests are saying" />
-        {reviews.length === 0 ? (
-          <p style={{ color: 'var(--color-text-muted)', textAlign: 'center' }}>No reviews yet. Be the first to share your experience.</p>
-        ) : (
-          <div className="sf-review-grid">
-            {reviews.map((r) => (
-              <ReviewCard key={r.id} review={r} />
-            ))}
+        {/* ============ ABOUT TEASER ============ */}
+        <section className="old-section old-section-alt">
+          <div className="old-container old-about-intro">
+            <div>
+              <h2>A neighbourhood table, done with care</h2>
+              <p>Pistachio started as a single espresso cart and grew into a full kitchen — but the goal never changed: make people feel properly looked after over a good plate of food.</p>
+              <p>We bake daily, source from growers we know by name, and treat every table — regulars and first-timers alike — like they're the reason we opened the doors.</p>
+              <Link to="/about" className="old-btn old-btn-primary">Read our story</Link>
+            </div>
+            <div className="old-about-intro-media">
+              <img
+                src="images/about-cafe.jpg"
+                alt="Inside Pistachio Café"
+                loading="lazy"
+                onError={(e) => {
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.style.display = 'flex';
+                    parent.style.alignItems = 'center';
+                    parent.style.justifyContent = 'center';
+                    const span = document.createElement('span');
+                    span.textContent = 'Add photo: images/about-cafe.jpg';
+                    span.style.fontSize = '0.8rem';
+                    span.style.color = '#8b8570';
+                    span.style.padding = '1rem';
+                    span.style.textAlign = 'center';
+                    e.currentTarget.replaceWith(span);
+                  }
+                }}
+              />
+            </div>
           </div>
-        )}
-        <form className="sf-review-form" onSubmit={handleSubmit} aria-label="Leave a review">
-          <h3>Leave a review</h3>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', margin: '0 0 18px' }}>Share your experience — it will appear once approved.</p>
-          {formMessage && (
-            <p style={{ margin: '0 0 12px', color: formMessage.type === 'error' ? 'var(--color-error)' : 'var(--color-success)', fontSize: '0.88rem', fontWeight: 600 }}>{formMessage.text}</p>
-          )}
-          <div className="sf-field">
-            <label htmlFor="home-review-name">Name</label>
-            <input id="home-review-name" value={reviewForm.customer_name} onChange={(e) => setReviewForm((f) => ({ ...f, customer_name: e.target.value }))} placeholder="Your name" required />
-          </div>
-          <div className="sf-field">
-            <label>Rating</label>
-            <StarRating value={reviewForm.rating} onChange={handleStar} />
-          </div>
-          <div className="sf-field">
-            <label htmlFor="home-review-comment">Your review</label>
-            <textarea id="home-review-comment" value={reviewForm.comment} onChange={(e) => setReviewForm((f) => ({ ...f, comment: e.target.value }))} rows={4} placeholder="What did you enjoy?" required />
-          </div>
-          <button type="submit" className="sf-btn sf-btn-primary" disabled={submitting}>{submitting ? 'Submitting…' : 'Submit review'}</button>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.82rem', marginTop: 10 }}>Reviews are moderated before they appear.</p>
-        </form>
-      </section>
+        </section>
 
-      <section className="sf-section" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: '32px 28px' }}>
-        <SectionHeading title="Visit us" subtitle={BRAND.location} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 28 }}>
-          <div>
-            <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Opening hours</h3>
-            <p style={{ margin: 0, color: "var(--color-text-muted)" }}>Weekdays <strong>{HOURS.weekday.open} – {HOURS.weekday.close}</strong></p>
-            <p style={{ margin: "4px 0 0", color: "var(--color-text-muted)" }}>Weekends <strong>{HOURS.weekend.open} – {HOURS.weekend.close}</strong></p>
+        {/* ============ REVIEWS ============ */}
+        <section className="old-section" id="reviews">
+          <div className="old-container">
+            <div className="old-section-head">
+              <div>
+                <h2>What people are saying</h2>
+                <p>Real notes from real tables.</p>
+              </div>
+            </div>
+            <div className="old-review-grid" data-review-grid>
+              {renderReviews()}
+            </div>
+
+            <div className="old-review-form">
+              <h3>Leave a review</h3>
+              <p>Tell us what you loved, or what we could do better.</p>
+              <form onSubmit={handleReviewSubmit} data-review-form>
+                <div className="old-form-grid-2">
+                  <div className="old-form-row">
+                    <label htmlFor="rev-name">Your name</label>
+                    <input type="text" id="rev-name" name="name" required value={reviewForm.name} onChange={(e) => setReviewForm((f) => ({ ...f, name: e.target.value }))} />
+                  </div>
+                  <div className="old-form-row">
+                    <label htmlFor="rev-role">How you know us (optional)</label>
+                    <input type="text" id="rev-role" name="role" placeholder="e.g. Weekend regular" value={reviewForm.role} onChange={(e) => setReviewForm((f) => ({ ...f, role: e.target.value }))} />
+                  </div>
+                </div>
+                <div className="old-form-row">
+                  <label>Rating</label>
+                  <div className="old-star-select" data-rating-group>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        data-star={star}
+                        aria-label={`${star} star`}
+                        className={star <= reviewForm.rating ? 'is-filled' : ''}
+                        onClick={() => handleStar(star)}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                  <input type="hidden" name="rating" data-rating-value value={reviewForm.rating} />
+                </div>
+                <div className="old-form-row">
+                  <label htmlFor="rev-quote">Your review</label>
+                  <textarea id="rev-quote" name="quote" rows={3} required value={reviewForm.quote} onChange={(e) => setReviewForm((f) => ({ ...f, quote: e.target.value }))} />
+                </div>
+                <button type="submit" className="old-btn old-btn-primary" disabled={submitting}>
+                  {submitting ? 'Submitting…' : 'Submit review'}
+                </button>
+              </form>
+            </div>
           </div>
-          <div>
-            <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Location</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>{BRAND.location}</p>
-            <p style={{ margin: '4px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>TODO: exact street address pending owner confirmation.</p>
-          </div>
-          <div>
-            <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Contact</h3>
-            {HAS_PHONE && (
-              <p style={{ margin: 0, color: 'var(--color-text-muted)' }}><a href={`tel:${CONTACT.phone}`}>{CONTACT.phone}</a></p>
-            )}
-            <p style={{ margin: '4px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>TODO: confirm phone with owner.</p>
-          </div>
-        </div>
-      </section>
+        </section>
+
+      </main>
     </div>
   );
 }
-
-
-
-
-
-
-

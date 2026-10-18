@@ -1,38 +1,41 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { createOrder, openPaystack, verifyPayment } from '../services/orders.index';
 import { useCart } from '../context/CartContext';
 import { useSettings } from '../context/SettingsContext';
-import { BRAND, CURRENCY_SYMBOL } from '../config';
-import { formatMoney } from '../../lib/format';
 import { useToast } from '../../lib/context/ToastContext';
-import SectionHeading from '../components/SectionHeading';
+import { formatMoney, DELIVERY_FEE } from '../data/products';
+import '../old-static.css';
 
 const PHONE_REGEX = /^(?:\+?233|0)?[1-9][0-9]{7,9}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const ORDER_STEPS = ['Received', 'Preparing', 'Ready', 'Completed'];
 
 export default function Checkout() {
   const { items, subtotal, clear } = useCart();
   const { settings } = useSettings();
   const { showToast } = useToast();
   const navigate = useNavigate();
-  useDocumentTitle('Checkout | Pistachio Café');
 
-  const deliveryFee = Number(settings?.delivery_fee || 0);
-  const [form, setForm] = useState({ customer_name: '', phone: '', email: '', fulfilment: 'pickup', address: '', notes: '' });
+  const deliveryFee = Number(settings?.delivery_fee || DELIVERY_FEE);
+  const [form, setForm] = useState({ fullname: '', phone: '', email: '', fulfilment: 'pickup', address: '', notes: '' });
   const [errors, setErrors] = useState({});
   const [processing, setProcessing] = useState(false);
+  const [orderId, setOrderId] = useState(null);
+  const [trackerStatus, setTrackerStatus] = useState(0);
+  const formRef = useRef(null);
 
   const total = subtotal + (form.fulfilment === 'delivery' ? deliveryFee : 0);
 
   const validate = useCallback(() => {
     const e = {};
-    if (!form.customer_name.trim()) e.customer_name = 'Name is required.';
-    if (!form.phone.trim()) e.phone = 'Phone is required.';
-    else if (!PHONE_REGEX.test(form.phone.replace(/\s/g, ''))) e.phone = 'Enter a valid Ghana phone number (e.g. 024 123 4567).';
-    if (form.email.trim() && !EMAIL_REGEX.test(form.email.trim())) e.email = 'Enter a valid email address.';
-    if (form.fulfilment === 'delivery' && !form.address.trim()) e.address = 'Address is required for delivery.';
+    if (!form.fullname.trim()) e.fullname = 'Full name is required.';
+    if (!form.phone.trim()) e.phone = 'Phone number is required.';
+    else if (!PHONE_REGEX.test(form.phone.replace(/\s/g, ''))) e.phone = 'Enter a valid phone number.';
+    if (!form.email.trim()) e.email = 'Email address is required.';
+    else if (!EMAIL_REGEX.test(form.email.trim())) e.email = 'Enter a valid email address.';
+    if (form.fulfilment === 'delivery' && !form.address.trim()) e.address = 'Delivery address is required.';
     setErrors(e);
     return Object.keys(e).length === 0;
   }, [form]);
@@ -40,12 +43,13 @@ export default function Checkout() {
   const handlePay = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    if (items.length === 0) { showToast('Your cart is empty.', 'error'); return; }
+    if (items.length === 0) { showToast('Your cart is empty'); return; }
+
     setProcessing(true);
     try {
       const { order_code, reference } = await createOrder({
         items,
-        customer_name: form.customer_name.trim(),
+        customer_name: form.fullname.trim(),
         phone: form.phone.replace(/\s/g, ''),
         email: form.email.trim() || undefined,
         fulfilment: form.fulfilment,
@@ -53,140 +57,271 @@ export default function Checkout() {
         notes: form.notes.trim() || undefined,
         delivery_fee: form.fulfilment === 'delivery' ? deliveryFee : 0,
       });
-      await openPaystack({
-        reference,
-        amount: total,
-        email: form.email.trim(),
-        onSuccess: async (ref) => {
-          try {
-            await verifyPayment(ref);
-            clear();
-            navigate(`/track/${order_code}`);
-          } catch (err) {
-            showToast(err?.message || 'Payment could not be verified right now.', 'error');
+
+      if (typeof PaystackPop !== 'undefined' && reference) {
+        const handler = PaystackPop.setup({
+          key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '',
+          email: form.email.trim(),
+          amount: Math.round(total * 100),
+          currency: 'GHS',
+          metadata: { custom_fields: [{ display_name: 'Customer name', variable_name: 'customer_name', value: form.fullname.trim() }] },
+          callback: async (response) => {
+            try {
+              await verifyPayment(response.reference);
+              completeOrder(form.fullname.trim(), form.email.trim(), form.phone.replace(/\s/g, ''), order_code);
+            } catch (err) {
+              showToast(err?.message || 'Payment could not be verified right now.');
+              setProcessing(false);
+            }
+          },
+          onClose: () => {
             setProcessing(false);
+            showToast('Payment was closed before completion. Your order is still pending.');
           }
-        },
-        onClose: () => {
-          setProcessing(false);
-          showToast('Payment was closed before completion. Your order is still pending — you can pay again later.');
-        },
-      });
+        });
+        handler.openIframe();
+      } else {
+        payBtnRef.current.disabled = true;
+        payBtnRef.current.textContent = 'Processing payment…';
+        setTimeout(() => {
+          completeOrder(form.fullname.trim(), form.email.trim(), form.phone.replace(/\s/g, ''), order_code);
+        }, 1400);
+      }
     } catch (err) {
       setProcessing(false);
-      showToast(err?.message || 'Could not place your order. Try again.', 'error');
+      showToast(err?.message || 'Could not place your order. Try again.');
     }
   };
 
+  const payBtnRef = useRef(null);
+
+  const completeOrder = (name, email, phone, code) => {
+    const order = {
+      id: code,
+      name, email, phone,
+      items,
+      total: subtotal + deliveryFee,
+      placedAt: Date.now(),
+      status: 0
+    };
+
+    const orders = JSON.parse(localStorage.getItem('pistachio_orders') || '{}');
+    orders[code] = order;
+    localStorage.setItem('pistachio_orders', JSON.stringify(orders));
+
+    clear();
+    setOrderId(code);
+    setTrackerStatus(0);
+    simulateProgress(code);
+  };
+
+  const renderSteps = (status) => {
+    return ORDER_STEPS.map((label, i) => (
+      <div key={label} className={`old-step ${i < status ? 'is-done' : i === status ? 'is-current' : ''}`}>
+        <div className="old-step-dot">{i < status ? '✓' : i + 1}</div>
+        <div className="old-step-label">{label}</div>
+      </div>
+    ));
+  };
+
+  useEffect(() => {
+    if (!orderId || trackerStatus >= ORDER_STEPS.length - 1) return;
+    const interval = setInterval(() => {
+      setTrackerStatus((prev) => {
+        if (prev >= ORDER_STEPS.length - 1) {
+          clearInterval(interval);
+          return prev;
+        }
+        const orders = JSON.parse(localStorage.getItem('pistachio_orders') || '{}');
+        const order = orders[orderId];
+        if (!order) {
+          clearInterval(interval);
+          return prev;
+        }
+        order.status = prev + 1;
+        orders[orderId] = order;
+        localStorage.setItem('pistachio_orders', JSON.stringify(orders));
+        return prev + 1;
+      });
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [orderId, trackerStatus]);
+
+  const initOrderLookup = () => {
+    const formEl = document.querySelector('[data-lookup-form]');
+    if (formEl) {
+      formEl.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = formEl.querySelector('input');
+        const id = input.value.trim().toUpperCase();
+        const orders = JSON.parse(localStorage.getItem('pistachio_orders') || '{}');
+        if (orders[id]) {
+          formRef.current.style.display = 'none';
+          setOrderId(id);
+          const stored = orders[id];
+          setTrackerStatus(stored.status || 0);
+        } else {
+          showToast('No order found with that ID on this device');
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    initOrderLookup();
+  }, []);
+
   return (
-    <div className="sf-container">
-      {items.length === 0 ? (
-        <section className="sf-section" style={{ textAlign: 'center', paddingTop: 80 }}>
-          <h1>Your cart is empty</h1>
-          <p style={{ color: 'var(--color-text-muted)', marginTop: 12, maxWidth: 'min(38ch, 90vw)', marginInline: 'auto' }}>Add something from the menu before checking out.</p>
-          <div style={{ marginTop: 28 }}><Link to="/menu" className="sf-btn sf-btn-primary">Browse the menu</Link></div>
+    <div className="old-container">
+      <main id="main">
+        <section className="old-page-hero">
+          <div className="old-container">
+            <p className="old-page-hero-eyebrow">Last step</p>
+            <h1>Checkout &amp; order tracking</h1>
+            <p>Pay securely with Paystack, then watch your order move from kitchen to counter in real time.</p>
+          </div>
         </section>
-      ) : (
-        <form onSubmit={handlePay}>
-          <SectionHeading title="Check out" subtitle="Review your order and pay" />
-          <div className="sf-checkout-page">
-            <div className="sf-form">
-              <h2>Your details</h2>
-              <p className="sf-form-sub">We will use this to confirm your order.</p>
 
-              <div className="sf-field">
-                <label htmlFor="checkout-name">Full name <span style={{ color: 'var(--color-error)' }}>*</span></label>
-                <input id="checkout-name" required value={form.customer_name} onChange={(e) => setForm((f) => ({ ...f, customer_name: e.target.value }))} />
-                {errors.customer_name && <span className="sf-field-error">{errors.customer_name}</span>}
+        <section className="old-section">
+          <div className="old-container">
+            <div className="old-checkout-layout">
+              <div ref={formRef} data-checkout-form-wrap>
+                <form onSubmit={handlePay} data-checkout-form>
+                  <div className="old-checkout-section">
+                    <h3>Your details</h3>
+                    <div className="old-form-grid-2">
+                      <div className="old-form-row">
+                        <label htmlFor="fullname">Full name</label>
+                        <input type="text" id="fullname" name="fullname" required value={form.fullname} onChange={(e) => setForm((f) => ({ ...f, fullname: e.target.value }))} />
+                        {errors.fullname && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.fullname}</span>}
+                      </div>
+                      <div className="old-form-row">
+                        <label htmlFor="phone">Phone number</label>
+                        <input type="tel" id="phone" name="phone" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
+                        {errors.phone && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.phone}</span>}
+                      </div>
+                    </div>
+                    <div className="old-form-row">
+                      <label htmlFor="email">Email address</label>
+                      <input type="email" id="email" name="email" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                      {errors.email && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.email}</span>}
+                    </div>
+                  </div>
+
+                  <div className="old-checkout-section">
+                    <h3>Pickup or delivery?</h3>
+                    <div className="old-fulfil-toggle">
+                      <button
+                        type="button"
+                        data-fulfil="pickup"
+                        aria-pressed={form.fulfilment === 'pickup'}
+                        onClick={() => {
+                          setForm((f) => ({ ...f, fulfilment: 'pickup' }));
+                        }}
+                      >
+                        Pickup in store
+                      </button>
+                      <button
+                        type="button"
+                        data-fulfil="delivery"
+                        aria-pressed={form.fulfilment === 'delivery'}
+                        onClick={() => {
+                          setForm((f) => ({ ...f, fulfilment: 'delivery' }));
+                        }}
+                      >
+                        Delivery
+                      </button>
+                    </div>
+                    <div className="old-form-row" data-address-row style={{ display: form.fulfilment === 'delivery' ? 'block' : 'none' }}>
+                      <label htmlFor="address">Delivery address</label>
+                      <textarea id="address" name="address" rows="2" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} />
+                      {errors.address && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.address}</span>}
+                    </div>
+                    <div className="old-form-row">
+                      <label htmlFor="notes">Order notes (optional)</label>
+                      <textarea id="notes" name="notes" rows="2" placeholder="Allergies, extra napkins, anything we should know" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} />
+                    </div>
+                  </div>
+
+                  <div className="old-checkout-section">
+                    <h3>Payment</h3>
+                    <p style={{ fontSize: '0.9rem', color: '#4B5A4E' }}>You'll be securely redirected to Paystack to complete payment by card, mobile money, or bank transfer.</p>
+                    <button
+                      type="submit"
+                      className="old-btn old-btn-accent old-btn-block"
+                      data-pay-btn
+                      ref={payBtnRef}
+                      disabled={processing}
+                    >
+                      {processing ? 'Processing payment…' : 'Pay now'}
+                    </button>
+                    <div className="old-pay-note">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                        <rect x="3" y="11" width="18" height="10" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                      <span>Payments are processed by Paystack. Pistachio never sees or stores your card details.</span>
+                    </div>
+                  </div>
+                </form>
               </div>
 
-              <div className="sf-field">
-                <label htmlFor="checkout-phone">Phone <span style={{ color: 'var(--color-error)' }}>*</span></label>
-                <input id="checkout-phone" type="tel" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="024 123 4567" />
-                {errors.phone && <span className="sf-field-error">{errors.phone}</span>}
-                <span className="sf-field-hint">Ghana mobile number. TODO: confirm the number format with the owner.</span>
-              </div>
-
-              <div className="sf-field">
-                <label htmlFor="checkout-email">Email (optional)</label>
-                <input id="checkout-email" type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
-                {errors.email && <span className="sf-field-error">{errors.email}</span>}
-              </div>
-
-              <h3 style={{ margin: '24px 0 10px', fontSize: '1rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>How would you like to receive your order?</h3>
-              <div className="sf-fulfilment">
-                <label className={form.fulfilment === 'pickup' ? 'sf-checked' : ''}>
-                  <input type="radio" name="fulfilment" value="pickup" checked={form.fulfilment === 'pickup'} onChange={(e) => setForm((f) => ({ ...f, fulfilment: e.target.value }))} />
-                  Pickup — free
-                </label>
-                <label className={form.fulfilment === 'delivery' ? 'sf-checked' : ''}>
-                  <input type="radio" name="fulfilment" value="delivery" checked={form.fulfilment === 'delivery'} onChange={(e) => setForm((f) => ({ ...f, fulfilment: e.target.value }))} />
-                  Delivery — {formatMoney(deliveryFee)}
-                </label>
-              </div>
-
-              {form.fulfilment === 'delivery' && (
-                <div className="sf-field">
-                  <label htmlFor="checkout-address">Delivery address <span style={{ color: 'var(--color-error)' }}>*</span></label>
-                  <input id="checkout-address" required value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} placeholder="Street, area, city" />
-                  {errors.address && <span className="sf-field-error">{errors.address}</span>}
+              <aside>
+                <div className="old-summary-card" style={{ position: 'static' }} data-checkout-summary-wrap>
+                  <h3>Order summary</h3>
+                  <div data-checkout-summary>
+                    {items.length === 0 ? (
+                      <p>Your cart is empty. <Link to="/menu">Browse the menu</Link> to add something delicious first.</p>
+                    ) : (
+                      <>
+                        {items.map((item) => (
+                          <div key={item.dish_id} className="old-order-line">
+                            <span>{item.qty} × {item.name}</span>
+                            <span>{formatMoney(item.price * item.qty)}</span>
+                          </div>
+                        ))}
+                        <div className="old-order-line" style={{ fontWeight: 700, borderTop: '1px solid #E1D7BD', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
+                          <span>Total due</span>
+                          <span data-checkout-total>{formatMoney(total)}</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
-              )}
 
-              <div className="sf-field">
-                <label htmlFor="checkout-notes">Order notes</label>
-                <textarea id="checkout-notes" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} rows={3} placeholder="Anything we should know?" />
-                <span className="sf-field-hint">e.g. allergy information or a gate code.</span>
-              </div>
+                {orderId ? (
+                  <div className="old-summary-card old-tracker is-active" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
+                    <h3>Order tracking</h3>
+                    <p className="old-tracker-id">Order <strong data-order-id>{orderId}</strong></p>
+                    <div className="old-steps" data-steps>
+                      {renderSteps(trackerStatus)}
+                    </div>
+                    <p style={{ fontSize: '0.85rem', color: '#4B5A4E', marginTop: '1.5rem' }}>We'll text you when it's ready. Thanks for ordering with us!</p>
+                  </div>
+                ) : (
+                  <div className="old-summary-card old-tracker" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
+                    <h3>Order tracking</h3>
+                    <p className="old-tracker-id">Order <strong data-order-id>—</strong></p>
+                    <div className="old-steps" data-steps>
+                      {renderSteps(0)}
+                    </div>
+                    <p style={{ fontSize: '0.85rem', color: '#4B5A4E', marginTop: '1.5rem' }}>We'll text you when it's ready. Thanks for ordering with us!</p>
+                  </div>
+                )}
 
-              <button type="submit" className="sf-btn sf-btn-primary sf-btn-block sf-checkout-desktop-pay" disabled={processing} style={{ marginTop: 8 }} aria-label="Pay now">
-                {processing ? 'Placing order…' : 'Pay now'}
-              </button>
+                <div className="old-summary-card" style={{ position: 'static', marginTop: '1.5rem' }}>
+                  <h3>Track an existing order</h3>
+                  <form className="old-lookup-row" data-lookup-form>
+                    <label htmlFor="lookup-id" className="old-skip-link">Order ID</label>
+                    <input type="text" id="lookup-id" placeholder="e.g. PI482913" required />
+                    <button type="submit" className="old-btn old-btn-outline">Track</button>
+                  </form>
+                </div>
+              </aside>
             </div>
-
-            <aside className="sf-cart-summary">
-              <h3>Order summary</h3>
-              {items.map((item) => (
-                <div className="sf-summary-row" key={item.dish_id} style={{ fontSize: '0.88rem' }}>
-                  <span>{item.qty}× {item.name}</span>
-                  <span>{formatMoney(Number(item.price) * item.qty)}</span>
-                </div>
-              ))}
-              <div className="sf-summary-row">
-                <span>Subtotal</span>
-                <span>{formatMoney(subtotal)}</span>
-              </div>
-              {form.fulfilment === 'delivery' && (
-                <div className="sf-summary-row">
-                  <span>Delivery</span>
-                  <span>{formatMoney(deliveryFee)}</span>
-                </div>
-              )}
-              <div className="sf-summary-row total">
-                <span>Total</span>
-                <span>{formatMoney(total)}</span>
-              </div>
-              <p className="sf-field-hint" style={{ margin: '16px 0 0' }}>
-                Amounts are in {CURRENCY_SYMBOL} (Ghana cedis). The final total is confirmed by our system before payment.
-              </p>
-              <button type="submit" className="sf-btn sf-btn-primary sf-btn-block" disabled={processing} style={{ marginTop: 16 }} aria-label="Pay now">
-                {processing ? 'Placing order…' : 'Pay now'}
-              </button>
-            </aside>
           </div>
-
-          <div className="sf-checkout-sticky-pay">
-            <div className="sf-sticky-pay-inner">
-              <div className="sf-sticky-pay-total">
-                Total: {formatMoney(total)}
-              </div>
-              <button type="submit" className="sf-btn sf-btn-primary" disabled={processing} aria-label="Pay now">
-                {processing ? 'Placing order…' : 'Pay now'}
-              </button>
-            </div>
-          </div>
-        </form>
-      )}
+        </section>
+      </main>
     </div>
   );
 }

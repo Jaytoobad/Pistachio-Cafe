@@ -1,86 +1,187 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
-import { BRAND, HOURS, CONTACT, IMAGES, HAS_PHONE } from '../config';
-import { formatMoney } from '../../lib/format';
-import { useSettings } from '../context/SettingsContext';
+import '../old-static.css';
 
 export default function About() {
-  const { settings } = useSettings();
-  const deliveryFee = Number(settings?.delivery_fee || 0);
-  useDocumentTitle('About | Pistachio Café');
-
   return (
-    <div className="sf-container">
-      <section className="sf-section">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center' }}>
-          <div>
-            <p className="sf-hero-eyebrow">About us</p>
-            <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>A café in Spintex, Accra</h1>
-            <p style={{ color: 'var(--color-text-muted)', marginTop: 16 }}>
-              Pistachio Café serves {BRAND.offerings.join(', ').toLowerCase()} in the heart of {BRAND.location}.
-              Our tagline says it all: <strong>{BRAND.tagline}</strong>.
-            </p>
-            <p style={{ color: 'var(--color-text-muted)', marginTop: 14 }}>
-              We open early and stay late, so you can drop by for coffee before work, linger over
-              dessert after dinner, or unwind with shisha in the evening. Order online for pickup,
-              or get it delivered to your door.
-            </p>
-            <div style={{ marginTop: 28, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <Link to="/menu" className="sf-btn sf-btn-primary">See the menu</Link>
-              <Link to="/track" className="sf-btn sf-btn-ghost">Track an order</Link>
+    <div className="old-container">
+      <main id="main">
+        <section className="old-page-hero">
+          <div className="old-container">
+            <p className="old-page-hero-eyebrow">Our story</p>
+            <h1>Slow food, made by people who care about the details</h1>
+            <p>Pistachio began in 2019 as a three-table espresso bar. Today we're a full kitchen, but we've kept the same rule: everything is made like it's for someone we know.</p>
+          </div>
+        </section>
+
+        <section className="old-section">
+          <div className="old-container old-about-intro">
+            <div>
+              <h2>What we're working toward</h2>
+              <p>We're not chasing being the biggest café in Accra — we're chasing being the one people trust with their mornings.</p>
+              <ul className="old-goal-list">
+                <li>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                    <path d="M12 2v20M2 12h20" />
+                  </svg>
+                  <div>
+                    <strong>Source honestly</strong>
+                    <p>Work directly with local farms and roasters, and always know exactly where our ingredients come from.</p>
+                  </div>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <div>
+                    <strong>Cut food waste in half</strong>
+                    <p>Plan our daily bakes around real demand, and turn surplus into staff meals and community donations.</p>
+                  </div>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                  <div>
+                    <strong>Grow our own team</strong>
+                    <p>Train from within — most of our senior kitchen staff started as apprentices in this very building.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div className="old-about-intro-media">
+              <img
+                src="images/about-team.jpg"
+                alt="The Pistachio kitchen team"
+                loading="lazy"
+                onError={(e) => {
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.style.display = 'flex';
+                    parent.style.alignItems = 'center';
+                    parent.style.justifyContent = 'center';
+                    const span = document.createElement('span');
+                    span.textContent = 'Add photo: images/about-team.jpg';
+                    span.style.fontSize = '0.8rem';
+                    span.style.color = '#8b8570';
+                    span.style.padding = '1rem';
+                    span.style.textAlign = 'center';
+                    e.currentTarget.replaceWith(span);
+                  }
+                }}
+              />
             </div>
           </div>
-          <div style={{ aspectRatio: '4 / 3', borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--color-forest)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <img src={IMAGES.about} alt="Inside Pistachio Café" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }} />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="sf-section">
-        <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 1.9rem)', marginBottom: 20 }}>What we offer</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
-          {[
-            { title: 'Coffee', desc: 'Slow-brewed and carefully poured.' },
-            { title: 'Desserts', desc: 'Handmade every morning.' },
-            { title: 'Shisha', desc: 'Relax and unwind after hours.' },
-            { title: 'Events', desc: 'Ask about hosting your gathering with us.' },
-          ].map((item) => (
-            <div key={item.title} style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 20 }}>
-              <h3 style={{ margin: '0 0 6px', fontSize: '1.15rem' }}>{item.title}</h3>
-              <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>{item.desc}</p>
+        <section className="old-section old-section-alt">
+          <div className="old-container">
+            <div className="old-section-head">
+              <div>
+                <h2>Where we've gotten to so far</h2>
+                <p>A few numbers we're proud of.</p>
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+            <div className="old-stat-strip">
+              <div>
+                <span className="old-stat-num">6</span>
+                <span className="old-stat-label">years serving the neighbourhood</span>
+              </div>
+              <div>
+                <span className="old-stat-num">40k+</span>
+                <span className="old-stat-label">plates served last year</span>
+              </div>
+              <div>
+                <span className="old-stat-num">12</span>
+                <span className="old-stat-label">local farms &amp; roasters we work with</span>
+              </div>
+              <div>
+                <span className="old-stat-num">4.8★</span>
+                <span className="old-stat-label">average customer rating</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      <section className="sf-section" style={{ background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', padding: '32px 28px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '28px' }}>
-          <div>
-            <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Opening hours</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>Weekdays <strong>{HOURS.weekday.open} – {HOURS.weekday.close}</strong></p>
-            <p style={{ margin: '4px 0 0', color: 'var(--color-text-muted)' }}>Weekends <strong>{HOURS.weekend.open} – {HOURS.weekend.close}</strong></p>
+        <section className="old-section">
+          <div className="old-container">
+            <div className="old-section-head">
+              <div>
+                <h2>What we hold onto</h2>
+                <p>The things that don't change as we grow.</p>
+              </div>
+            </div>
+            <div className="old-value-grid">
+              <div className="old-value-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                  <path d="M12 21C7 17 3 13.5 3 9.5A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9 3.5c0 4-4 7.5-9 11.5z" />
+                </svg>
+                <h3>Hospitality first</h3>
+                <p>Every plate leaves the kitchen the way we'd want to receive it ourselves — warm, unhurried, and generous.</p>
+              </div>
+              <div className="old-value-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v5l3 3" />
+                </svg>
+                <h3>Made fresh, not fast</h3>
+                <p>We'd rather you wait a few extra minutes than eat something that was made in advance and reheated.</p>
+              </div>
+              <div className="old-value-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                  <path d="M3 3v18h18M18.4 8.4l-5 5-3-3-4 4" />
+                </svg>
+                <h3>Honest sourcing</h3>
+                <p>We name the farms our produce comes from, because you deserve to know what you're eating and who made it.</p>
+              </div>
+              <div className="old-value-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                  <path d="M12 2 3 7v6c0 5 4 8.5 9 9 5-.5 9-4 9-9V7l-9-5z" />
+                </svg>
+                <h3>A place for everyone</h3>
+                <p>Solo laptop mornings, big family brunches, first dates — every table gets the same care.</p>
+              </div>
+            </div>
           </div>
-          <div>
-            <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Location</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>{BRAND.location}</p>
-            <p style={{ margin: '4px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>TODO: exact street address pending owner confirmation.</p>
+        </section>
+
+        <section className="old-section old-section-alt">
+          <div className="old-container" style={{ maxWidth: 760 }}>
+            <div className="old-section-head">
+              <div>
+                <h2>A few common questions</h2>
+              </div>
+            </div>
+            <details className="old-faq-item" open>
+              <summary>Do you take reservations?</summary>
+              <p>We hold a handful of tables for walk-ins every day, but for groups of 5 or more we recommend calling ahead so we can seat you comfortably.</p>
+            </details>
+            <details className="old-faq-item">
+              <summary>Can you accommodate allergies or dietary needs?</summary>
+              <p>Yes — most of our menu can be adapted. Add a note at checkout or let your server know, and our kitchen will take it from there.</p>
+            </details>
+            <details className="old-faq-item">
+              <summary>Do you deliver outside East Legon?</summary>
+              <p>Right now we deliver within a 6km radius of the café. Enter your address at checkout and we'll let you know if you're in range.</p>
+            </details>
+            <details className="old-faq-item">
+              <summary>Is parking available?</summary>
+              <p>There's free parking directly behind the building, with space for about 15 cars.</p>
+            </details>
           </div>
-          <div>
-            <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Order online</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
-              Pickup is free. Delivery is {deliveryFee > 0 ? formatMoney(deliveryFee) : 'free'}.
-            </p>
-            <p style={{ margin: '4px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-              TODO: confirm delivery fee with owner if it differs from settings.
-            </p>
+        </section>
+
+        <section className="old-section old-text-center">
+          <div className="old-container">
+            <h2>Come see us, or order in</h2>
+            <p style={{ margin: '0 auto 1.5rem' }}>Whichever way you'd rather have your morning, we've got you.</p>
+            <div className="old-hero-cta" style={{ justifyContent: 'center' }}>
+              <Link to="/menu" className="old-btn old-btn-accent">Order online</Link>
+              <Link to="/" className="old-btn old-btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>Get directions</Link>
+            </div>
           </div>
-        </div>
-        <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <Link to="/menu" className="sf-btn sf-btn-primary">Order now</Link>
-          {HAS_PHONE && <a href={`tel:${CONTACT.phone}`} className="sf-btn sf-btn-ghost">Call us</a>}
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }

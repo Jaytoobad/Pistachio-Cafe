@@ -1,77 +1,144 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { useCart } from '../context/CartContext';
-import QuantityStepper from '../components/QuantityStepper';
-import { formatMoney } from '../../lib/format';
-import { IMAGES } from '../config';
+import { useToast } from '../../lib/context/ToastContext';
+import { formatMoney } from '../data/products';
+import '../old-static.css';
 
 export default function Cart() {
   const { items, updateQty, remove, subtotal, count } = useCart();
-  useDocumentTitle('Cart | Pistachio Café');
+  const { showToast } = useToast();
+
+  const deliveryFee = 10.00;
+  const total = subtotal + (subtotal > 0 ? deliveryFee : 0);
 
   if (items.length === 0) {
     return (
-      <div className="sf-container">
-        <section className="sf-section" style={{ textAlign: 'center', paddingTop: 80 }}>
-          <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)' }}>Your cart is empty</h1>
-          <p style={{ color: 'var(--color-text-muted)', marginTop: 12, maxWidth: '38ch', marginInline: 'auto' }}>
-            Browse the menu and add something delicious. Pickup is free and orders are ready in about 20 minutes.
-          </p>
-          <div style={{ marginTop: 28 }}>
-            <Link to="/menu" className="sf-btn sf-btn-primary">Browse the menu</Link>
-          </div>
-        </section>
+      <div className="old-container">
+        <main id="main">
+          <section className="old-page-hero">
+            <div className="old-container">
+              <p className="old-page-hero-eyebrow">Almost there</p>
+              <h1>Your cart</h1>
+              <p>Double check what you're ordering, then head to checkout.</p>
+            </div>
+          </section>
+          <section className="old-section">
+            <div className="old-container">
+              <div className="old-empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+                <h3>Your cart is empty</h3>
+                <p>Looks like you haven't added anything yet.</p>
+                <Link to="/menu" className="old-btn old-btn-accent">Browse the menu</Link>
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="sf-container">
-      <section className="sf-section">
-        <div className="sf-section-head">
-          <div>
-            <h2>Your cart</h2>
-            <p>{count} item{count === 1 ? '' : 's'} — {items.length} dish{items.length === 1 ? '' : 's'}</p>
+    <div className="old-container">
+      <main id="main">
+        <section className="old-page-hero">
+          <div className="old-container">
+            <p className="old-page-hero-eyebrow">Almost there</p>
+            <h1>Your cart</h1>
+            <p>Double check what you're ordering, then head to checkout.</p>
           </div>
-          <Link to="/menu" className="sf-btn sf-btn-ghost">Continue shopping</Link>
-        </div>
+        </section>
 
-        <div className="sf-cart-page">
-          <div className="sf-cart-items">
-            {items.map((item) => (
-              <div key={item.dish_id} className="sf-cart-line">
-                <img src={item.image_url || IMAGES.placeholder} alt={item.name} className="sf-cart-line-img" />
-                <div className="sf-cart-line-body">
-                  <div className="sf-cart-line-name">{item.name}</div>
-                  <div className="sf-cart-line-price">{formatMoney(item.price)} each</div>
-                  <QuantityStepper value={item.qty} onChange={(q) => updateQty(item.dish_id, q)} />
+        <section className="old-section">
+          <div className="old-container">
+            <div className="old-cart-layout">
+              <div>
+                <div data-cart-list>
+                  {items.map((item) => (
+                    <div key={item.dish_id} className="old-cart-item" data-item={item.dish_id}>
+                      <div className="old-cart-item-media">
+                        <img
+                          src={item.image_url || '/images/placeholder-cup-pistachios.jpg'}
+                          alt=""
+                          loading="lazy"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      </div>
+                      <div>
+                        <p className="old-cart-item-name old-mt-0">{item.name}</p>
+                        <p className="old-cart-item-cat old-mt-0">{formatMoney(item.price)} each</p>
+                        <button
+                          className="old-cart-item-remove"
+                          onClick={() => {
+                            remove(item.dish_id);
+                            showToast('Item removed');
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <div className="old-cart-item-right">
+                        <span className="old-cart-item-total">{formatMoney(item.price * item.qty)}</span>
+                        <div className="old-qty-stepper">
+                          <button
+                            type="button"
+                            aria-label="Decrease quantity"
+                            onClick={() => {
+                              if (item.qty <= 1) {
+                                remove(item.dish_id);
+                              } else {
+                                updateQty(item.dish_id, item.qty - 1);
+                              }
+                            }}
+                          >
+                            −
+                          </button>
+                          <span>{item.qty}</span>
+                          <button
+                            type="button"
+                            aria-label="Increase quantity"
+                            onClick={() => updateQty(item.dish_id, item.qty + 1)}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <button className="sf-remove" onClick={() => remove(item.dish_id)}>Remove</button>
               </div>
-            ))}
+              <aside className="old-summary-card" data-cart-summary>
+                <h3>Order summary</h3>
+                <div className="old-summary-row">
+                  <span>Subtotal</span>
+                  <span data-subtotal>{formatMoney(subtotal)}</span>
+                </div>
+                <div className="old-summary-row">
+                  <span>Delivery / service fee</span>
+                  <span data-delivery>{formatMoney(deliveryFee)}</span>
+                </div>
+                <div className="old-promo-row">
+                  <input type="text" placeholder="Promo code" aria-label="Promo code" />
+                  <button type="button" onClick={() => showToast('Promo codes coming soon')}>
+                    Apply
+                  </button>
+                </div>
+                <div className="old-summary-row total">
+                  <span>Total</span>
+                  <span data-total>{formatMoney(total)}</span>
+                </div>
+                <Link to="/checkout" className="old-btn old-btn-primary old-btn-block" style={{ marginTop: '1rem' }}>
+                  Proceed to checkout
+                </Link>
+              </aside>
+            </div>
           </div>
-
-          <aside className="sf-cart-summary">
-            <h3>Order summary</h3>
-            <div className="sf-summary-row">
-              <span>Subtotal</span>
-              <span>{formatMoney(subtotal)}</span>
-            </div>
-            <p className="sf-field-hint" style={{ margin: '0 0 16px' }}>
-              Delivery fee is added at checkout, based on the settings in the admin panel.
-            </p>
-            <div className="sf-summary-row total">
-              <span>Total</span>
-              <span>{formatMoney(subtotal)}</span>
-            </div>
-            <Link to="/checkout" className="sf-btn sf-btn-primary sf-btn-block" style={{ marginTop: 20 }}>
-              Proceed to checkout
-            </Link>
-          </aside>
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 }
-

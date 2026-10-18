@@ -1,145 +1,204 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
-import { fetchMenu, fetchAvailableDishes } from '../services/dishes.index';
-import DishCard from '../components/DishCard';
-import DishModal from '../components/DishModal';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
-import { formatMoney } from '../../lib/format';
-import { SkeletonGrid } from '../../lib/components/Skeleton';
+import { PRODUCTS, findProduct, formatMoney, CATEGORIES } from '../data/products';
+import '../old-static.css';
+
+const FILTERS = [
+  { label: 'All', value: 'all' },
+  { label: 'Breakfast', value: 'breakfast' },
+  { label: 'Brunch', value: 'brunch' },
+  { label: 'Dessert', value: 'dessert' },
+];
+
+function capitalize(s){
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function escapeAttr(s){
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
 
 export default function Menu() {
-  const [menus, setMenus] = useState([]);
-  const [dishes, setDishes] = useState([]);
-  const [activeMenu, setActiveMenu] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [selectedDish, setSelectedDish] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { add, count, subtotal } = useCart();
+  const { add } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();
-  useDocumentTitle('Menu | Pistachio Café');
+  const [searchParams] = useSearchParams();
+  const [category, setCategory] = useState(searchParams.get('category') || 'all');
+  const [activeFilter, setActiveFilter] = useState(category);
+  const productGridRef = useRef(null);
 
-  const load = async () => {
-    setLoading(true);
-    setError(false);
-    try {
-      const [sections, items] = await Promise.all([fetchMenu(), fetchAvailableDishes()]);
-      setMenus(sections);
-      setDishes(items);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
+  const renderProducts = useCallback((cat) => {
+    const grid = productGridRef.current;
+    if (!grid) return;
+    const items = cat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === cat);
+    if (items.length === 0) {
+      grid.innerHTML = '<p>No items in this category yet — check back soon.</p>';
+      return;
     }
+    grid.innerHTML = items.map(p => `
+      <article class="old-product-card">
+        <div class="old-product-card-media">
+          <span class="old-product-tag">${capitalize(p.category)}</span>
+          <img src="${p.image}" alt="${escapeAttr(p.name)}" loading="lazy"
+            onerror="this.closest('.old-product-card-media').style.display='flex';this.closest('.old-product-card-media').style.alignItems='center';this.closest('.old-product-card-media').style.justifyContent='center';this.replaceWith(Object.assign(document.createElement('span'),{textContent:'Add photo: ${escapeAttr(p.image)}',style:'font-size:0.75rem;color:#8b8570;padding:0 1rem;text-align:center'}))">
+        </div>
+        <div class="old-product-card-body">
+          <h3>${escapeAttr(p.name)}</h3>
+          <p>${escapeAttr(p.desc)}</p>
+          <div class="old-product-card-foot">
+            <span class="old-price">${formatMoney(p.price)}</span>
+            <button class="old-add-btn" data-add="${p.id}">Add to cart</button>
+          </div>
+        </div>
+      </article>
+    `).join('');
+
+    grid.querySelectorAll('[data-add]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.add;
+        add(findProduct(id), 1);
+        const original = btn.textContent;
+        btn.textContent = 'Added ✓';
+        btn.classList.add('is-added');
+        const product = findProduct(id);
+        if (product) showToast(`${product.name} added to cart`);
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('is-added');
+        }, 1200);
+      });
+    });
+  }, [add, showToast]);
+
+  useEffect(() => {
+    renderProducts(category);
+  }, [category, renderProducts]);
+
+  const handleFilter = (value) => {
+    setActiveFilter(value);
+    setCategory(value);
+    navigate(`?category=${value === 'all' ? '' : value}`, { replace: true });
   };
 
-  useEffect(() => { load(); }, []);
-
-  const filtered = activeMenu ? dishes.filter((d) => d.menu_id === activeMenu) : dishes;
-
-  if (loading) {
-    return (
-      <div className="sf-container">
-        <div className="sf-section">
-          <div className="sf-section-head"><div><h2>Menu</h2></div></div>
-          <Skeleton count={6} />
-        </div>
-      </div>
-    );
-  }
-  if (error) {
-    return (
-      <div className="sf-container">
-        <div className="sf-section">
-          <div className="sf-error">Could not load the menu. <button className="sf-btn sf-btn-primary" style={{ marginTop: 12 }} onClick={load}>Try again</button></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="sf-container">
-      <section className="sf-section">
-        <div className="sf-section-head">
-          <div>
-            <h2>Our menu</h2>
-            <p>Available for pickup and delivery today.</p>
+    <div className="old-container">
+      <main id="main">
+        <section className="old-page-hero">
+          <div className="old-container">
+            <p className="old-page-hero-eyebrow">The full spread</p>
+            <h1>Breakfast, brunch &amp; dessert</h1>
+            <p>Everything's made fresh in-house. Add whatever catches your eye — you can review your order before you pay.</p>
           </div>
-        </div>
+        </section>
 
-        <div className="sf-tabs" role="tablist">
-          <button
-            type="button"
-            className={`sf-tab ${activeMenu === null ? 'active' : ''}`}
-            onClick={() => setActiveMenu(null)}
-          >
-            All
-          </button>
-          {menus.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              className={`sf-tab ${activeMenu === c.id ? 'active' : ''}`}
-              onClick={() => setActiveMenu(c.id)}
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
-
-        {filtered.length === 0 ? (
-          <div className="sf-empty">
-            <h3>Nothing available right now</h3>
-            <p>Check back soon — we restock the menu daily.</p>
+        <section className="old-section">
+          <div className="old-container">
+            <div className="old-filter-row">
+              {FILTERS.map((f) => (
+                <button
+                  key={f.value}
+                  className="old-filter-pill"
+                  aria-pressed={activeFilter === f.value}
+                  onClick={() => handleFilter(f.value)}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+            <div className="old-card-grid" data-product-grid ref={productGridRef}>
+              {category === 'all' ? PRODUCTS.map(p => (
+                <article key={p.id} className="old-product-card">
+                  <div className="old-product-card-media">
+                    <span className="old-product-tag">{capitalize(p.category)}</span>
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      loading="lazy"
+                      onError={(e) => {
+                        const media = e.currentTarget.closest('.old-product-card-media');
+                        if (media) {
+                          media.style.display = 'flex';
+                          media.style.alignItems = 'center';
+                          media.style.justifyContent = 'center';
+                          const span = document.createElement('span');
+                          span.textContent = 'Add photo: ' + p.image;
+                          span.style.fontSize = '0.75rem';
+                          span.style.color = '#8b8570';
+                          span.style.padding = '0 1rem';
+                          span.style.textAlign = 'center';
+                          e.currentTarget.replaceWith(span);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="old-product-card-body">
+                    <h3>{p.name}</h3>
+                    <p>{p.desc}</p>
+                    <div className="old-product-card-foot">
+                      <span className="old-price">{formatMoney(p.price)}</span>
+                      <button
+                        className="old-add-btn"
+                        onClick={() => {
+                          add(p, 1);
+                          showToast(`${p.name} added to cart`);
+                        }}
+                      >
+                        Add to cart
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              )) : PRODUCTS.filter(p => p.category === category).map(p => (
+                <article key={p.id} className="old-product-card">
+                  <div className="old-product-card-media">
+                    <span className="old-product-tag">{capitalize(p.category)}</span>
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      loading="lazy"
+                      onError={(e) => {
+                        const media = e.currentTarget.closest('.old-product-card-media');
+                        if (media) {
+                          media.style.display = 'flex';
+                          media.style.alignItems = 'center';
+                          media.style.justifyContent = 'center';
+                          const span = document.createElement('span');
+                          span.textContent = 'Add photo: ' + p.image;
+                          span.style.fontSize = '0.75rem';
+                          span.style.color = '#8b8570';
+                          span.style.padding = '0 1rem';
+                          span.style.textAlign = 'center';
+                          e.currentTarget.replaceWith(span);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="old-product-card-body">
+                    <h3>{p.name}</h3>
+                    <p>{p.desc}</p>
+                    <div className="old-product-card-foot">
+                      <span className="old-price">{formatMoney(p.price)}</span>
+                      <button
+                        className="old-add-btn"
+                        onClick={() => {
+                          add(p, 1);
+                          showToast(`${p.name} added to cart`);
+                        }}
+                      >
+                        Add to cart
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
-        ) : (
-          <div className="sf-grid">
-            {filtered.map((dish) => (
-              <DishCard
-                key={dish.id}
-                dish={dish}
-                onAdd={(dish, qty) => {
-                  add(dish, qty);
-                  showToast(`${dish.name} added to cart`);
-                }}
-                onQuickView={(dish) => {
-                  setSelectedDish(dish);
-                  setIsModalOpen(true);
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {count > 0 && (
-        <div className="sf-sticky-cart-bar">
-          <div className="sf-sticky-info">
-            <span className="sf-sticky-items">{count} item{count === 1 ? '' : 's'} in cart</span>
-            <span className="sf-sticky-total">{formatMoney(subtotal)}</span>
-          </div>
-          <button
-            type="button"
-            className="sf-btn sf-btn-primary"
-            onClick={() => navigate('/cart')}
-          >
-            View cart
-          </button>
-        </div>
-      )}
-
-      <DishModal
-        dish={selectedDish}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onAdd={(dish, qty) => {
-          add(dish, qty);
-          showToast(`${dish.name} added to cart`);
-        }}
-      />
+        </section>
+      </main>
     </div>
   );
 }
