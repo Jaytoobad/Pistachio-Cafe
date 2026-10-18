@@ -1,37 +1,24 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { PRODUCTS, findProduct, formatMoney } from '../data/products';
+import { BRAND } from '../config';
+import { STARTER_REVIEWS } from '../data/content';
 import '../old-static.css';
 
 const REVIEWS_KEY = 'pistachio_reviews';
 
-const STARTER_REVIEWS = [
-  {
-    name: 'Ama Owusu',
-    role: 'Regular, Saturday brunch',
-    rating: 5,
-    quote: 'The shakshuka is unreal and the staff remember my order. My weekend does not start without this place.'
-  },
-  {
-    name: 'Kwabena Asante',
-    role: 'First-time visitor',
-    rating: 5,
-    quote: 'Walked in for coffee, stayed two hours for the brunch board. Genuinely one of the best in the city.'
-  },
-  {
-    name: 'Linda Mensah',
-    role: 'Works nearby',
-    rating: 4,
-    quote: 'My go-to for a working lunch. Would love a few more vegan dessert options, but the coffee alone keeps me coming back.'
-  }
-];
+// STARTER_REVIEWS (../data/content.js) are SAMPLE reviews — invented for demo
+// purposes only. They are labelled `sample: true` and render ONLY in demo
+// mode, i.e. when no approved (real, user-submitted) reviews exist yet.
 
 function getReviews(){
   try {
     const stored = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
-    return Array.isArray(stored) ? [...stored, ...STARTER_REVIEWS] : STARTER_REVIEWS;
+    // Demo mode: no approved reviews exist yet → show the sample starter set.
+    if (!Array.isArray(stored) || stored.length === 0) return STARTER_REVIEWS;
+    return stored;
   } catch {
     return STARTER_REVIEWS;
   }
@@ -104,14 +91,15 @@ export default function Home() {
   };
 
   const renderReviews = () => {
-    return reviews.map(r => (
-      <article key={`${r.name}-${r.rating}`} className="old-review-card">
+    return reviews.map((r, idx) => (
+      <article key={`${r.name}-${r.rating}-${idx}`} className="old-review-card">
         <div className="old-review-stars" aria-label={`${r.rating} out of 5 stars`}>
           {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
         </div>
         <p className="old-review-quote">"{escapeHtml(r.quote)}"</p>
         <p className="old-review-name old-mt-0">{escapeHtml(r.name)}</p>
         <p className="old-review-role">{escapeHtml(r.role)}</p>
+        {r.sample && <p className="old-review-role" style={{ fontStyle: 'italic', opacity: 0.6 }}>Sample review — for demo purposes only</p>}
       </article>
     ));
   };
@@ -150,9 +138,9 @@ export default function Home() {
               <Link to="/about" className="old-btn old-btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>Our story</Link>
             </div>
             <div className="old-hero-info-strip">
-              <div><strong>7am – 4pm</strong>Tuesday to Sunday</div>
+              <div><strong>Mon–Fri 8AM–11PM · Sat–Sun 8AM–12AM</strong>Opening hours</div>
               <div><strong>Pickup &amp; delivery</strong>Order online, ready in 20 min</div>
-              <div><strong>12 Palm Grove Ave</strong>East Legon, Accra</div>
+              <div><strong>{BRAND.location}</strong></div>
             </div>
           </div>
         </section>

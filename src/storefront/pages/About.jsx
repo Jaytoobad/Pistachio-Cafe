@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { BRAND } from '../config';
+import { ABOUT_HERO, ABOUT_STATS, ABOUT_FAQ_DELIVERY } from '../data/content';
 import '../old-static.css';
 
 export default function About() {
@@ -8,9 +10,9 @@ export default function About() {
       <main id="main">
         <section className="old-page-hero">
           <div className="old-container">
-            <p className="old-page-hero-eyebrow">Our story</p>
-            <h1>Slow food, made by people who care about the details</h1>
-            <p>Pistachio began in 2019 as a three-table espresso bar. Today we're a full kitchen, but we've kept the same rule: everything is made like it's for someone we know.</p>
+            <p className="old-page-hero-eyebrow">{ABOUT_HERO.eyebrow}</p>
+            <h1>{ABOUT_HERO.heading}</h1>
+            <p>{ABOUT_HERO.body}</p>
           </div>
         </section>
 
@@ -83,22 +85,13 @@ export default function About() {
               </div>
             </div>
             <div className="old-stat-strip">
-              <div>
-                <span className="old-stat-num">6</span>
-                <span className="old-stat-label">years serving the neighbourhood</span>
-              </div>
-              <div>
-                <span className="old-stat-num">40k+</span>
-                <span className="old-stat-label">plates served last year</span>
-              </div>
-              <div>
-                <span className="old-stat-num">12</span>
-                <span className="old-stat-label">local farms &amp; roasters we work with</span>
-              </div>
-              <div>
-                <span className="old-stat-num">4.8★</span>
-                <span className="old-stat-label">average customer rating</span>
-              </div>
+              {ABOUT_STATS.map((s, i) => (
+                <div key={i}>
+                  <span className="old-stat-num">{s.value}</span>
+                  <span className="old-stat-label">{s.label}</span>
+                  {/* PLACEHOLDER: replace with real info — this stat is invented. */}
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -161,8 +154,8 @@ export default function About() {
               <p>Yes — most of our menu can be adapted. Add a note at checkout or let your server know, and our kitchen will take it from there.</p>
             </details>
             <details className="old-faq-item">
-              <summary>Do you deliver outside East Legon?</summary>
-              <p>Right now we deliver within a 6km radius of the café. Enter your address at checkout and we'll let you know if you're in range.</p>
+              <summary>Do you deliver outside {BRAND.location.split(',')[0]}?</summary>
+              <p>{ABOUT_FAQ_DELIVERY}</p>
             </details>
             <details className="old-faq-item">
               <summary>Is parking available?</summary>

@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { formatMoney } from '../data/products';
+import { DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE } from '../config';
 import '../old-static.css';
 
 export default function Cart() {
   const { items, updateQty, remove, subtotal, count } = useCart();
   const { showToast } = useToast();
-
-  const deliveryFee = 10.00;
+  // PLACEHOLDER: delivery fee comes from the selected zone (default Spintex
+  // GHS 15), not the old flat GHS 10.
+  const [zoneId, setZoneId] = useState(DEFAULT_DELIVERY_ZONE.id);
+  const zone = DELIVERY_ZONES.find((z) => z.id === zoneId) || DEFAULT_DELIVERY_ZONE;
+  const deliveryFee = zone.fee;
   const total = subtotal + (subtotal > 0 ? deliveryFee : 0);
 
   if (items.length === 0) {
@@ -120,6 +124,19 @@ export default function Cart() {
                 <div className="old-summary-row">
                   <span>Delivery / service fee</span>
                   <span data-delivery>{formatMoney(deliveryFee)}</span>
+                </div>
+                <div className="old-form-row" style={{ marginTop: '0.75rem' }}>
+                  <label htmlFor="cart-zone">Delivery zone</label>
+                  <select
+                    id="cart-zone"
+                    value={zoneId}
+                    onChange={(e) => setZoneId(e.target.value)}
+                    style={{ padding: '6px 8px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff' }}
+                  >
+                    {DELIVERY_ZONES.map((z) => (
+                      <option key={z.id} value={z.id}>{z.name} — {formatMoney(z.fee)}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="old-promo-row">
                   <input type="text" placeholder="Promo code" aria-label="Promo code" />

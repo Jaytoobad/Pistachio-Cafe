@@ -1,6 +1,7 @@
 import React from 'react';
 import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
-import { BRAND, HOURS, CONTACT, HAS_PHONE, HAS_WHATSAPP } from '../config';
+import { BRAND, HOURS, CONTACT, HAS_PHONE, HAS_WHATSAPP, HAS_EMAIL } from '../config';
+import { CONTACT_INTRO, CONTACT_EMAIL_PLACEHOLDER_NOTE } from '../data/content';
 
 export default function Contact() {
   useDocumentTitle('Contact | Pistachio Café');
@@ -10,7 +11,7 @@ export default function Contact() {
         <p className="sf-hero-eyebrow">Get in touch</p>
         <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>Contact us</h1>
         <p style={{ color: 'var(--color-text-muted)', marginTop: 14, maxWidth: '48ch' }}>
-          Reach out with questions about orders, events, or anything else. We are in {BRAND.location} and happy to help.
+          {CONTACT_INTRO}
         </p>
       </section>
 
@@ -31,11 +32,15 @@ export default function Contact() {
           <p style={{ margin: '6px 0 0', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>TODO: confirm this WhatsApp number with the owner.</p>
         </div>
         )}
+        {/* PLACEHOLDER: email is hidden until a real address is set in
+            config.CONTACT — `hello@pistachio.cafe` is a placeholder. */}
+        {HAS_EMAIL && (
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
           <h3 style={{ margin: '0 0 8px' }}>Email</h3>
           <a href={`mailto:${CONTACT.email}`} style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }}>{CONTACT.email}</a>
-          <p style={{ margin: '6px 0 0', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>TODO: confirm this email with the owner.</p>
+          <p style={{ margin: '6px 0 0', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>{CONTACT_EMAIL_PLACEHOLDER_NOTE}</p>
         </div>
+        )}
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
           <h3 style={{ margin: '0 0 8px' }}>Instagram</h3>
           <a href={BRAND.instagramUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }}>{BRAND.instagram}</a>

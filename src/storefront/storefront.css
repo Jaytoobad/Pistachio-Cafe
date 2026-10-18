@@ -109,8 +109,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   border-radius: var(--radius-sm);
@@ -118,31 +118,43 @@
   color: var(--color-ink);
   font-size: 1.1rem;
   line-height: 1;
+  min-height: 44px;
+  min-width: 44px;
 }
 
 /* Mobile menu drawer */
 .sf-mobile-menu {
-  display: none;
   position: fixed;
   inset: 0;
   z-index: 210;
   background: var(--color-surface);
-  outline: none;
+  transform: translatex(100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 280ms ease, visibility 280ms ease;
 }
 .sf-mobile-menu.open {
-  display: block;
+  transform: translatex(0);
+  opacity: 1;
+  visibility: visible;
 }
 .sf-drawer-close {
   position: absolute;
   top: 14px;
   right: 16px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   color: var(--color-ink);
   font-size: 1.6rem;
   line-height: 1;
   cursor: pointer;
-  padding: 6px;
+  padding: 0;
+  border-radius: 50%;
 }
 .sf-drawer-nav {
   display: flex;
@@ -231,6 +243,9 @@
 
 /* Layout */
 .sf-main { flex: 1; max-width: var(--container-width); margin: 0 auto; padding: 32px 20px calc(64px + var(--safe-area-bottom)); }
+@media (max-width: 719px) {
+  .sf-main { padding-bottom: max(90px, calc(64px + var(--safe-area-bottom))); }
+}
 .sf-container { max-width: var(--container-width); margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right)); }
 
 /* Hero */
@@ -323,7 +338,7 @@
 .sf-form-sub { color: var(--color-text-muted); font-size: 0.9rem; margin: 0 0 22px; }
 .sf-field { margin-bottom: 18px; }
 .sf-field label { display: block; margin-bottom: 7px; font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
-.sf-field input, .sf-field select, .sf-field textarea { width: 100%; padding: 11px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 1rem; font-family: inherit; background: var(--color-surface); color: var(--color-ink); }
+.sf-field input, .sf-field select, .sf-field textarea { width: 100%; padding: 11px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 16px; font-family: inherit; background: var(--color-surface); color: var(--color-ink); }
 .sf-field input:focus, .sf-field select:focus, .sf-field textarea:focus { border-color: var(--color-primary); outline: none; }
 .sf-field-error { color: var(--color-error); font-size: 0.82rem; margin-top: 5px; display: block; }
 .sf-field-hint { color: var(--color-text-muted); font-size: 0.8rem; margin-top: 5px; display: block; }
@@ -579,6 +594,7 @@ img, video, canvas, svg {
   height: auto;
   display: block;
 }
+input, select, textarea { font-size: 16px; }
 
 /* Ensure tap targets are at least 44px */
 button, a, input[type='button'], input[type='submit'], input[type='reset'], .sf-btn, .sf-tab, .sf-qty-btn, .sf-remove, .sf-cart-btn, .sf-nav-toggle {

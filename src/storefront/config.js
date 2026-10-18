@@ -58,6 +58,7 @@ export function isPlaceholderContact(value) {
 
 export const HAS_PHONE = !isPlaceholderContact(CONTACT.phone);
 export const HAS_WHATSAPP = !isPlaceholderContact(CONTACT.whatsapp);
+export const HAS_EMAIL = !isPlaceholderContact(CONTACT.email);
 
 // --- Currency ---------------------------------------------------------------
 // Products are stored in Ghana cedis (GHS). Paystack wants the amount in
@@ -118,3 +119,22 @@ export const DELIVERY_PROMISE = {
   pickup: 20, // minutes
   delivery: 45, // minutes
 };
+
+// --- Delivery zones ---------------------------------------------------------
+// Delivery fee comes from the SELECTED zone, not a flat rate. The default
+// zone (Spintex) is GHS 15. Zones are keyed by id; checkout/cart should ask
+// the customer to pick one when delivery is selected.
+export const DELIVERY_ZONES = [
+  { id: 'spintex',       name: 'Spintex',            fee: 15, default: true },
+  { id: 'airport-res',   name: 'Airport Residential', fee: 20 },
+  { id: 'east-legon',    name: 'East Legon',          fee: 25 },
+  { id: 'cantonments',   name: 'Cantonments',         fee: 25 },
+  { id: 'labadi',        name: 'Labadi',              fee: 30 },
+];
+
+export const DEFAULT_DELIVERY_ZONE =
+  DELIVERY_ZONES.find((z) => z.default) || DELIVERY_ZONES[0];
+
+export function getDeliveryZone(id) {
+  return DELIVERY_ZONES.find((z) => z.id === id) || DEFAULT_DELIVERY_ZONE;
+}

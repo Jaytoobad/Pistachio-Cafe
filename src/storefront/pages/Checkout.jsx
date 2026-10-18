@@ -1,10 +1,10 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createOrder, openPaystack, verifyPayment } from '../services/orders.index';
 import { useCart } from '../context/CartContext';
-import { useSettings } from '../context/SettingsContext';
 import { useToast } from '../../lib/context/ToastContext';
-import { formatMoney, DELIVERY_FEE } from '../data/products';
+import { formatMoney } from '../data/products';
+import { DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE, getDeliveryZone } from '../config';
 import '../old-static.css';
 
 const PHONE_REGEX = /^(?:\+?233|0)?[1-9][0-9]{7,9}$/;
@@ -14,19 +14,24 @@ const ORDER_STEPS = ['Received', 'Preparing', 'Ready', 'Completed'];
 
 export default function Checkout() {
   const { items, subtotal, clear } = useCart();
-  const { settings } = useSettings();
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const deliveryFee = Number(settings?.delivery_fee || DELIVERY_FEE);
-  const [form, setForm] = useState({ fullname: '', phone: '', email: '', fulfilment: 'pickup', address: '', notes: '' });
+  // PLACEHOLDER: delivery fee comes from the selected zone (default Spintex
+  // GHS 15), not the old flat GHS 10 from settings/delivery_fee.
+  const [form, setForm] = useState({
+    fullname: '', phone: '', email: '', fulfilment: 'pickup',
+    address: '', notes: '', zone: DEFAULT_DELIVERY_ZONE.id,
+  });
   const [errors, setErrors] = useState({});
   const [processing, setProcessing] = useState(false);
   const [orderId, setOrderId] = useState(null);
   const [trackerStatus, setTrackerStatus] = useState(0);
   const formRef = useRef(null);
 
-  const total = subtotal + (form.fulfilment === 'delivery' ? deliveryFee : 0);
+  const zone = getDeliveryZone(form.zone);
+  const deliveryFee = form.fulfilment === 'delivery' ? zone.fee : 0;
+  const total = subtotal + deliveryFee;
 
   const validate = useCallback(() => {
     const e = {};
@@ -236,6 +241,23 @@ export default function Checkout() {
                       <label htmlFor="address">Delivery address</label>
                       <textarea id="address" name="address" rows="2" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} />
                       {errors.address && <span className="old-form-row" style={{ color: '#A8434B', fontSize: '0.82rem', marginTop: '4px' }}>{errors.address}</span>}
+                    </div>
+                    <div className="old-form-row" data-address-row style={{ display: form.fulfilment === 'delivery' ? 'block' : 'none' }}>
+                      <label htmlFor="zone">Delivery zone</label>
+                      <select
+                        id="zone"
+                        name="zone"
+                        value={form.zone}
+                        onChange={(e) => setForm((f) => ({ ...f, zone: e.target.value }))}
+                        style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff' }}
+                      >
+                        {DELIVERY_ZONES.map((z) => (
+                          <option key={z.id} value={z.id}>{z.name} — {formatMoney(z.fee)}</option>
+                        ))}
+                      </select>
+                      <span style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', marginTop: '4px', display: 'block' }}>
+                        PLACEHOLDER: fee comes from the selected zone (default Spintex GHS 15).
+                      </span>
                     </div>
                     <div className="old-form-row">
                       <label htmlFor="notes">Order notes (optional)</label>

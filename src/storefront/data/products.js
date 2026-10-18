@@ -84,9 +84,6 @@ export function findProduct(id){
 
 export const CATEGORIES = ["breakfast", "brunch", "dessert"];
 
-// Cart constants (ported from old js/cart.js)
-export const DELIVERY_FEE = 10.00;
-
 export function formatMoney(n){
   return "GH₵" + Number(n || 0).toFixed(2);
 }

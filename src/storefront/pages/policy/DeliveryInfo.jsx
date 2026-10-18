@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND, CONTACT, HAS_PHONE, HAS_WHATSAPP } from '../../config';
+import { BRAND, CONTACT, HAS_PHONE, HAS_WHATSAPP, DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE } from '../../config';
+import { DELIVERY_ZONES_TEXT } from '../../data/content';
 
 export default function DeliveryInfo() {
   return (
@@ -18,8 +19,10 @@ export default function DeliveryInfo() {
           <div>
             <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem' }}>Delivery zones</h3>
             <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-              We deliver within Accra, including Spintex, Airport Residential, East Legon and surrounding areas.
-              Exact coverage and fees are set in the admin panel.
+              {DELIVERY_ZONES_TEXT}
+            </p>
+            <p style={{ margin: '8px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
+              Zones and fees: {DELIVERY_ZONES.map((z) => `${z.name} ${CONTACT.currencySymbol || '₵'}${z.fee}`).join(', ')}. Default zone is {DEFAULT_DELIVERY_ZONE.name}.
             </p>
           </div>
           <div>
