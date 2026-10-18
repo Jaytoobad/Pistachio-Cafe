@@ -15,6 +15,11 @@ export const BRAND = {
   offerings: ['Coffee', 'Desserts', 'Shisha'],
   instagram: '@pistachio.ghana',
   instagramUrl: 'https://instagram.com/pistachio.ghana',
+  // PLACEHOLDER: replace with real info — Facebook, X and TikTok have no
+  // confirmed URLs yet. Keep them empty so components hide the icons.
+  facebookUrl: '',
+  xUrl: '',
+  tiktokUrl: '',
 };
 
 // --- Hours ------------------------------------------------------------------
@@ -59,6 +64,13 @@ export function isPlaceholderContact(value) {
 export const HAS_PHONE = !isPlaceholderContact(CONTACT.phone);
 export const HAS_WHATSAPP = !isPlaceholderContact(CONTACT.whatsapp);
 export const HAS_EMAIL = !isPlaceholderContact(CONTACT.email);
+
+// --- Social visibility -------------------------------------------------------
+// Facebook / X / TikTok have no confirmed URLs yet, so they default to
+// empty and the icons are hidden until a real link is set here.
+export const HAS_FACEBOOK = Boolean(BRAND.facebookUrl);
+export const HAS_X = Boolean(BRAND.xUrl);
+export const HAS_TIKTOK = Boolean(BRAND.tiktokUrl);
 
 // --- Currency ---------------------------------------------------------------
 // Products are stored in Ghana cedis (GHS). Paystack wants the amount in

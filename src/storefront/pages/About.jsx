@@ -154,10 +154,10 @@ export default function About() {
               <summary>Do you deliver outside {BRAND.location.split(',')[0]}?</summary>
               <p>{ABOUT_FAQ_DELIVERY}</p>
             </details>
-            <details className="old-faq-item">
-              <summary>Is parking available?</summary>
-              <p>There's free parking directly behind the building, with space for about 15 cars.</p>
-            </details>
+<details className="old-faq-item">
+  <summary>Is parking available?</summary>
+  <p>PLACEHOLDER: replace with real info — parking details for the Spintex location. There's free parking directly behind the building, with space for about 15 cars.</p>
+</details>
           </div>
         </section>
 
