@@ -228,7 +228,7 @@ export default function Orders() {
                         </div>
                         <div className="order-card-customer">{order.customer_name}</div>
                         <div className="order-card-items">
-                          {(order.order_items || []).map((item) => `${item.qty}&times; ${item.name}`).join(', ') || '\u2014'}
+                          {(order.order_items || []).map((item) => `${item.quantity}&times; ${item.dish_name}`).join(', ') || '\u2014'}
                         </div>
                         <div className="order-card-meta">
                           <span className="order-card-total">{formatMoney(order.total)}</span>
@@ -298,7 +298,7 @@ export default function Orders() {
                     <td>{o.customer_name}</td>
                     <td>{o.phone}</td>
                     <td className="cell-muted" style={{ fontSize: 0.85 }}>
-                      {(o.order_items || []).map((i) => `${i.qty}&times;`).join(' ')}
+                      {(o.order_items || []).map((i) => `${i.quantity}&times;`).join(' ')}
                     </td>
                     <td>{formatMoney(o.total)}</td>
                     <td><StatusPill status={o.status} /></td>

@@ -75,7 +75,7 @@ export async function fetchMenu() {
 }
 
 export async function fetchDishes() {
-  const { data, error } = await supabase.from('dishes').select('*, menu(name)').order('sort_order');
+  const { data, error } = await supabase.from('dishes').select('*').order('sort_order');
   if (error) throw error;
   return data || [];
 }
@@ -139,7 +139,7 @@ export async function reorderMenuSections(orderedIds) {
 // --- Reviews ----------------------------------------------------------------
 
 export async function fetchReviews() {
-  const { data, error } = await supabase.from('reviews').select('*, dishes(name)').order('created_at', { ascending: false });
+  const { data, error } = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }
@@ -187,7 +187,7 @@ export async function updateSettings(settings) {
 // --- Staff ------------------------------------------------------------------
 
 export async function fetchStaff() {
-  const { data, error } = await supabase.from('staff').select('*, email').order('created_at', { ascending: false });
+  const { data, error } = await supabase.from('staff').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data || [];
 }

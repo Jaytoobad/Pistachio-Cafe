@@ -119,13 +119,12 @@ export default function Staff() {
       <div className="data-table-wrap">
         <table className="data-table">
           <thead>
-            <tr><th>User ID</th><th>Email</th><th>Role</th><th>Active</th><th>Added</th><th>Actions</th></tr>
+            <tr><th>User ID</th><th>Role</th><th>Active</th><th>Added</th><th>Actions</th></tr>
           </thead>
           <tbody>
             {staff.map((s) => (
               <tr key={s.id}>
                 <td className="cell-muted" style={{ fontSize: '0.85rem' }}>{s.user_id}</td>
-                <td>{s.email || '—'}</td>
                 <td className="cell-muted">{s.role || 'staff'}</td>
                 <td>{s.is_active ? '✓' : '—'}</td>
                 <td className="cell-muted">{s.created_at ? new Date(s.created_at).toLocaleDateString() : '—'}</td>

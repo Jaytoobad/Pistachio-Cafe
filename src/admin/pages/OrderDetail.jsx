@@ -110,8 +110,8 @@ const statusRank = order ? STATUS_ORDER.indexOf(order.status) : -1;
 
   const itemLines = (order.order_items || []).map((item) => (
     <tr key={item.id}>
-      <td className="name">{item.name}</td>
-      <td className="qty">{item.qty}</td>
+      <td className="name">{item.dish_name}</td>
+      <td className="qty">{item.quantity}</td>
       <td className="price">{formatMoney(item.unit_price)}</td>
     </tr>
   ));
@@ -179,8 +179,8 @@ const statusRank = order ? STATUS_ORDER.indexOf(order.status) : -1;
           <dd>{order.customer_name}</dd>
         </div>
         <div>
-          <dt>Email</dt>
-          <dd><a href={`mailto:${order.email}`}>{order.email}</a></dd>
+          <dt>Phone</dt>
+          <dd><a href={`tel:${order.phone}`}>{order.phone}</a></dd>
         </div>
         <div>
           <dt>Phone</dt>

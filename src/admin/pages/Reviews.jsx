@@ -72,7 +72,7 @@ export default function Reviews() {
       <ConfirmDialog
         open={!!deleteTarget}
         title="Delete review?"
-        message={deleteTarget ? `Delete the review for &ldquo;${deleteTarget.dish_name || 'an item'}&rdquo;?` : 'Delete review?'}
+        message={deleteTarget ? `Delete the review for &ldquo;${deleteTarget.name || 'an item'}&rdquo;?` : 'Delete review?'}
         confirmLabel="Delete"
         cancelLabel="Keep"
         onConfirm={doDelete}
@@ -82,15 +82,15 @@ export default function Reviews() {
       <div className="data-table-wrap">
         <table className="data-table">
           <thead>
-            <tr><th>Customer</th><th>Product</th><th>Rating</th><th>Comment</th><th>Approved</th><th>Actions</th></tr>
+            <tr><th>Customer</th><th>Product</th><th>Rating</th><th>Quote</th><th>Approved</th><th>Actions</th></tr>
           </thead>
           <tbody>
             {reviews.map((r) => (
               <tr key={r.id}>
-                <td>{r.customer_name || r.user_email || '—'}</td>
-                <td className="cell-muted">{r.dish_name || '—'}</td>
+                <td>{r.name || r.email || '—'}</td>
+                <td className="cell-muted">{r.name || '—'}</td>
                 <td>{'★'.repeat(r.rating || 0)}${'☆'.repeat(5 - (r.rating || 0))}</td>
-                <td className="cell-muted" style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.comment || ''}</td>
+                <td className="cell-muted" style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.quote || ''}</td>
                 <td>
                   <button className={`btn btn-sm ${r.is_approved ? 'btn-outline' : 'btn-primary'}`} onClick={() => toggleApproved(r)}>
                     {r.is_approved ? 'Approved' : 'Approve'}
