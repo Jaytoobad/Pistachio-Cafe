@@ -8,7 +8,7 @@ import { useReviews } from '../hooks/useReviews';
 import { submitReview } from '../services/reviews';
 import DishCard from '../components/DishCard';
 import DishDetailModal from '../components/DishDetailModal';
-import '../old-static.css';
+import '../../styles/storefront.css';
 
 const REVIEWS_KEY = 'pi_reviews';
 
