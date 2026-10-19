@@ -17,6 +17,7 @@ const AdminDashboard = lazy(() => import('./admin/pages/Dashboard'));
 const AdminOrders = lazy(() => import('./admin/pages/Orders'));
 const AdminOrderDetail = lazy(() => import('./admin/pages/OrderDetail'));
 const AdminMenuSections = lazy(() => import('./admin/pages/MenuSections'));
+const AdminDishes = lazy(() => import('./admin/pages/Dishes'));
 const AdminReviews = lazy(() => import('./admin/pages/Reviews'));
 const AdminSubscribers = lazy(() => import('./admin/pages/Subscribers'));
 const AdminSettings = lazy(() => import('./admin/pages/Settings'));
@@ -62,6 +63,7 @@ return (
                   <Route path="orders" element={<AdminOrders />} />
                   <Route path="orders/:id" element={<AdminOrderDetail />} />
                   <Route path="menu" element={<AdminMenuSections />} />
+                  <Route path="dishes" element={<AdminDishes />} />
                   <Route path="reviews" element={<AdminReviews />} />
                   <Route path="subscribers" element={<AdminSubscribers />} />
                   <Route path="settings" element={<AdminSettings />} />
