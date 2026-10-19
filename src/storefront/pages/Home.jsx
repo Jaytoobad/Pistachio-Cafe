@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND } from '../config';
+import { BRAND, HOURS, DELIVERY_PROMISE, IMAGES } from '../config';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { useDishes } from '../hooks/useDishes';
@@ -19,6 +19,38 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
+function useStoreStatus() {
+  const [status, setStatus] = useState('Closed � opens 08:00');
+
+  useEffect(() => {
+    const compute = () => {
+      try {
+        const accra = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Accra' }));
+        const isWeekend = accra.getDay() === 0 || accra.getDay() === 6;
+        const h = isWeekend ? HOURS.weekend : HOURS.weekday;
+        const [oh, om] = h.open.split(':').map(Number);
+        const [ch, cm] = h.close.split(':').map(Number);
+        const now = accra.getHours() * 60 + accra.getMinutes();
+        const open = oh * 60 + om;
+        let close = ch * 60 + cm;
+        if (close <= open) close = 24 * 60;
+        const openNow = now >= open && now < close;
+        const closeLabel = ch === 0 && cm === 0 ? 'midnight' : h.close;
+        setStatus(openNow ? `Open now � closes ${closeLabel}` : `Closed � opens ${h.open}`);
+      } catch {
+        const isWeekend = new Date().getDay() === 0 || new Date().getDay() === 6;
+        const h = isWeekend ? HOURS.weekend : HOURS.weekday;
+        setStatus(`Open/closed � ${h.open}�${h.close}`);
+      }
+    };
+    compute();
+    const timer = setInterval(compute, 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return status;
+}
+
 export default function Home() {
   const { add } = useCart();
   const { showToast } = useToast();
@@ -29,6 +61,11 @@ export default function Home() {
   const { dishes } = useDishes();
   const { menus } = useMenus();
   const { reviews, loading } = useReviews();
+  const storeStatus = useStoreStatus();
+
+  const formatHoursLine = () => {
+    return <span>Mon�Fri 8AM�11PM&nbsp;�&nbsp;Sat�Sun 8AM�12AM</span>;
+  };
 
   const menuNameForDish = (dish) => {
     if (dish.menu_name) return dish.menu_name;
@@ -101,85 +138,104 @@ export default function Home() {
   };
 
   return (
-    <div className="old-container min-h-dvh">
-      <main id="main" className="old-main">
-
+    <>
+      <main id="main" className="site-main">
         {/* ============ HERO ============ */}
-        <section className="old-hero hero-section hero-full" aria-labelledby="hero-title">
-          <div className="old-hero-inner hero-inner hero-inner-full">
-            <p className="old-hero-eyebrow hero-eyebrow text-amber-700">Good mornings, done properly</p>
-            <h1 id="hero-title" className="hero-title font-serif text-charcoal leading-tight">Breakfast, brunch, and the good kind of slow.</h1>
-            <p className="old-hero-sub hero-sub text-muted max-w-prose leading-relaxed">Handmade pastries, slow-brewed coffee, and plates built for lingering. Order ahead, or come sit with us a while.</p>
-            <div className="old-hero-cta hero-cta gap-3">
-              <Link to="/menu" className="old-btn old-btn-accent btn-cafe btn-cafe-primary">See the menu</Link>
-              <Link to="/about" className="old-btn old-btn-outline btn-cafe btn-cafe-outline">Our story</Link>
+        <section className="hero" aria-labelledby="hero-title">
+          <img
+            src={IMAGES.hero}
+            alt=""
+            className="hero-bg"
+            fetchpriority="high"
+            width="2400"
+            height="1200"
+          />
+          <div className="hero-overlay"></div>
+          <div className="hero-content">
+            <p className="hero-eyebrow">{storeStatus}</p>
+            <h1 id="hero-title" className="hero-title">Breakfast, brunch, and the good kind of slow.</h1>
+            <p className="hero-sub">Handmade pastries, slow-brewed coffee, and plates built for lingering. Order ahead, or come sit with us a while.</p>
+            <div className="hero-cta">
+              <Link to="/menu" className="btn-hero btn-hero-primary">See the menu</Link>
+              <Link to="/about" className="btn-hero btn-hero-outline">Our story</Link>
             </div>
-            <div className="old-hero-info-strip hero-hours mt-8 mb-4">
-              <div><strong>Mon–Fri 8AM–11PM</strong> · <strong>Sat–Sun 8AM–12AM</strong></div>
-              <div><strong>Pickup &amp; delivery</strong> · Ready in 20 min</div>
-              <div><strong>{BRAND.location}</strong></div>
+            <div className="hero-info-strip">
+              <div className="hero-info-item">
+                <div className="hero-info-label">Hours</div>
+                <div className="hero-info-value">Mon�Fri 8AM�11PM � Sat�Sun 8AM�12AM</div>
+              </div>
+              <div className="hero-info-divider" aria-hidden="true"></div>
+              <div className="hero-info-item">
+                <div className="hero-info-label">Pickup & delivery</div>
+                <div className="hero-info-value">Ready in {DELIVERY_PROMISE.pickup} min</div>
+              </div>
+              <div className="hero-info-divider" aria-hidden="true"></div>
+              <div className="hero-info-item">
+                <div className="hero-info-label">Location</div>
+                <div className="hero-info-value">{BRAND.location}</div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* ============ FEATURED MENU ============ */}
-        <section className="old-section">
-          <div className="old-container px-4 py-6">
-            <div className="old-section-head">
+        <section className="section">
+          <div className="container">
+            <div className="section-head">
               <div>
                 <h2>What's on today</h2>
                 <p>A few favourites from our breakfast, brunch, and dessert menu.</p>
               </div>
-              <Link to="/menu" className="old-btn old-btn-outline">Full menu</Link>
+              <Link to="/menu" className="btn btn-outline">Full menu</Link>
             </div>
-            <div className="grid-cols-2" data-featured-grid>
+            <div className="grid grid-cols-2 grid-cols-3-md">
               {renderFeatured()}
             </div>
           </div>
         </section>
 
         {/* ============ ABOUT TEASER (premium story card) ============ */}
-        <section className="old-section old-section-alt py-6">
-          <div className="old-container px-4">
+        <section className="section section-alt">
+          <div className="container">
             <div className="story-card">
               <h2>A neighbourhood table, done with care</h2>
-              <p className="text-muted leading-relaxed mb-4">Pistachio started as a single espresso cart and grew into a full kitchen — but the goal never changed: make people feel properly looked after over a good plate of food.</p>
-              <p className="text-muted leading-relaxed mb-4">We bake daily, source from growers we know by name, and treat every table — regulars and first-timers alike — like they're the reason we opened the doors.</p>
-              <Link to="/about" className="old-btn old-btn-primary btn-cafe btn-cafe-primary">Read our story</Link>
+              <p>Pistachio started as a single espresso cart and grew into a full kitchen � but the goal never changed: make people feel properly looked after over a good plate of food.</p>
+              <p>We bake daily, source from growers we know by name, and treat every table � regulars and first-timers alike � like they're the reason we opened the doors.</p>
+              <Link to="/about" className="btn btn-primary">Read our story</Link>
             </div>
           </div>
         </section>
 
         {/* ============ REVIEWS ============ */}
-        <section className="old-section" id="reviews">
-          <div className="old-container px-4 py-6">
-            <div className="old-section-head">
+        <section className="section" id="reviews">
+          <div className="container">
+            <div className="section-head">
               <div>
                 <h2>What people are saying</h2>
                 <p>Real notes from real tables.</p>
               </div>
             </div>
-            <div className="review-carousel" data-review-grid>
+            <div className="review-carousel">
               {renderReviews()}
             </div>
 
-            <div className="old-review-form mt-8">
+            <div className="review-form">
               <h3>Leave a review</h3>
               <p>Tell us what you loved, or what we could do better.</p>
               <form onSubmit={handleReviewSubmit} data-review-form>
-                <div className="old-form-grid-2">
-                  <div className="old-form-row">
+                <div className="form-grid-2">
+                  <div className="form-row">
                     <label htmlFor="rev-name">Your name</label>
                     <input type="text" id="rev-name" name="name" required value={reviewForm.name} onChange={(e) => setReviewForm((f) => ({ ...f, name: e.target.value }))} />
                   </div>
-                  <div className="old-form-row">
+                  <div className="form-row">
                     <label htmlFor="rev-role">How you know us (optional)</label>
                     <input type="text" id="rev-role" name="role" placeholder="e.g. Weekend regular" value={reviewForm.role} onChange={(e) => setReviewForm((f) => ({ ...f, role: e.target.value }))} />
                   </div>
                 </div>
-                <div className="old-form-row">
+                <div className="form-row">
                   <label>Rating</label>
-                  <div className="old-star-select" data-rating-group>
+                  <div className="star-select" data-rating-group>
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
@@ -195,18 +251,17 @@ export default function Home() {
                   </div>
                   <input type="hidden" name="rating" data-rating-value value={reviewForm.rating} />
                 </div>
-                <div className="old-form-row">
+                <div className="form-row">
                   <label htmlFor="rev-quote">Your review</label>
                   <textarea id="rev-quote" name="quote" rows={3} required value={reviewForm.quote} onChange={(e) => setReviewForm((f) => ({ ...f, quote: e.target.value }))} />
                 </div>
-                <button type="submit" className="old-btn old-btn-primary" disabled={submitting}>
+                <button type="submit" className="btn btn-primary" disabled={submitting}>
                   {submitting ? 'Submitting…' : 'Submit review'}
                 </button>
               </form>
             </div>
           </div>
         </section>
-
       </main>
 
       {quickView && (
@@ -220,6 +275,6 @@ export default function Home() {
           }}
         />
       )}
-    </div>
+    </>
   );
 }

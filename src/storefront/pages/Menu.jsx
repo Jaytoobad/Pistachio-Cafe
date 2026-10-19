@@ -40,19 +40,19 @@ export default function Menu() {
   const filtered = dishes;
 
   return (
-    <div className={`old-container min-h-dvh px-4 py-6 old-menu-page${count > 0 ? ' has-cart' : ''}`}>
+    <div className={`min-h-dvh menu-page${count > 0 ? ' has-cart' : ''}`}>
       <main id="main">
-        <section className="old-page-hero page-hero">
-          <div className="old-container">
-            <p className="old-page-hero-eyebrow page-hero-eyebrow text-muted">The full spread</p>
-            <h1 className="page-hero-title text-charcoal font-serif">Breakfast, brunch &amp; dessert</h1>
-            <p className="page-hero-desc text-muted">Everything's made fresh in-house. Add whatever catches your eye — you can review your order before you pay.</p>
+        <section className="page-hero">
+          <div className="container">
+            <p className="page-hero-eyebrow">The full spread</p>
+            <h1 className="page-hero-title">Breakfast, brunch & dessert</h1>
+            <p className="page-hero-desc">Everything's made fresh in-house. Add whatever catches your eye — you can review your order before you pay.</p>
           </div>
         </section>
 
-        <section className="old-section py-6">
-          <div className="old-container">
-            <div className="old-filter-row">
+        <section className="section">
+          <div className="container">
+            <div className="old-filter-row menu-filter-row">
               {FILTERS.map((f) => (
                 <button
                   key={f.value}
@@ -68,7 +68,7 @@ export default function Menu() {
                 </button>
               ))}
             </div>
-            <div className="grid-cols-2" data-menu-grid>
+            <div className="grid grid-cols-2 grid-cols-1-xs grid-cols-2-sm grid-cols-3-lg">
               {filtered.map((dish) => (
                 <DishCard
                   key={dish.id}
@@ -104,14 +104,14 @@ export default function Menu() {
       )}
 
       {count > 0 && (
-        <div className="old-menu-sticky-bar">
-          <div className="old-sticky-text">
-            <div className="old-sticky-count">
+        <div className="sticky-cart-bar">
+          <div className="sticky-text">
+            <div className="sticky-count">
               {count} {count === 1 ? 'item' : 'items'}
             </div>
-            <div className="old-sticky-total">{formatMoney(subtotal)}</div>
+            <div className="sticky-total">{formatMoney(subtotal)}</div>
           </div>
-          <Link to="/cart" className="old-btn old-btn-accent old-sticky-btn">
+          <Link to="/cart" className="btn btn-accent sticky-btn">
             View cart
           </Link>
         </div>

@@ -97,8 +97,9 @@ export const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '
 export const IMAGES = {
   logo: '/images/brand/logo.svg',
   logoPng: '/images/brand/logo.png',
-  // TODO: final hero image
-  hero: '/images/hero-flatlay.jpg',
+  // Hero image comes from heroImage config
+  hero: '/images/hero/hero.jpg',
+  heroImage: '/images/hero/hero.jpg',
   heroCoffee: '/images/hero-coffee-beans.jpg',
   // TODO: final about image
   about: '/images/about-marble-bag.jpg',

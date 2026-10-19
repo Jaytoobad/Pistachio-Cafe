@@ -11,9 +11,9 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
   const price = Number(dish.price || 0);
 
   return (
-    <article className="old-product-card dish-card">
+    <article className="dish-card card">
       <div
-        className="old-product-card-media dish-media"
+        className="dish-media"
         onClick={() => onQuickView?.(dish)}
         style={{ cursor: onQuickView ? 'pointer' : 'default' }}
       >
@@ -25,14 +25,14 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
           className="w-full h-full object-cover"
         />
         {dish.menu_name || (dish.menu && dish.menu.name) ? (
-          <span className="old-product-tag dish-tag">{dish.menu_name || dish.menu.name}</span>
+          <span className="dish-tag">{dish.menu_name || dish.menu.name}</span>
         ) : null}
       </div>
-      <div className="old-product-card-body dish-body">
+      <div className="dish-body">
         <h3 className="dish-name">{dish.name}</h3>
         {dish.description && <p className="dish-desc">{dish.description}</p>}
-        <div className="old-product-card-foot dish-foot">
-          <span className="old-price dish-price">{formatMoney(price)}</span>
+        <div className="dish-foot">
+          <span className="dish-price">{formatMoney(price)}</span>
           {editingQty ? (
             <div className="dish-controls">
               <div className="micro-stepper">
@@ -55,7 +55,7 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
               </div>
               <button
                 type="button"
-                className="old-btn old-btn-accent dish-add-btn"
+                className="btn btn-accent dish-add-btn"
                 onClick={() => { onAdd(dish, qty); setEditingQty(false); }}
                 aria-label={`Add ${dish.name} to cart`}
               >
@@ -65,7 +65,7 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
           ) : (
             <button
               type="button"
-              className="old-btn old-btn-accent dish-add-btn dish-add-simple"
+              className="btn btn-accent dish-add-btn dish-add-simple"
               onClick={() => { setEditingQty(true); }}
               aria-label={`Set quantity for ${dish.name}`}
             >

@@ -1,0 +1,1 @@
+Replace hero.jpg with your own photo, 2400x1200 or larger, under 400 KB, subject on the right
