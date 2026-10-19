@@ -239,7 +239,7 @@ export default function StorefrontLayout() {
 
               <h4>Stay in the loop</h4>
 
-              <p>New seasonal dishes, first \u2026 straight to your inbox.</p>
+              <p>New seasonal dishes, first to your inbox.</p>
 
               <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); }}>
 
