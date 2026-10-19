@@ -7,6 +7,7 @@ const FOOD_ICON = '🍽️';
 export default function DishCard({ dish, onAdd, onQuickView }) {
   const [qty, setQty] = React.useState(1);
   const [editingQty, setEditingQty] = React.useState(false);
+  const [imageError, setImageError] = React.useState(false);
   const price = Number(dish.price || 0);
   const hasImage = Boolean(dish.image_url);
   const image = dish.image_url || IMAGES.placeholder;
@@ -14,28 +15,19 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
   return (
     <article className="sf-product-card dish-card">
       <div className="sf-product-media dish-media aspect-square object-cover overflow-hidden rounded-t-xl" onClick={() => onQuickView?.(dish)} style={{ cursor: onQuickView ? 'pointer' : 'default', background: '#EFE8D6' }}>
-        {hasImage ? (
+        {!imageError && hasImage ? (
           <img
             src={image}
             alt={dish.name || 'Dish'}
             loading="lazy"
             data-name={dish.name || 'Dish'}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              const media = e.currentTarget.closest('.dish-media');
-              if (media) {
-                media.innerHTML = '';
-                const span = document.createElement('span');
-                span.className = 'dish-placeholder';
-                span.innerHTML = `<span style="font-size:1.25rem; line-height:1; display:block; margin-bottom:0.25rem;">${FOOD_ICON}</span>${(e.currentTarget.getAttribute('data-name') || dish.name || 'Dish')} photo coming soon`;
-                media.appendChild(span);
-              }
-            }}
+            onError={() => setImageError(true)}
           />
         ) : (
           <span className="dish-placeholder">
             <span style="font-size:1.25rem; line-height:1; display:block; margin-bottom:0.25rem;">{FOOD_ICON}</span>
-            {dish.name} photo coming soon
+            {(dish.name || 'Dish')} photo coming soon
           </span>
         )}
         {dish.menu_name || (dish.menu && dish.menu.name) ? (
