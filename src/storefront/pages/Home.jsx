@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND, HOURS, DELIVERY_PROMISE, IMAGES } from '../config';
+import { BRAND, DELIVERY_PROMISE, IMAGES } from '../config';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { useDishes } from '../hooks/useDishes';
 import { useMenus } from '../hooks/useMenus';
 import { useReviews } from '../hooks/useReviews';
+import { useStoreStatus } from '../hooks/useStoreStatus';
 import { submitReview } from '../services/reviews';
 import DishCard from '../components/DishCard';
 import DishDetailModal from '../components/DishDetailModal';
@@ -13,42 +14,14 @@ import '../../styles/storefront.css';
 
 const REVIEWS_KEY = 'pi_reviews';
 
+// React 18 does not know the `fetchPriority` prop, so it is passed through
+// as a plain lowercase attribute (the name HTML uses) to avoid a console warning.
+const HERO_IMG_PROPS = { fetchpriority: 'high' };
+
 function escapeHtml(str){
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
-}
-
-function useStoreStatus() {
-  const [status, setStatus] = useState('Closed � opens 08:00');
-
-  useEffect(() => {
-    const compute = () => {
-      try {
-        const accra = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Accra' }));
-        const isWeekend = accra.getDay() === 0 || accra.getDay() === 6;
-        const h = isWeekend ? HOURS.weekend : HOURS.weekday;
-        const [oh, om] = h.open.split(':').map(Number);
-        const [ch, cm] = h.close.split(':').map(Number);
-        const now = accra.getHours() * 60 + accra.getMinutes();
-        const open = oh * 60 + om;
-        let close = ch * 60 + cm;
-        if (close <= open) close = 24 * 60;
-        const openNow = now >= open && now < close;
-        const closeLabel = ch === 0 && cm === 0 ? 'midnight' : h.close;
-        setStatus(openNow ? `Open now � closes ${closeLabel}` : `Closed � opens ${h.open}`);
-      } catch {
-        const isWeekend = new Date().getDay() === 0 || new Date().getDay() === 6;
-        const h = isWeekend ? HOURS.weekend : HOURS.weekday;
-        setStatus(`Open/closed � ${h.open}�${h.close}`);
-      }
-    };
-    compute();
-    const timer = setInterval(compute, 60 * 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  return status;
 }
 
 export default function Home() {
@@ -62,10 +35,6 @@ export default function Home() {
   const { menus } = useMenus();
   const { reviews, loading } = useReviews();
   const storeStatus = useStoreStatus();
-
-  const formatHoursLine = () => {
-    return <span>Mon�Fri 8AM�11PM&nbsp;�&nbsp;Sat�Sun 8AM�12AM</span>;
-  };
 
   const menuNameForDish = (dish) => {
     if (dish.menu_name) return dish.menu_name;
@@ -146,7 +115,7 @@ export default function Home() {
             src={IMAGES.hero}
             alt=""
             className="hero-bg"
-            fetchpriority="high"
+            {...HERO_IMG_PROPS}
             width="2400"
             height="1200"
           />
@@ -162,7 +131,7 @@ export default function Home() {
             <div className="hero-info-strip">
               <div className="hero-info-item">
                 <div className="hero-info-label">Hours</div>
-                <div className="hero-info-value">Mon�Fri 8AM�11PM � Sat�Sun 8AM�12AM</div>
+                <div className="hero-info-value">Mon–Fri 8AM–11PM · Sat–Sun 8AM–12AM</div>
               </div>
               <div className="hero-info-divider" aria-hidden="true"></div>
               <div className="hero-info-item">
@@ -199,8 +168,8 @@ export default function Home() {
           <div className="container">
             <div className="story-card">
               <h2>A neighbourhood table, done with care</h2>
-              <p>Pistachio started as a single espresso cart and grew into a full kitchen � but the goal never changed: make people feel properly looked after over a good plate of food.</p>
-              <p>We bake daily, source from growers we know by name, and treat every table � regulars and first-timers alike � like they're the reason we opened the doors.</p>
+              <p>Pistachio started as a single espresso cart and grew into a full kitchen — but the goal never changed: make people feel properly looked after over a good plate of food.</p>
+              <p>We bake daily, source from growers we know by name, and treat every table — regulars and first-timers alike — like they're the reason we opened the doors.</p>
               <Link to="/about" className="btn btn-primary">Read our story</Link>
             </div>
           </div>

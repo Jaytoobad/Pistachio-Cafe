@@ -4,6 +4,7 @@ import ErrorBoundary from './lib/components/ErrorBoundary';
 import { AuthProvider } from './lib/context/AuthContext';
 import { ToastProvider } from './lib/context/ToastContext';
 import { CartProvider } from './storefront/context/CartContext';
+import { FavouritesProvider } from './storefront/context/FavouritesContext';
 import { SettingsProvider } from './storefront/context/SettingsContext';
 import PageLoader from './lib/components/PageLoader';
 import ProtectedAdminRoute from './lib/components/ProtectedAdminRoute';
@@ -73,7 +74,7 @@ return (
                 </Route>
 
                 {/* Storefront routes inside the shared storefront layout */}
-                <Route element={<SettingsProvider><StorefrontLayout /></SettingsProvider>}>
+                <Route element={<SettingsProvider><FavouritesProvider><StorefrontLayout /></FavouritesProvider></SettingsProvider>}>
                   <Route index element={<StoreHome />} />
                   <Route path="menu" element={<StoreMenu />} />
                   <Route path="cart" element={<StoreCart />} />

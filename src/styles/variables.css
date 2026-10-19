@@ -21,6 +21,12 @@
   --color-success: var(--color-sage-dark);
   --color-error: #A8434B;
   --color-warn: var(--color-ochre-dark);
+  --color-ink: var(--color-charcoal);
+  --color-ink-soft: var(--color-muted);
+  --color-forest: #201614;          /* deep green-brown */
+  --color-pistachio: #7FA356;       /* pistachio green */
+  --color-cream: #FFFDF8;           /* cream surface */
+  --color-cream-dim: #EFE8D6;       /* slightly deeper panel background */
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
