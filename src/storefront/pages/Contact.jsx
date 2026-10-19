@@ -1,6 +1,6 @@
 import React from 'react';
 import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
-import { BRAND, HOURS, CONTACT, HAS_PHONE, HAS_WHATSAPP, HAS_EMAIL } from '../config';
+import { BRAND, HOURS, CONTACT, HAS_PHONE, HAS_WHATSAPP, HAS_EMAIL, getContact } from '../config';
 import { CONTACT_INTRO, CONTACT_EMAIL_PLACEHOLDER_NOTE } from '../data/content';
 
 export default function Contact() {

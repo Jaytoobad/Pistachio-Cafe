@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND, CONTACT, HAS_PHONE, HAS_WHATSAPP, DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE } from '../../config';
+import { BRAND, CONTACT, HAS_PHONE, HAS_WHATSAPP, DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE, getContact } from '../../config';
 import { DELIVERY_ZONES_TEXT } from '../../data/content';
 
 export default function DeliveryInfo() {

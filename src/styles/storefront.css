@@ -976,3 +976,41 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .old-checkout-page [data-pay-btn] { display: none !important; }
   .old-menu-page.has-cart { padding-bottom: max(90px, env(safe-area-inset-bottom) + 56px); }
 }
+
+/* Global safety rules for storefront */
+svg { display: inline-block; max-width: 100%; height: auto; }
+.social-row svg, .cart-link svg, .nav-toggle svg, .footer-links svg { width: 20px; height: 20px; flex: none; }
+
+/* Footer responsive overrides */
+.site-footer .container { max-width: 1200px; padding: 48px 24px 0; }
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid > div:first-child,
+  .footer-grid > div:last-child { grid-column: 1 / -1; }
+  .footer-bottom { flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+  .newsletter-form { width: 100%; max-width: 100%; }
+}
+
+.footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links li:last-child { margin-bottom: 0; }
+
+.newsletter-form { display: flex; margin-top: 0.75rem; width: 100%; }
+.newsletter-form input { flex: 1; height: 44px; border-radius: 4px 0 0 4px; padding: 0 0.9em; }
+.newsletter-form button { height: 44px; border-radius: 0 4px 4px 0; background: var(--old-marigold, var(--marigold, #E7A33E)); color: #1F2A22; border: 1.5px solid var(--old-marigold, var(--marigold, #E7A33E)); padding: 0 1em; font-weight: 700; cursor: pointer; }
+
+.social-row a { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); color: var(--paper, #F7F2E6); transition: background 0.15s ease, border-color 0.15s ease; }
+.social-row a:hover { background: var(--old-marigold, #E7A33E); border-color: var(--old-marigold, #E7A33E); color: var(--old-ink, #1F2A22); }
+
+@media (max-width: 768px) {
+  .site-footer .container { padding: 48px 24px 0; max-width: 1200px; }
+  .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .footer-grid > div:nth-child(1) { grid-column: 1 / -1; }
+  .footer-grid > div:nth-child(4) { grid-column: 1 / -1; }
+  .newsletter-form { width: 100%; max-width: 100%; }
+  .footer-bottom { flex-direction: column; align-items: center; text-align: center; }
+}
+@media (max-width: 480px) {
+  .site-footer .container { padding: 32px 16px 0; }
+  .footer-grid { gap: 1rem; }
+}

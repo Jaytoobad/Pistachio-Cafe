@@ -100,7 +100,9 @@ const statusRank = order ? STATUS_ORDER.indexOf(order.status) : -1;
   const backLink = `<a href="/admin/orders">&larr; Back to orders</a>`;
   const telLink = `tel:${order.phone}`;
   const waText = `Hi ${order.customer_name}, this is Pistachio Cafe about your order ${order.order_code}.`;
-  const waLink = `https://wa.me/${toWhatsAppNumber(order.phone)}?text=${encodeURIComponent(waText)}`;
+  const waNum = toWhatsAppNumber(order.phone);
+  const isRealWa = waNum && waNum !== '233000000000' && /[1-9]/.test(waNum);
+  const waLink = isRealWa ? `https://wa.me/${waNum}?text=${encodeURIComponent(waText)}` : null;
 
   const timeline = STATUS_ORDER.map((status, index) => ({
     status,

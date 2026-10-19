@@ -57,13 +57,18 @@ const PLACEHOLDER_DIGITS = '0000000000';
 
 export function isPlaceholderContact(value) {
   if (!value) return true;
-  const digits = String(value).replace(/\D/g, '');
-  return !digits || digits.includes(PLACEHOLDER_DIGITS);
+  const v = String(value);
+  const digits = v.replace(/[^0-9]/g, "");
+  if (!digits) return true;
+  if (digits === "233000000000") return true;
+  if (/^0+$/.test(digits)) return true;
+  if (digits.includes("0000000000")) return true;
+  return false;
 }
 
 export const HAS_PHONE = !isPlaceholderContact(CONTACT.phone);
 export const HAS_WHATSAPP = !isPlaceholderContact(CONTACT.whatsapp);
-export const HAS_EMAIL = !isPlaceholderContact(CONTACT.email);
+export const HAS_EMAIL = !(isPlaceholderContact(CONTACT.email) || CONTACT.email === 'hello@pistachio.cafe');
 
 // --- Social visibility -------------------------------------------------------
 // Facebook / X / TikTok have no confirmed URLs yet, so they default to
@@ -149,4 +154,11 @@ export const DEFAULT_DELIVERY_ZONE =
 
 export function getDeliveryZone(id) {
   return DELIVERY_ZONES.find((z) => z.id === id) || DEFAULT_DELIVERY_ZONE;
+}
+export function getContact() {
+  const c = { ...CONTACT };
+  if (isPlaceholderContact(c.phone)) c.phone = null;
+  if (isPlaceholderContact(c.whatsapp)) c.whatsapp = null;
+  if (isPlaceholderContact(c.email) || c.email === 'hello@pistachio.cafe') c.email = null;
+  return c;
 }
