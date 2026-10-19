@@ -256,7 +256,7 @@ export default function Home() {
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
             <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>Popular right now</h2>
             <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
-            <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
+            <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem' }}>
               {featured.map((p) => (
                 <DishCard key={p.id} dish={p} onAdd={addToCart} onQuickView={setQuickView} />
               ))}
@@ -269,7 +269,7 @@ export default function Home() {
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
             <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>Sweet treats</h2>
             <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
-            <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
+            <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem' }}>
               {desserts.slice(0, 4).map((p) => (
                 <DishCard key={p.id} dish={p} onAdd={addToCart} onQuickView={setQuickView} />
               ))}
