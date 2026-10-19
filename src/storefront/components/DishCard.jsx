@@ -13,8 +13,12 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
   const image = dish.image_url || IMAGES.placeholder;
 
   return (
-    <article className="sf-product-card dish-card">
-      <div className="sf-product-media dish-media aspect-square object-cover overflow-hidden rounded-t-xl" onClick={() => onQuickView?.(dish)} style={{ cursor: onQuickView ? 'pointer' : 'default', background: '#EFE8D6' }}>
+    <article className="old-product-card dish-card">
+      <div
+        className="old-product-card-media dish-media"
+        onClick={() => onQuickView?.(dish)}
+        style={{ cursor: onQuickView ? 'pointer' : 'default' }}
+      >
         {!imageError && hasImage ? (
           <img
             src={image}
@@ -31,14 +35,14 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
           </span>
         )}
         {dish.menu_name || (dish.menu && dish.menu.name) ? (
-          <span className="sf-product-tag dish-tag">{dish.menu_name || dish.menu.name}</span>
+          <span className="old-product-tag dish-tag">{dish.menu_name || dish.menu.name}</span>
         ) : null}
       </div>
-      <div className="sf-product-body dish-body">
-        <h3 className="sf-product-name dish-name line-clamp-2 leading-tight">{dish.name}</h3>
-        {dish.description && <p className="sf-product-desc dish-desc line-clamp-2">{dish.description}</p>}
-        <div className="sf-product-foot dish-foot">
-          <span className="sf-product-price dish-price whitespace-nowrap font-semibold text-sm sm:text-base">{formatMoney(price)}</span>
+      <div className="old-product-card-body dish-body">
+        <h3 className="dish-name">{dish.name}</h3>
+        {dish.description && <p className="dish-desc">{dish.description}</p>}
+        <div className="old-product-card-foot dish-foot">
+          <span className="old-price dish-price">{formatMoney(price)}</span>
           {editingQty ? (
             <div className="dish-controls">
               <div className="micro-stepper">
@@ -61,7 +65,7 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
               </div>
               <button
                 type="button"
-                className="sf-btn sf-btn-primary sf-add-btn dish-add-btn"
+                className="old-btn old-btn-accent dish-add-btn"
                 onClick={() => { onAdd(dish, qty); setEditingQty(false); }}
                 aria-label={`Add ${dish.name} to cart`}
               >
@@ -69,14 +73,14 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
               </button>
             </div>
           ) : (
-            <button
-              type="button"
-              className="sf-btn sf-btn-primary sf-add-btn dish-add-btn dish-add-simple"
-              onClick={() => { setEditingQty(true); }}
-              aria-label={`Set quantity for ${dish.name}`}
-            >
-              Add
-            </button>
+              <button
+                type="button"
+                className="old-btn old-btn-accent dish-add-btn dish-add-simple"
+                onClick={() => { setEditingQty(true); }}
+                aria-label={`Set quantity for ${dish.name}`}
+              >
+                Add
+              </button>
           )}
         </div>
       </div>

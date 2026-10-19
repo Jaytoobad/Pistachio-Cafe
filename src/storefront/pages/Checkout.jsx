@@ -175,7 +175,7 @@ export default function Checkout() {
   }, []);
 
   return (
-    <div className="old-container min-h-dvh px-4 py-6">
+    <div className="old-container min-h-dvh px-4 py-6 old-checkout-page">
       <main id="main">
         <section className="old-page-hero page-hero">
           <div className="old-container">
@@ -347,6 +347,18 @@ export default function Checkout() {
           </div>
         </section>
       </main>
+
+      <div className="old-checkout-sticky-bar">
+        <div className="old-sticky-total">Total due: {formatMoney(total)}</div>
+        <button
+          type="button"
+          className="old-btn old-btn-accent old-sticky-btn"
+          onClick={handlePay}
+          disabled={processing}
+        >
+          {processing ? 'Processing…' : 'Pay now'}
+        </button>
+      </div>
     </div>
   );
 }

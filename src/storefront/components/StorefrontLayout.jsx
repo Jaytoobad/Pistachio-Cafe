@@ -41,6 +41,7 @@ function useStoreStatus() {
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/menu', label: 'Menu' },
+  { to: '/cart', label: 'Cart' },
   { to: '/track', label: 'Track order' },
   { to: '/about', label: 'About' },
   { to: '/contact', label: 'Contact' },
@@ -84,6 +85,11 @@ export default function StorefrontLayout({ children }) {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -115,6 +121,13 @@ export default function StorefrontLayout({ children }) {
               onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.logoPng; }}
             />
           </Link>
+          <ul className="nav-links" role="navigation" aria-label="Main">
+            {navLinks.map((l) => (
+              <li key={l.to}>
+                <NavLinkItem l={l} onClick={closeMenu} />
+              </li>
+            ))}
+          </ul>
           <div className="nav-actions">
             <Link to="/cart" className="cart-link tap-target" aria-label="View cart">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="20" height="20"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>

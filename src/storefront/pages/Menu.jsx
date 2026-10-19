@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { useDishes } from '../hooks/useDishes';
@@ -26,7 +26,7 @@ function menuNameForDish(dish, menus) {
 }
 
 export default function Menu() {
-  const { add } = useCart();
+  const { add, count, subtotal } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -40,7 +40,7 @@ export default function Menu() {
   const filtered = dishes;
 
   return (
-    <div className="old-container min-h-dvh px-4 py-6">
+    <div className={`old-container min-h-dvh px-4 py-6 old-menu-page${count > 0 ? ' has-cart' : ''}`}>
       <main id="main">
         <section className="old-page-hero page-hero">
           <div className="old-container">
@@ -101,6 +101,20 @@ export default function Menu() {
             showToast(`${d.name} added to cart`);
           }}
         />
+      )}
+
+      {count > 0 && (
+        <div className="old-menu-sticky-bar">
+          <div className="old-sticky-text">
+            <div className="old-sticky-count">
+              {count} {count === 1 ? 'item' : 'items'}
+            </div>
+            <div className="old-sticky-total">{formatMoney(subtotal)}</div>
+          </div>
+          <Link to="/cart" className="old-btn old-btn-accent old-sticky-btn">
+            View cart
+          </Link>
+        </div>
       )}
     </div>
   );
