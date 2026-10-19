@@ -94,6 +94,12 @@ export const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '
 // Brand images in /public are temporary placeholders and will be swapped
 // one by one later. Reference every image from here so swaps are one-liners.
 // TODO: replace each placeholder path with the final asset once it exists.
+export const heroSlides = [
+  { image: '/images/hero/hero-1.jpg', title: 'Breakfast, brunch and the good kind of slow.', text: 'Handmade plates, delivered to your door.' },
+  { image: '/images/hero/hero-2.jpg', title: 'Desserts worth the detour.', text: 'Waffles, cakes and ice cream, made fresh.' },
+  { image: '/images/hero/hero-3.jpg', title: 'From our kitchen to your door.', text: 'Order online, track every step.' },
+];
+
 export const IMAGES = {
   logo: '/images/brand/logo.svg',
   logoPng: '/images/brand/logo.png',

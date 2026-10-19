@@ -403,11 +403,28 @@ button { font-family: inherit; cursor: pointer; }
 .shrink-0 { flex-shrink: 0; }
 .grow-1 { flex-grow: 1; }
 
+/* Grid utilities (responsive) */
+.grid { display: grid; }
+
 /* Grid: 2-column mobile dish grid */
 .grid-cols-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
+}
+
+/* Responsive column overrides */
+@media (max-width: 479px) {
+  .grid-cols-1-xs { grid-template-columns: repeat(1, 1fr); }
+}
+@media (min-width: 480px) {
+  .grid-cols-2-sm { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 768px) {
+  .grid-cols-3-md { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .grid-cols-3-lg { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* Aspect ratio containers */
