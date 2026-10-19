@@ -229,7 +229,7 @@ export default function StorefrontLayout() {
 
                 {HAS_EMAIL && CONTACT.email && CONTACT.email !== 'hello@pistachio.cafe' && <li><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>}
 
-                <li>Mon\u2013Fri 8AM\u201311PM \u00b7 Sat\u2013Sun 8AM\u201312AM</li>
+                <li>Mon–Fri 8AM–11PM · Sat–Sun 8AM–12AM</li>
 
               </ul>
 
