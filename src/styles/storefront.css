@@ -1820,7 +1820,7 @@ header.site-header.site-header--scrolled { box-shadow: var(--shadow-sm); }
 
 .dish-media {
   position: relative;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   background: var(--color-cream-dim);
   overflow: hidden;
   width: 100%;
