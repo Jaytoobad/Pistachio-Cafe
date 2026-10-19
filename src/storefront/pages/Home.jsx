@@ -142,7 +142,7 @@ export default function Home() {
         <section
           className="hero-full"
           aria-labelledby="hero-title"
-          style={{ height: '62svh', minHeight: '480px', position: 'relative', overflow: 'hidden', background: 'var(--color-espresso)' }}
+          style={{ height: '62svh', minHeight: '520px', position: 'relative', overflow: 'hidden', background: 'var(--color-espresso)' }}
         >
           <style>{`@media (min-width: 1024px){ .hero-full{ height: 68svh; max-height: 620px; } }`}</style>
           <img
@@ -152,7 +152,7 @@ export default function Home() {
             onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(20,17,14,0.88) 0%, rgba(20,17,14,0.3) 55%, rgba(20,17,14,0) 78%)' }} />
-          <div style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', alignItems: 'flex-end' }}>
+          <div style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', alignItems: 'flex-start', paddingTop: '80px' }}>
             <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 24px 36px' }}>
               <p style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--color-ochre)', fontSize: '1.05rem', margin: '0 0 0.75rem' }}>Good mornings, done properly</p>
               <h1 id="hero-title" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.9rem, 5.5vw, 3.6rem)', lineHeight: 1.06, maxWidth: '16ch', color: '#fff', margin: '0 0 0.85rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
