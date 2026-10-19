@@ -133,7 +133,7 @@ export default function StorefrontLayout() {
       />
 
 
-      <HamburgerDrawer open={menuOpen} onClose={closeAll} />
+      <HamburgerDrawer open={menuOpen} onClose={closeAll} cartCount={count} favCount={favCount} />
 
       <SearchPanel open={searchOpen} onClose={closeAll} />
 

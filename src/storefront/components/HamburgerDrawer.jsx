@@ -13,7 +13,7 @@ const navLinks = [
   { to: '/contact', label: 'Contact' },
 ];
 
-export default function HamburgerDrawer({ open, onClose }) {
+export default function HamburgerDrawer({ open, onClose, cartCount = 0, favCount = 0 }) {
   const navigate = useNavigate();
   const status = useStoreStatus();
   const [openNow, setOpenNow] = useState(status.startsWith('Open now'));
@@ -78,6 +78,17 @@ export default function HamburgerDrawer({ open, onClose }) {
             </NavLink>
           ))}
         </nav>
+        <div className="sf-drawer-actions">
+          <button type="button" className="sf-drawer-action" onClick={() => { onClose(); navigate('/cart'); }}>
+            Cart {cartCount > 0 && <span className="sf-drawer-action-badge">{cartCount}</span>}
+          </button>
+          <button type="button" className="sf-drawer-action" onClick={() => { onClose(); navigate('/menu'); }}>
+            Search
+          </button>
+          <button type="button" className="sf-drawer-action" onClick={() => { onClose(); navigate('/menu'); }}>
+            Favourites {favCount > 0 && <span className="sf-drawer-action-badge">{favCount}</span>}
+          </button>
+        </div>
         <div className="sf-drawer-status">
           <span className={`sf-drawer-status-badge ${openNow ? 'sf-drawer-status-open' : 'sf-drawer-status-closed'}`}>
             {openNow ? 'Open now' : 'Closed'}

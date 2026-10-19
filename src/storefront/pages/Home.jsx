@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND, HOURS, CONTACT, HAS_PHONE, IMAGES, isPlaceholderContact, heroSlides } from '../config';
+import { BRAND, HOURS, CONTACT, HAS_PHONE, IMAGES, isPlaceholderContact, DELIVERY_PROMISE } from '../config';
 import { HOME_ABOUT_TEASER, STARTER_REVIEWS } from '../data/content';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
@@ -39,22 +39,6 @@ export default function Home() {
   const { menus } = useMenus();
   const { reviews, loading: reviewsLoading } = useReviews();
   const storeStatus = useStoreStatus();
-
-  // Hero slider
-  const [slide, setSlide] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const touchStart = useRef(null);
-
-  const nextSlide = useCallback(() => setSlide((s) => (s + 1) % heroSlides.length), []);
-  const prevSlide = useCallback(() => setSlide((s) => (s - 1 + heroSlides.length) % heroSlides.length), []);
-
-  useEffect(() => {
-    if (paused) return;
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mq.matches) return;
-    const t = setInterval(nextSlide, 6000);
-    return () => clearInterval(t);
-  }, [paused, nextSlide]);
 
   // Menu carousel (shop by menu)
   const menuScrollRef = useRef(null);
@@ -154,74 +138,49 @@ export default function Home() {
   return (
     <>
       <main id="main" className="site-main">
-        {/* ============ HERO SLIDER ============ */}
+        {/* ============ HERO ============ */}
         <section
           className="hero-full"
           aria-labelledby="hero-title"
-          style={{ height: '72svh', minHeight: '520px' }}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onTouchStart={() => setPaused(true)}
+          style={{ height: '62svh', minHeight: '440px', position: 'relative', overflow: 'hidden', background: 'var(--color-espresso)' }}
         >
-          <style>{`@media (min-width: 1024px){ .hero-full{ height: 80svh; max-height: 820px; } }`}</style>
-          {heroSlides.map((s, i) => (
-            <div
-              key={i}
-              style={{
-                position: 'absolute', inset: 0,
-                opacity: i === slide ? 1 : 0,
-                transition: 'opacity 600ms ease',
-                background: `linear-gradient(135deg, #7FA356 0%, #2D5A3D 100%)`,
-              }}
-            >
-              <img
-                src={s.image}
-                alt=""
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', maxWidth: 'none' }}
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-              />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(20,17,14,0.85) 0%, rgba(20,17,14,0.3) 55%, rgba(20,17,14,0) 78%)' }} />
-            </div>
-          ))}
-          <div className="hero-inner-full" style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 24px 48px' }}>
-              <h1 id="hero-title" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 6vw, 4rem)', lineHeight: 1.08, maxWidth: '16ch', color: '#fff', margin: '0 0 1rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                {heroSlides[slide].title}
+          <style>{`@media (min-width: 1024px){ .hero-full{ height: 68svh; max-height: 640px; } }`}</style>
+          <img
+            src={IMAGES.hero}
+            alt=""
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', maxWidth: 'none', opacity: 0.35 }}
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(20,17,14,0.88) 0%, rgba(20,17,14,0.3) 55%, rgba(20,17,14,0) 78%)' }} />
+          <div style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', alignItems: 'flex-end' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 24px 36px' }}>
+              <p style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--color-ochre)', fontSize: '1.05rem', margin: '0 0 0.75rem' }}>Good mornings, done properly</p>
+              <h1 id="hero-title" style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.9rem, 5.5vw, 3.6rem)', lineHeight: 1.06, maxWidth: '16ch', color: '#fff', margin: '0 0 0.85rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                Breakfast, brunch, and the good kind of slow.
               </h1>
-              <p style={{ color: '#EFE7D8', fontSize: '1.05rem', margin: '0 0 2rem', maxWidth: '46ch' }}>
-                {heroSlides[slide].text}
+              <p style={{ color: '#EFE7D8', fontSize: '1.02rem', margin: '0 0 1.5rem', maxWidth: '46ch' }}>
+                Handmade pastries, slow-brewed coffee, and plates built for lingering. Order ahead, or come sit with us a while.
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                <Link to="/menu" className="btn-hero btn-hero-primary" style={{ background: '#2D5A3D', color: '#fff' }}>ORDER NOW</Link>
-                <Link to="/menu" className="btn-hero btn-hero-outline">VIEW MENU</Link>
+                <Link to="/menu" className="btn-hero btn-hero-primary">See the menu</Link>
+                <Link to="/about" className="btn-hero btn-hero-outline">Our story</Link>
+              </div>
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.22)', marginTop: '1.5rem', paddingTop: '1.1rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem 2.25rem', maxWidth: '780px' }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)', marginBottom: '0.35rem' }}>Hours</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>Mon–Fri 8AM–11PM · Sat–Sun 8AM–12AM</div>
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)', marginBottom: '0.35rem' }}>Pickup & delivery</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>Ready in {DELIVERY_PROMISE.pickup} min</div>
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)', marginBottom: '0.35rem' }}>Location</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>{BRAND.location}</div>
+                </div>
               </div>
             </div>
           </div>
-          {/* dots */}
-          <div style={{ position: 'absolute', bottom: '20px', left: '24px', zIndex: 3, display: 'flex', gap: '8px' }}>
-            {heroSlides.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Go to slide ${i + 1}`}
-                onClick={() => setSlide(i)}
-                style={{
-                  width: i === slide ? '32px' : '10px',
-                  height: '10px',
-                  borderRadius: '999px',
-                  border: 'none',
-                  background: i === slide ? '#D97706' : 'rgba(255,255,255,0.5)',
-                  cursor: 'pointer',
-                  transition: 'width 200ms ease, background 200ms ease',
-                  padding: 0,
-                }}
-              />
-            ))}
-          </div>
-          {/* arrows desktop */}
-          <button type="button" aria-label="Previous slide" onClick={prevSlide} style={{ position: 'absolute', top: '50%', left: '16px', transform: 'translateY(-50%)', zIndex: 3, width: '44px', height: '44px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', cursor: 'pointer', display: 'none' }} className="hero-arrow">‹</button>
-          <button type="button" aria-label="Next slide" onClick={nextSlide} style={{ position: 'absolute', top: '50%', right: '16px', transform: 'translateY(-50%)', zIndex: 3, width: '44px', height: '44px', borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', cursor: 'pointer', display: 'none' }} className="hero-arrow">›</button>
-          <style>{`@media (min-width: 1024px){ .hero-arrow{ display: inline-flex !important; align-items: center; justify-content: center; font-size: 1.5rem; } }`}</style>
         </section>
 
         {/* ============ DELIVERY STRIP ============ */}
