@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BRAND } from '../config';
 import { ABOUT_HERO, ABOUT_STATS, ABOUT_FAQ_DELIVERY } from '../data/content';
+import SafeImg from '../components/SafeImg';
 import '../../styles/storefront.css';
 
 export default function About() {
@@ -20,25 +21,13 @@ export default function About() {
         <section className="old-section py-6">
           <div className="old-container px-4">
             <div className="story-card">
-              <div className="aspect-16-9 overflow-hidden rounded-xl mb-4" style={{ background: '#EFE8D6' }}>
-                <img
+              <div className="aspect-16-9 overflow-hidden rounded-xl mb-4">
+                <SafeImg
                   src="images/about-team.jpg"
+                  label="Team photo coming soon"
                   alt="The Pistachio kitchen team"
                   loading="lazy"
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const container = e.currentTarget.closest('.aspect-16-9');
-                    if (container) {
-                      container.innerHTML = '';
-                      container.style.display = 'flex';
-                      container.style.alignItems = 'center';
-                      container.style.justifyContent = 'center';
-                      const span = document.createElement('span');
-                      span.className = 'dish-placeholder';
-                      span.innerHTML = '<span style="font-size:1.5rem; line-height:1; display:block; margin-bottom:0.25rem;">🍽️</span>Team photo coming soon';
-                      container.appendChild(span);
-                    }
-                  }}
                 />
               </div>
               <h2>A neighbourhood table, done with care</h2>

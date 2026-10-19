@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { formatMoney } from '../data/products';
 import { DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE } from '../config';
+import SafeImg from '../components/SafeImg';
 import '../../styles/storefront.css';
 
 export default function Cart() {
@@ -60,25 +61,13 @@ export default function Cart() {
             <div data-cart-list>
               {items.map((item) => (
                 <div key={item.dish_id} className="old-cart-item cart-item" data-item={item.dish_id}>
-                  <div className="old-cart-item-media cart-item-media aspect-square overflow-hidden rounded-t-xl" style={{ background: '#EFE8D6' }}>
-                    <img
-                      src={item.image_url || '/images/placeholder-cup-pistachios.jpg'}
-                      alt=""
+                  <div className="old-cart-item-media cart-item-media aspect-square overflow-hidden rounded-t-xl">
+                    <SafeImg
+                      src={item.image_url}
+                      label={item.name}
                       loading="lazy"
                       data-name={item.name}
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const media = e.currentTarget.closest('.cart-item-media');
-                        if (media) {
-                          media.style.display = 'flex';
-                          media.style.alignItems = 'center';
-                          media.style.justifyContent = 'center';
-                          const span = document.createElement('span');
-                          span.className = 'dish-placeholder';
-                          span.textContent = (e.currentTarget.getAttribute('data-name') || item.name);
-                          e.currentTarget.replaceWith(span);
-                        }
-                      }}
                     />
                   </div>
                   <div>

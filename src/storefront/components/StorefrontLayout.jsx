@@ -4,6 +4,7 @@ import '../../styles/storefront.css';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { BRAND, HOURS, CONTACT, IMAGES, HAS_PHONE, HAS_WHATSAPP, HAS_EMAIL, HAS_FACEBOOK, HAS_X, HAS_TIKTOK } from '../config';
+import SafeImg from './SafeImg';
 
 const HEADER_BREAKPOINT = 1024;
 
@@ -114,11 +115,11 @@ export default function StorefrontLayout({ children }) {
       <header className="site-header navbar">
         <div className="navbar-inner">
           <Link to="/" className="brand" aria-label="Pistachio Café home">
-            <img
+            <SafeImg
               src={IMAGES.logo}
+              label="Pistachio Café"
               alt="Pistachio Café"
               style={{ height: '36px', width: 'auto' }}
-              onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.logoPng; }}
             />
           </Link>
           <ul className="nav-links" role="navigation" aria-label="Main">
@@ -148,7 +149,7 @@ export default function StorefrontLayout({ children }) {
         <div className="container">
           <div className="footer-grid">
             <div>
-              <img src={IMAGES.logo} alt="Pistachio Café" style={{ height: '32px', width: 'auto', marginBottom: '0.75rem' }} onError={(e) => { e.target.onerror = null; e.target.src = IMAGES.logoPng; }} />
+              <SafeImg src={IMAGES.logo} label="Pistachio Café" alt="Pistachio Café" style={{ height: '32px', width: 'auto', marginBottom: '0.75rem' }} />
               <p>Handmade breakfast, brunch, and desserts in {BRAND.location}. Open every day.</p>
               <div className="social-row">
                 <a href={BRAND.instagramUrl} aria-label="Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>

@@ -45,7 +45,9 @@ function tone({ frequency = 880, duration = 160, type = 'sine', volume = 0.12 })
     osc.start();
     osc.stop(ctx.currentTime + duration / 1000);
     ctx.close().catch(() => {});
-  } catch {}
+  } catch (e) {
+    // AudioContext unavailable (e.g. autoplay policy) — sound is best-effort only.
+  }
 }
 
 function playNewOrderSound(muted) {
