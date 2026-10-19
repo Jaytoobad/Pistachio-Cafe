@@ -142,9 +142,9 @@ export default function Home() {
         <section
           className="hero-full"
           aria-labelledby="hero-title"
-          style={{ height: '62svh', minHeight: '440px', position: 'relative', overflow: 'hidden', background: 'var(--color-espresso)' }}
+          style={{ height: '62svh', minHeight: '480px', position: 'relative', overflow: 'hidden', background: 'var(--color-espresso)' }}
         >
-          <style>{`@media (min-width: 1024px){ .hero-full{ height: 68svh; max-height: 640px; } }`}</style>
+          <style>{`@media (min-width: 1024px){ .hero-full{ height: 68svh; max-height: 620px; } }`}</style>
           <img
             src={IMAGES.hero}
             alt=""
@@ -260,7 +260,7 @@ export default function Home() {
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
             <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>Popular right now</h2>
             <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
-            <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+            <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
               {featured.map((p) => (
                 <DishCard key={p.id} dish={p} onAdd={addToCart} onQuickView={setQuickView} />
               ))}
@@ -273,7 +273,7 @@ export default function Home() {
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
             <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>Sweet treats</h2>
             <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
-            <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+            <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
               {desserts.slice(0, 4).map((p) => (
                 <DishCard key={p.id} dish={p} onAdd={addToCart} onQuickView={setQuickView} />
               ))}
@@ -289,7 +289,7 @@ export default function Home() {
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '56px 24px' }}>
             <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>How it works</h2>
             <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '24px' }}>
               {[
                 { title: 'Choose', text: 'Browse the menu and pick your favourites.' },
                 { title: 'Pay', text: 'Secure checkout with Paystack.' },
@@ -310,7 +310,7 @@ export default function Home() {
 
         {/* ============ ABOUT TEASER ============ */}
         <section style={{ padding: '0 0 96px' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px', alignItems: 'center' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px', alignItems: 'center' }}>
             <div style={{ borderRadius: '16px', overflow: 'hidden', aspectRatio: '4 / 3' }}>
               <img src={IMAGES.about} alt="About" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             </div>
@@ -341,7 +341,7 @@ export default function Home() {
               <h3 style={{ fontFamily: 'var(--font-display)', margin: '0 0 4px' }}>Leave a review</h3>
               <p style={{ color: '#5A554E', fontSize: '0.9rem', margin: '0 0 16px' }}>Tell us what you loved, or what we could do better.</p>
               <form onSubmit={handleReviewSubmit} data-review-form>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px', marginBottom: '12px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '4px' }}>Your name</label>
                     <input type="text" required value={reviewForm.name} onChange={(e) => setReviewForm((f) => ({ ...f, name: e.target.value }))} style={{ width: '100%', padding: '0.75em 0.9em', border: '1.5px solid #E7E2D8', borderRadius: '6px', background: '#FFFDF8' }} />
