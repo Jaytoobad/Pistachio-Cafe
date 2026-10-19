@@ -373,7 +373,7 @@ export default function Home() {
         </section>
 
         {/* ============ VISIT US ============ */}
-        <section style={{ padding: '0 0 96px', background: '#2D5A3D', color: '#fff' }}>
+        <section style={{ padding: '0 0 96px', background: 'var(--color-pistachio)', color: '#fff' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '56px 24px', textAlign: 'center' }}>
             <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px', color: '#fff' }}>Visit us</h2>
             <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 24px' }} />

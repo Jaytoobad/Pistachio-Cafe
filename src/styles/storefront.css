@@ -1065,7 +1065,7 @@ a.skip-link:focus { left: 0; }
 /* --- Announcement bar ---------------------------------------------------- */
 .sf-announcement {
   height: 36px;
-  background: var(--color-forest);
+  background: var(--color-pistachio);
   color: #fff;
   font-size: 12px;
   font-weight: 600;
