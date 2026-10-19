@@ -171,10 +171,6 @@ export default function Home() {
                   <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>Mon–Fri 8AM–11PM · Sat–Sun 8AM–12AM</div>
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)', marginBottom: '0.35rem' }}>Pickup & delivery</div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>Ready in {DELIVERY_PROMISE.pickup} min</div>
-                </div>
-                <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)', marginBottom: '0.35rem' }}>Location</div>
                   <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>{BRAND.location}</div>
                 </div>
