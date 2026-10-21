@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createOrder, openPaystack, verifyPayment } from '../services/orders.index';
 import { useCart } from '../context/CartContext';
+import { useSettings } from '../context/SettingsContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { formatMoney } from '../data/products';
 import { DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE, getDeliveryZone } from '../config';
@@ -28,6 +29,11 @@ export default function Checkout() {
   const formRef = useRef(null);
   const payBtnRef = useRef(null);
 
+  const { settings } = useSettings();
+  const acceptingOrders = settings.accepting_orders !== false;
+  const isOpen = settings.is_open !== false;
+  const storeOpen = acceptingOrders && isOpen;
+
   const zone = getDeliveryZone(form.zone);
   const deliveryFee = form.fulfilment === 'delivery' ? zone.fee : 0;
   const total = subtotal + deliveryFee;
@@ -46,6 +52,10 @@ export default function Checkout() {
 
   const handlePay = async (e) => {
     e.preventDefault();
+    if (!storeOpen) {
+      showToast('Online orders are currently paused. Please try again later.');
+      return;
+    }
     if (!validate()) return;
     if (items.length === 0) { showToast('Your cart is empty'); return; }
 
@@ -176,6 +186,11 @@ export default function Checkout() {
 
   return (
     <div className="old-container min-h-dvh px-4 py-6 old-checkout-page">
+      {!storeOpen && (
+        <div style={{ background: '#F8E1DE', border: '1px solid var(--color-error)', color: '#7A2E32', padding: '10px 16px', borderRadius: 'var(--radius-sm)', marginBottom: 12, fontSize: '0.9rem', textAlign: 'center' }}>
+          Online orders are currently {acceptingOrders ? 'closed' : 'paused'}. Please try again later.
+        </div>
+      )}
       <main id="main">
         <section className="old-page-hero page-hero">
           <div className="old-container">
@@ -277,7 +292,7 @@ export default function Checkout() {
                     className="old-btn old-btn-accent old-btn-block btn-cafe btn-cafe-primary"
                     data-pay-btn
                     ref={payBtnRef}
-                    disabled={processing}
+                    disabled={processing || !storeOpen}
                   >
                     {processing ? 'Processing payment…' : 'Pay now'}
                   </button>
@@ -354,7 +369,7 @@ export default function Checkout() {
           type="button"
           className="old-btn old-btn-accent old-sticky-btn"
           onClick={handlePay}
-          disabled={processing}
+          disabled={processing || !storeOpen}
         >
           {processing ? 'Processing…' : 'Pay now'}
         </button>

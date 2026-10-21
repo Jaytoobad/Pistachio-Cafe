@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { BRAND, HOURS, CONTACT, HAS_PHONE, IMAGES, isPlaceholderContact, DELIVERY_PROMISE } from '../config';
 import { HOME_ABOUT_TEASER, STARTER_REVIEWS } from '../data/content';
@@ -144,7 +144,7 @@ export default function Home() {
           aria-labelledby="hero-title"
           style={{ height: '62svh', minHeight: '520px', position: 'relative', overflow: 'hidden', background: 'var(--color-espresso)' }}
         >
-          <style>{`@media (min-width: 1024px){ .hero-full{ height: 68svh; max-height: 620px; } }`}</style>
+          <style>{`@media (min-width: '1024px'){ .hero-full{ height: 68svh; max-height: '620px'; } }`}</style>
           <img
             src={IMAGES.hero}
             alt=""
@@ -168,7 +168,7 @@ export default function Home() {
               <div style={{ borderTop: '1px solid rgba(255,255,255,0.22)', marginTop: '1.5rem', paddingTop: '1.1rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem 2.25rem', maxWidth: '780px' }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)', marginBottom: '0.35rem' }}>Hours</div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>Mon–Fri 8AM–11PM · Sat–Sun 8AM–12AM</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>Monâ€“Fri 8AMâ€“11PM Â· Satâ€“Sun 8AMâ€“12AM</div>
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)', marginBottom: '0.35rem' }}>Location</div>
@@ -183,9 +183,9 @@ export default function Home() {
         <section style={{ background: '#FFFDF8', borderBottom: '1px solid #E7E2D8' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 24px', display: 'flex', gap: '24px', overflowX: 'auto', flexWrap: 'wrap' }}>
             {[
-              { icon: '🚚', text: 'Fast delivery in Spintex & Accra' },
-              { icon: '🍳', text: 'Made fresh daily' },
-              { icon: '📍', text: 'Track your order live' },
+              { icon: 'ðŸšš', text: 'Fast delivery in Spintex & Accra' },
+              { icon: 'ðŸ³', text: 'Made fresh daily' },
+              { icon: 'ðŸ“', text: 'Track your order live' },
             ].map((it, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap', fontSize: '0.9rem', fontWeight: 600, color: '#1A1A1A' }}>
                 <span style={{ fontSize: '1.2rem' }}>{it.icon}</span> {it.text}
@@ -234,7 +234,7 @@ export default function Home() {
                   </span>
                   <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px' }}>
                     <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 600, marginBottom: '4px' }}>{m.name}</div>
-                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.85 }}>ORDER NOW →</div>
+                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.85 }}>ORDER NOW â†’</div>
                   </div>
                 </Link>
               ))}
@@ -244,8 +244,8 @@ export default function Home() {
                 <div style={{ height: '100%', width: `${menuProgress * 100}%`, background: '#D97706', transition: 'width 100ms ease' }} />
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <button type="button" onClick={() => scrollMenu(-1)} aria-label="Previous" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid #E7E2D8', background: '#fff', cursor: 'pointer' }}>‹</button>
-                <button type="button" onClick={() => scrollMenu(1)} aria-label="Next" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid #E7E2D8', background: '#fff', cursor: 'pointer' }}>›</button>
+                <button type="button" onClick={() => scrollMenu(-1)} aria-label="Previous" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid #E7E2D8', background: '#fff', cursor: 'pointer' }}>â€¹</button>
+                <button type="button" onClick={() => scrollMenu(1)} aria-label="Next" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid #E7E2D8', background: '#fff', cursor: 'pointer' }}>â€º</button>
               </div>
             </div>
           </div>
@@ -351,7 +351,7 @@ export default function Home() {
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '4px' }}>Rating</label>
                   <div style={{ display: 'flex', gap: '4px' }}>
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <button key={star} type="button" onClick={() => handleStar(star)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: star <= reviewForm.rating ? '#C7862A' : '#E7E2D8' }}>★</button>
+                      <button key={star} type="button" onClick={() => handleStar(star)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: star <= reviewForm.rating ? '#C7862A' : '#E7E2D8' }}>â˜…</button>
                     ))}
                   </div>
                 </div>
@@ -360,7 +360,7 @@ export default function Home() {
                   <textarea rows={3} required value={reviewForm.quote} onChange={(e) => setReviewForm((f) => ({ ...f, quote: e.target.value }))} style={{ width: '100%', padding: '0.75em 0.9em', border: '1.5px solid #E7E2D8', borderRadius: '6px', background: '#FFFDF8' }} />
                 </div>
                 <button type="submit" disabled={submitting} style={{ background: '#D97706', color: '#fff', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, border: 'none', cursor: 'pointer', minHeight: '44px' }}>
-                  {submitting ? 'Submitting…' : 'Submit review'}
+                  {submitting ? 'Submittingâ€¦' : 'Submit review'}
                 </button>
                 <div style={{ paddingBottom: '96px' }} />
               </form>
@@ -375,7 +375,7 @@ export default function Home() {
             <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 24px' }} />
             <p style={{ margin: '0 0 8px', fontSize: '1.1rem' }}>{BRAND.location}</p>
             <p style={{ margin: '0 0 16px', fontSize: '0.9rem', opacity: 0.85 }}>
-              Mon–Fri 8AM–11PM · Sat–Sun 8AM–12AM
+              Monâ€“Fri 8AMâ€“11PM Â· Satâ€“Sun 8AMâ€“12AM
               <span style={{ marginLeft: '8px', padding: '2px 8px', borderRadius: '999px', background: isOpen ? '#EAF3EC' : '#F1ECE9', color: isOpen ? '#3D6A46' : '#6B5F5A', fontSize: '0.7rem', fontWeight: 700 }}>
                 {isOpen ? 'Open' : 'Closed'}
               </span>
@@ -408,7 +408,7 @@ export default function Home() {
                 style={{ flex: 1, minWidth: '200px', padding: '0.75em 0.9em', border: '1.5px solid #E7E2D8', borderRadius: '6px', background: '#FFFDF8' }}
               />
               <button type="submit" disabled={nlSubmitting} style={{ background: '#D97706', color: '#fff', padding: '0.75em 1.5em', borderRadius: '6px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
-                {nlSubmitting ? 'Joining…' : 'Join'}
+                {nlSubmitting ? 'Joiningâ€¦' : 'Join'}
               </button>
             </form>
             {nlMessage && <p style={{ marginTop: '12px', fontSize: '0.9rem', color: '#5A554E' }}>{nlMessage}</p>}
@@ -428,3 +428,4 @@ export default function Home() {
     </>
   );
 }
+

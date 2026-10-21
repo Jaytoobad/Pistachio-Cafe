@@ -12,12 +12,12 @@ const DEFAULTS = {
   whatsapp: CONTACT.whatsapp,
   email: CONTACT.email,
   is_open: true,
-  accepting_order: true,
+  accepting_orders: true,
+  busy_minutes: 0,
+  promo_banner: '',
+  hours: {},
 };
 
-// Mock-first settings: render immediately with defaults, then silently merge
-// real rows from Supabase only if the request succeeds. On any error the
-// defaults stay and a warning is logged. Empty-string values are ignored.
 const SettingsContext = createContext({ settings: DEFAULTS, loading: false });
 
 export function SettingsProvider({ children }) {

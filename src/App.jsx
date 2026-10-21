@@ -13,15 +13,22 @@ import StorefrontLayout from './storefront/components/StorefrontLayout';
 // Admin
 const AdminLogin = lazy(() => import('./admin/pages/Login'));
 const AdminLayout = lazy(() => import('./admin/layout/AdminLayout'));
-const AdminDashboard = lazy(() => import('./admin/pages/Dashboard'));
+const AdminToday = lazy(() => import('./admin/pages/Today'));
 const AdminOrders = lazy(() => import('./admin/pages/Orders'));
 const AdminOrderDetail = lazy(() => import('./admin/pages/OrderDetail'));
 const AdminMenuSections = lazy(() => import('./admin/pages/MenuSections'));
 const AdminDishes = lazy(() => import('./admin/pages/Dishes'));
+const AdminAddOns = lazy(() => import('./admin/pages/AddOns'));
+const AdminRiders = lazy(() => import('./admin/pages/Riders'));
+const AdminZones = lazy(() => import('./admin/pages/Zones'));
+const AdminCustomers = lazy(() => import('./admin/pages/Customers'));
 const AdminReviews = lazy(() => import('./admin/pages/Reviews'));
 const AdminSubscribers = lazy(() => import('./admin/pages/Subscribers'));
 const AdminSettings = lazy(() => import('./admin/pages/Settings'));
 const AdminStaff = lazy(() => import('./admin/pages/Staff'));
+const AdminHours = lazy(() => import('./admin/pages/Hours'));
+const AdminReport = lazy(() => import('./admin/pages/Report'));
+const AdminEightySix = lazy(() => import('./admin/pages/EightySix'));
 
 // Storefront (customer-facing)
 const StoreHome = lazy(() => import('./storefront/pages/Home'));
@@ -34,6 +41,7 @@ const StoreGallery = lazy(() => import('./storefront/pages/Gallery'));
 const StoreReviews = lazy(() => import('./storefront/pages/Reviews'));
 const StoreContact = lazy(() => import('./storefront/pages/Contact'));
 const StoreNotFound = lazy(() => import('./storefront/pages/NotFound'));
+const StoreAbout = lazy(() => import('./storefront/pages/About'));
 
 export default function App() {
   const location = useLocation();
@@ -60,15 +68,23 @@ return (
                     </ProtectedAdminRoute>
                   }
                 >
-                  <Route index element={<AdminDashboard />} />
+                  <Route index element={<AdminToday />} />
+                  <Route path="today" element={<Navigate to="/admin" replace />} />
                   <Route path="orders" element={<AdminOrders />} />
                   <Route path="orders/:id" element={<AdminOrderDetail />} />
                   <Route path="menu" element={<AdminMenuSections />} />
                   <Route path="dishes" element={<AdminDishes />} />
+                  <Route path="addons" element={<AdminAddOns />} />
+                  <Route path="riders" element={<AdminRiders />} />
+                  <Route path="zones" element={<AdminZones />} />
+                  <Route path="customers" element={<AdminCustomers />} />
                   <Route path="reviews" element={<AdminReviews />} />
                   <Route path="subscribers" element={<AdminSubscribers />} />
                   <Route path="settings" element={<AdminSettings />} />
                   <Route path="staff" element={<AdminStaff />} />
+                  <Route path="hours" element={<AdminHours />} />
+                  <Route path="report" element={<AdminReport />} />
+                  <Route path="86" element={<AdminEightySix />} />
                   <Route path="*" element={
                     <ProtectedAdminRoute>
                       <Navigate to="/admin" replace />
