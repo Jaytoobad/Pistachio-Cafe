@@ -6,11 +6,11 @@ import { IMAGES } from '../config';
 import SafeImg from './SafeImg';
 
 const navLinks = [
-  { to: '/', label: 'Home' },
+  { to: '/#story', label: 'Story' },
   { to: '/menu', label: 'Menu' },
+  { to: '/gallery', label: 'Gallery' },
+  { to: '/visit', label: 'Visit' },
   { to: '/track', label: 'Track order' },
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
 ];
 
 const HAMBURGER_SVG = (

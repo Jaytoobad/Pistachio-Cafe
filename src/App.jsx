@@ -29,7 +29,8 @@ const StoreMenu = lazy(() => import('./storefront/pages/Menu'));
 const StoreCart = lazy(() => import('./storefront/pages/Cart'));
 const StoreCheckout = lazy(() => import('./storefront/pages/Checkout'));
 const StoreTrack = lazy(() => import('./storefront/pages/Track'));
-const StoreAbout = lazy(() => import('./storefront/pages/About'));
+const StoreVisit = lazy(() => import('./storefront/pages/Visit'));
+const StoreGallery = lazy(() => import('./storefront/pages/Gallery'));
 const StoreReviews = lazy(() => import('./storefront/pages/Reviews'));
 const StoreContact = lazy(() => import('./storefront/pages/Contact'));
 const StoreNotFound = lazy(() => import('./storefront/pages/NotFound'));
@@ -84,6 +85,8 @@ return (
                   <Route path="track" element={<StoreTrack />} />
                   <Route path="track/:code" element={<StoreTrack />} />
                   <Route path="about" element={<StoreAbout />} />
+                  <Route path="visit" element={<StoreVisit />} />
+                  <Route path="gallery" element={<StoreGallery />} />
                   <Route path="reviews" element={<StoreReviews />} />
                   <Route path="contact" element={<StoreContact />} />
                   <Route path="*" element={<StoreNotFound />} />
