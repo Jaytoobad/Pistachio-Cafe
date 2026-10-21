@@ -1,8 +1,8 @@
-export const CURRENCY = 'GHS';
-export const CURRENCY_SYMBOL = '₵';
+export const CURRENCY = 'GH₵';
+export const CURRENCY_SYMBOL = 'GH₵';
 
 export function formatMoney(amount) {
-  return `${CURRENCY_SYMBOL}${Number(amount || 0).toLocaleString('en-GH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `GH₵${Number(amount || 0).toLocaleString('en-GH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 export function formatAccra(iso, options = {}) {

@@ -77,11 +77,11 @@ export const HAS_FACEBOOK = Boolean(BRAND.facebookUrl);
 export const HAS_X = Boolean(BRAND.xUrl);
 export const HAS_TIKTOK = Boolean(BRAND.tiktokUrl);
 
-// --- Currency ---------------------------------------------------------------
+export const SITE_URL = import.meta.env.VITE_SITE_URL || 'https://pistachio-cafe.vercel.app';
 // Products are stored in Ghana cedis (GHS). Paystack wants the amount in
 // pesewas (kobo), so multiply by 100 when talking to Paystack.
 export const CURRENCY = 'GHS';
-export const CURRENCY_SYMBOL = '₵';
+export const CURRENCY_SYMBOL = 'GH₵';
 export const TO_PAYSTACK = (cedis) => Math.round(Number(cedis || 0) * 100);
 export const FROM_PAYSTACK = (pesewas) => Number(pesewas || 0) / 100;
 
