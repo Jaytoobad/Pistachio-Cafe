@@ -8,7 +8,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .js,.jsx",
-    "photos": "node scripts/optimize-images.mjs"
+    "photos": "node scripts/optimize-images.mjs",
+    "prebuild": "node scripts/check-encoding.mjs",
+    "check:encoding": "node scripts/check-encoding.mjs",
+    "check:styles": "node scripts/check-styles.mjs",
+    "verify": "node scripts/verify.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
@@ -23,6 +27,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "eslint": "^9.39.5",
     "eslint-plugin-react": "^7.37.5",
+    "playwright": "^1.64.1",
     "vite": "^5.4.0"
   },
   "engines": {

@@ -1,55 +1,53 @@
-# Pistachio Café — Admin
+# Project rules
 
-Restaurant admin for Pistachio Café (Spintex, Accra). React + Vite, Supabase, Paystack.
+Pistachio Cafe (Spintex, Accra) — customer storefront plus staff admin.
+Stack: React 18, Vite, React Router, Supabase, Paystack, plain CSS (no CSS framework).
 
-## Stack
-- React 18, React Router (lazy-loaded admin routes), @supabase/supabase-js, recharts
-- Plain CSS (`src/index.css`, `src/styles/variables.css`)
-- Supabase: Postgres, Auth, Realtime, Storage, Edge Functions
+## Encoding
 
-## Environment variables
-Copy `.env.example` to `.env` and fill in:
+- Every file is UTF-8 **without BOM**. Do not add a BOM to anything.
+- In JSX write punctuation as HTML entities: `&ndash;` `&mdash;` `&middot;` `&copy;` `&rsaquo;` `&lsaquo;`.
+- In JS strings use `\u` escapes (for example `\u2014` for an em dash).
+- Never paste special characters straight into a file. Never paste emoji.
+- No emoji anywhere in code, copy or UI.
+- Icons are inline SVG with explicit `width` and `height` attributes.
+- Stars (ratings) are SVG, never text characters.
 
-```
-VITE_SUPABASE_URL=https://gxidxsximyodjvvzgzmi.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-```
+## Verification
 
-Never put `VITE_` on the Paystack secret key — it lives only in Edge Function secrets:
-```
-supabase secrets set PAYSTACK_SECRET_KEY=sk_live_xxxx
-supabase secrets set SUPABASE_URL=https://gxidxsximyodjvvzgzmi.supabase.co
-supabase secrets set SERVICE_ROLE_KEY=your-service-role-key
-```
+- Never say a UI change is done until `npm run verify` passes.
+- `npm run verify` writes full-page screenshots to `docs/screens/`. Look at them.
+- If you cannot view images, say so explicitly and rely on the printed report
+  instead of claiming you saw the screens.
 
-## Migrations
-1. `npm install`
-2. `cp .env.example .env` and fill values
-3. Apply `supabase/migrations/0001_rename_menu_dishes.sql, 0002_admin.sql, 0003_payments.sql, 0004_storefront.sql, 0005_order_status_enum.sql, 0006_riders_and_helpers.sql` (or run `psql "$DATABASE_URL" -f supabase/ALL_IN_ONE.sql`) (via Supabase SQL Editor or CLI)
-4. Seed the database: `psql "$DATABASE_URL" -f supabase/seed.sql`
-5. `npm run dev` then `npm run build`
+## Design
 
-## Edge functions
-Deploy after setting secrets:
-```
-supabase functions deploy create-order
-supabase functions deploy paystack-webhook
-supabase functions deploy verify-payment
-```
-Register `paystack-webhook` URL (`https://gxidxsximyodjvvzgzmi.functions.supabase.co/paystack-webhook`) in the Paystack dashboard under Webhooks.
+- Keep the existing colour palette (`src/styles/tokens.css`, `src/styles/variables.css`).
+  Do not introduce new brand colours.
+- Headings are sentence case and left aligned.
+- No ALL-CAPS section titles with underlines.
+- No numbered badges unless the content is a real sequence.
+- No arrows added to button text.
+- No emoji.
+- No hover or fade effect on everything. Use them only where they carry meaning.
+- Do not repeat the same rounded card with the same shadow everywhere.
+- No fake content. Real dishes, real hours, real prices, real photos.
+- Copy is plain, specific and warm.
+- Buttons say what happens: "Add to cart", "Track my order". Not "Submit", "Click here".
 
-## First staff user
-Admin access = Supabase Auth account + a row in the `staff` table. There is no signup UI — add the first staff row directly in Supabase (SQL Editor):
+## Content
 
-```sql
-insert into public.staff (user_id) values ('<auth-users-id>');
-```
+- Never render notes, TODOs or the word PLACEHOLDER to customers.
+- All owner-editable text lives in `src/storefront/data/content.js` and
+  `src/storefront/config.js`. Do not hard-code copy inside components.
 
-Then sign in at `/admin/login` with that account.
+## Responsive
 
-## Scripts
-- `npm run dev` — dev server
-- `npm run build` — production build
-- `npm run preview` — preview production build
+- Design phone first: 360 to 430 px. Then tablet: 768 to 1024 px. Then desktop.
+- No horizontal scroll at any width.
+- Tap targets are at least 44 px.
 
+## Database
 
+- Database changes are NOT allowed.
+- The live schema is documented in `docs/SCHEMA.md`. Read it before touching data code.
