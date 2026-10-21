@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext .js,.jsx"
+    "lint": "eslint . --ext .js,.jsx",
+    "photos": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

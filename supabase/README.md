@@ -1,1 +1,1 @@
-The live database is already migrated and is the source of truth. Do not run the archived files.
+Future DB changes must grant privileges explicitly (default privileges revoked).

@@ -91,6 +91,7 @@ if (!Array.isArray(items) || items.length === 0) {
       if (!dish.is_available) return json({ error: `${dish.name} is unavailable.` }, 400, corsHeaders);
       const qty = Number(item.quantity) || 1;
       if (!Number.isFinite(qty) || qty <= 0) return json({ error: 'Invalid quantity.' }, 400, corsHeaders);
+      if (qty > 20) return json({ error: 'Quantity exceeds maximum of 20.' }, 400, corsHeaders);
       const unitPrice = Number(dish.price);
       if (!Number.isFinite(unitPrice) || unitPrice < 0) return json({ error: `Invalid price for ${dish.name}.` }, 400, corsHeaders);
       const subtotal = unitPrice * qty;
@@ -241,6 +242,7 @@ const { error: itemsError } = await supabase.from('order_items').insert(
     return json({ error: 'Could not create order right now. Please try again shortly.' }, 500, corsHeaders);
   }
 });
+
 
 
 
