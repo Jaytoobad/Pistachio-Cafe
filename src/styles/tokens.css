@@ -1,32 +1,110 @@
-/* ============================================================================
-   Pistachio Café — old static site design tokens
-   Ported from reference/old-static/css/style.css.
-   Kept as --old-* variables so they never collide with the current design
-   system in variables.css.
-   ============================================================================ */
-
+/* Pistachio Café — design tokens (mobile-first) */
 :root {
-  /* --- color --- */
-  --old-ink:            #1F2A22;   /* deep forest-black, primary text */
-  --old-ink-soft:       #4B5A4E;   /* secondary text */
-  --old-paper:          #F7F2E6;   /* parchment background */
-  --old-paper-dim:      #EFE8D6;   /* slightly deeper panel background */
-  --old-line:           #E1D7BD;   /* hairline borders */
-  --old-marigold:       #E7A33E;   /* primary accent — buttons, prices, highlights */
-  --old-marigold-dark:  #C7862A;
-  --old-sage:           #6E8563;   /* secondary accent — tags, success */
-  --old-berry:          #A8434B;   /* cart / alerts / remove actions */
-  --old-cream:          #FFFDF8;   /* card surfaces */
+  /* Base spacing (4px scale) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 36px;
+  --space-10: 40px;
+  --space-11: 44px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-18: 72px;
+  --space-20: 80px;
+  --space-24: 96px;
 
-  /* --- layout --- */
-  --old-max-width:      1200px;
-  --old-radius-sm:      4px;
-  --old-radius-md:      10px;
-  --old-gutter:         clamp(1.25rem, 4vw, 3rem);
+  /* Fluid typography */
+  --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.825rem + 0.25vw, 0.9375rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --text-3xl: clamp(1.875rem, 1.5rem + 1.875vw, 2.5rem);
+  --text-4xl: clamp(2.25rem, 1.7rem + 2.75vw, 3.25rem);
+  --text-5xl: clamp(2.75rem, 2rem + 3.75vw, 4.25rem);
+
+  /* Container */
+  --container-gutter-mobile: 16px;
+  --container-gutter-tablet: 24px;
+  --container-max-width: 1200px;
+
+  /* Section spacing */
+  --section-space-mobile: 56px;
+  --section-space-tablet: 72px;
+  --section-space-desktop: 96px;
+
+  /* Colors */
+  --color-charcoal: #1A1A1A;
+  --color-espresso: #201614;
+  --color-muted: #5A554E;
+  --color-ochre: #D97706;
+  --color-ochre-dark: #B45309;
+  --color-sage: #5B7052;
+  --color-sage-dark: #4A5B42;
+  --color-surface: #FAF8F5;
+  --color-bg: #F5F2EB;
+  --color-border: #E7E2D8;
+  --color-text: var(--color-charcoal);
+  --color-text-muted: var(--color-muted);
+  --color-primary: var(--color-ochre);
+  --color-primary-hover: var(--color-ochre-dark);
+  --color-accent: var(--color-sage);
+  --color-success: var(--color-sage-dark);
+  --color-error: #A8434B;
+  --color-warn: var(--color-ochre-dark);
+  --color-ink: var(--color-charcoal);
+  --color-ink-soft: var(--color-muted);
+  --color-forest: #201614;
+  --color-pistachio: #7FA356;
+  --color-cream: #FFFDF8;
+  --color-cream-dim: #EFE8D6;
+
+  /* Typography */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(27, 48, 34, 0.08);
+  --shadow-md: 0 6px 20px rgba(27, 48, 34, 0.10);
+  --shadow-lg: 0 12px 40px rgba(27, 48, 34, 0.14);
+
+  /* Layout */
+  --container-width: var(--container-max-width);
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --sidebar-width: 260px;
+  --header-height: 72px;
+
+  /* Safe areas */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+
+  /* Touch */
+  --tap-min: 44px;
+
+  /* Viewport height */
+  --vh: 100dvh;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
