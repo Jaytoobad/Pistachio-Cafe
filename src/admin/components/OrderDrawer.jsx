@@ -290,7 +290,7 @@ function ticketHtml(order) {
     return `<tr><td class="name">${escapeHtml(it.name || it.dish_name || 'Item')}</td><td class="qty">${qty}</td><td class="price">${formatMoney(Number(it.unit_price || 0) * Number(qty || 0))}</td></tr>`;
   }).join('');
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
-  body{font-family:${'Work Sans', sans-serif};font-size:7.5pt;line-height:1.3;color:#000;margin:0;padding: '6px' 8px;}
+  body{font-family:'Work Sans', sans-serif;font-size:7.5pt;line-height:1.3;color:#000;margin:0;padding: '6px' 8px;}
   .ticket-head{text-align:center;border-bottom: '16px' double #000;padding-bottom: '4px';margin-bottom: '6px';}
   .ticket-head h2{margin:0;font-size:13pt;text-transform:uppercase;letter-spacing: '0.2em';}
   .ticket-head p{margin: '2px' 0;font-size:7pt;}

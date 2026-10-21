@@ -1,4 +1,3 @@
-import sharp from 'sharp';
 import { readdirSync, statSync } from 'fs';
 import { join } from 'path';
 const root = 'public/images';

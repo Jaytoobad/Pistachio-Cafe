@@ -4,7 +4,7 @@ import eslintPluginReact from 'eslint-plugin-react';
 export default [
   eslintJs.configs.recommended,
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['**/*.{js,jsx,mjs}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -28,6 +28,11 @@ export default [
         React: 'readonly',
         PaystackPop: 'readonly',
         process: 'readonly',
+        FileReader: 'readonly',
+        Image: 'readonly',
+        Blob: 'readonly',
+        URL: 'readonly',
+        sharp: 'readonly',
       },
     },
     plugins: {
