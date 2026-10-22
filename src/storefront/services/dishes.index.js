@@ -52,6 +52,36 @@ export async function fetchAvailableDishes(menuId = null) {
   return items;
 }
 
+// The dishes of one menu section, found by its slug. The menu id in the
+// database is a uuid, so the slug is resolved to the real id first - querying
+// with the sample id would come back empty.
+export async function fetchAvailableDishesBySlug(slug) {
+  const mockItems = () => {
+    const menu = MOCK_MENUS.find((m) => m.slug === slug);
+    if (!menu) return [];
+    return MOCK_DISHES.filter((d) => d.is_available !== false && d.menu_id === menu.id);
+  };
+
+  if (!isSupabaseConfigured || !supabase) return mockItems();
+
+  try {
+    const menus = await fetchMenu();
+    const menu = menus.find((m) => m.slug === slug);
+    if (!menu) return mockItems();
+    const { data, error } = await supabase
+      .from('dishes')
+      .select('*, menus(name)')
+      .eq('is_available', true)
+      .eq('menu_id', menu.id)
+      .order('sort_order');
+    if (error) throw error;
+    if (data && data.length > 0) return data;
+  } catch (err) {
+    if (import.meta.env.DEV) console.warn('fetchAvailableDishesBySlug failed, using mock data:', err);
+  }
+  return mockItems();
+}
+
 export async function fetchFeaturedDishes() {
   if (!isSupabaseConfigured || !supabase) {
     const byCat = {};

@@ -1,29 +1,38 @@
 import { useState, useEffect } from 'react';
-import { HOURS } from '../config';
+import { accraNow, hoursForDay } from '../config';
 
 // Live open/closed status from HOURS, in Africa/Accra time.
+//
+// currentStoreStatus() gives the raw facts (are we open, when do we open and
+// close today). useStoreStatus() keeps the old one-line string for the
+// components that only need the sentence.
+export function currentStoreStatus() {
+  const accra = accraNow();
+  const hours = hoursForDay(accra.getDay());
+
+  const [openHour, openMinute] = hours.open.split(':').map(Number);
+  const [closeHour, closeMinute] = hours.close.split(':').map(Number);
+  const now = accra.getHours() * 60 + accra.getMinutes();
+
+  const opens = openHour * 60 + openMinute;
+  let closes = closeHour * 60 + closeMinute;
+  if (closes <= opens) closes = 24 * 60;
+
+  const isOpen = now >= opens && now < closes;
+  const closeLabel = closeHour === 0 && closeMinute === 0 ? 'midnight' : hours.close;
+
+  return {
+    isOpen,
+    hours,
+    label: isOpen ? `Open now \u00b7 closes ${closeLabel}` : `Closed \u00b7 opens ${hours.open}`,
+  };
+}
+
 export function useStoreStatus() {
-  const [status, setStatus] = useState('Closed \u00b7 opens 08:00');
+  const [status, setStatus] = useState(() => currentStoreStatus().label);
 
   useEffect(() => {
-    const compute = () => {
-      const accra = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Accra' }));
-
-      const isWeekend = accra.getDay() === 0 || accra.getDay() === 6;
-      const h = isWeekend ? HOURS.weekend : HOURS.weekday;
-
-      const [oh, om] = h.open.split(':').map(Number);
-      const [ch, cm] = h.close.split(':').map(Number);
-      const now = accra.getHours() * 60 + accra.getMinutes();
-      const open = oh * 60 + om;
-      let close = ch * 60 + cm;
-      if (close <= open) close = 24 * 60;
-
-      const openNow = now >= open && now < close;
-      const closeLabel = ch === 0 && cm === 0 ? 'midnight' : h.close;
-
-      setStatus(openNow ? `Open now \u00b7 closes ${closeLabel}` : `Closed \u00b7 opens ${h.open}`);
-    };
+    const compute = () => setStatus(currentStoreStatus().label);
 
     compute();
 

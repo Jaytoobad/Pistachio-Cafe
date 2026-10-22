@@ -67,7 +67,7 @@ export default function Menu() {
                 </button>
               ))}
             </div>
-            <div className="grid grid-cols-2 grid-cols-1-xs grid-cols-2-sm grid-cols-3-lg">
+            <div className="dish-grid">
               {filtered.map((dish) => (
                 <DishCard
                   key={dish.id}

@@ -348,19 +348,6 @@
 
 /* --- Full-bleed helpers -------------------------------------------------- */
 
-.hero-full {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  position: relative;
-}
-
-@media (min-width: 640px) {
-  .hero-full {
-    margin-left: 0;
-    width: auto;
-  }
-}
-
 .section-full {
   width: 100vw;
   margin-left: calc(50% - 50vw);

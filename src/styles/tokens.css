@@ -72,6 +72,9 @@
   --color-ink-soft: var(--color-muted);
   --color-forest: var(--color-espresso);
   --color-pistachio: #7FA356;
+  /* A pale tint of the pistachio green. Used for the flat photo placeholders
+     (menu tiles and dishes whose photo has not been uploaded yet). */
+  --color-pistachio-tint: #E9EFDD;
   --color-cream: #FFFDF8;
   --color-cream-dim: #EFE8D6;
 

@@ -1,5 +1,31 @@
 import React from 'react';
 
+const STAR_PATH = 'm12 3.6 2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 17l-5.25 2.75 1-5.85L3.5 9.75l5.9-.85z';
+
+// Five small SVG stars. The number is spelled out for screen readers.
+function Stars({ rating }) {
+  const value = Math.max(0, Math.min(5, Number(rating) || 0));
+  return (
+    <span className="sf-review-stars" aria-label={`${value} out of 5 stars`}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <svg
+          key={n}
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill={n <= value ? 'currentColor' : 'none'}
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d={STAR_PATH} />
+        </svg>
+      ))}
+    </span>
+  );
+}
+
 export default function ReviewCard({ review }) {
   const author = review.customer_name || 'A guest';
   const dish = review.dish_name || review.dishes?.name || null;
@@ -7,16 +33,10 @@ export default function ReviewCard({ review }) {
 
   return (
     <article className="sf-review-card review-card-snap">
-      <div className="sf-review-stars" aria-label={rating + ' out of 5 stars'} style={{ color: '#D97706', fontSize: '0.875rem', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
-        {[1, 2, 3, 4, 5].map((n) => (
-          <span key={n} style={{ marginRight: '2px' }}>{n <= rating ? '*' : 'o'}</span>
-        ))}
-      </div>
-      <p className="sf-review-quote" style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '0.875rem', lineHeight: '1.625', color: 'var(--color-charcoal)', margin: '0 0 0.75rem' }}>
-        "{review.comment}"
-      </p>
-      <div className="sf-review-author" style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--color-charcoal)', marginBottom: '0.25rem' }}>{author}</div>
-      {dish && <div className="sf-review-dish" style={{ fontSize: '0.75rem', color: 'var(--color-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{dish}</div>}
+      <Stars rating={rating} />
+      <p className="sf-review-quote">{review.comment}</p>
+      <div className="sf-review-author">{author}</div>
+      {dish && <div className="sf-review-dish">{dish}</div>}
     </article>
   );
 }

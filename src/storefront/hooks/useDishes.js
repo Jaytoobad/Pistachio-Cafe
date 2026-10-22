@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { MOCK_DISHES, MOCK_MENUS } from '../data/mockData';
-import { fetchAvailableDishes } from '../services/dishes.index';
+import { fetchAvailableDishes, fetchAvailableDishesBySlug } from '../services/dishes.index';
 
 // Mock-first hook for dishes. `menuSlug` filters to a single menu when set.
 // Renders immediately with mock data; only replaces state when Supabase
@@ -12,7 +12,9 @@ export function useDishes(menuSlug = null) {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await fetchAvailableDishes(menuSlug ? menuIdForSlug(menuSlug) : null);
+      const data = menuSlug
+        ? await fetchAvailableDishesBySlug(menuSlug)
+        : await fetchAvailableDishes();
       if (Array.isArray(data) && data.length > 0) setDishes(data);
     } catch (err) {
       if (import.meta.env.DEV) console.warn('useDishes: keeping mock data:', err);

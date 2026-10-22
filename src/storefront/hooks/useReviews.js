@@ -1,23 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
-import { STARTER_REVIEWS } from '../data/content';
 import { fetchApprovedReviews } from '../services/reviews';
 
-// Mock-first hook for approved reviews. Renders immediately with the starter
-// reviews (marked PLACEHOLDER in content.js), then silently replaces with
-// real rows from Supabase only if the request succeeds. On any error the
-// starter reviews stay. Starter reviews only show when no approved reviews
-// exist yet - once real rows arrive they are hidden.
+// Approved reviews only, straight from the database. There is no sample
+// fallback: if there are no approved reviews yet the storefront shows the
+// review form and nothing else.
 export function useReviews() {
-  const [reviews, setReviews] = useState(STARTER_REVIEWS);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const data = await fetchApprovedReviews();
-      if (Array.isArray(data) && data.length > 0) setReviews(data);
+      if (Array.isArray(data)) setReviews(data);
     } catch (err) {
-      if (import.meta.env.DEV) console.warn('useReviews: keeping starter reviews:', err);
+      if (import.meta.env.DEV) console.warn('useReviews: no approved reviews available:', err);
     } finally {
       setLoading(false);
     }

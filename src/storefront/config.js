@@ -30,6 +30,31 @@ export const HOURS = {
   weekend: { open: '08:00', close: '00:00' }, // 8AM - 12AM
 };
 
+// Day labels for the opening hours list, indexed the same way as
+// Date.getDay() (0 = Sunday).
+export const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+// Saturday and Sunday run the weekend hours, every other day is a weekday.
+export function hoursForDay(dayIndex) {
+  return dayIndex === 0 || dayIndex === 6 ? HOURS.weekend : HOURS.weekday;
+}
+
+// "08:00" -> "8AM", "23:00" -> "11PM", "00:00" -> "12AM".
+export function formatClock(time) {
+  const [rawHour, rawMinute] = String(time || '00:00').split(':');
+  const hour24 = Number(rawHour) || 0;
+  const minute = Number(rawMinute) || 0;
+  const suffix = hour24 >= 12 ? 'PM' : 'AM';
+  const hour = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return minute ? `${hour}:${String(minute).padStart(2, '0')}${suffix}` : `${hour}${suffix}`;
+}
+
+// Now, as a Date that reads like the Accra wall clock. Used for the open /
+// closed status and for highlighting today in the hours list.
+export function accraNow() {
+  return new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Accra' }));
+}
+
 // --- Announcement bar ------------------------------------------------------
 // One static line above the header. Leave it empty to hide the bar entirely.
 export const ANNOUNCEMENT = 'Pickup and delivery in Spintex and across Accra';
@@ -98,19 +123,16 @@ export const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '
 // Brand images in /public are temporary placeholders and will be swapped
 // one by one later. Reference every image from here so swaps are one-liners.
 // TODO: replace each placeholder path with the final asset once it exists.
-export const heroSlides = [
-  { image: '/images/hero/hero-1.jpg', title: 'Breakfast, brunch and the good kind of slow.', text: 'Handmade plates, delivered to your door.' },
-  { image: '/images/hero/hero-2.jpg', title: 'Desserts worth the detour.', text: 'Waffles, cakes and ice cream, made fresh.' },
-  { image: '/images/hero/hero-3.jpg', title: 'From our kitchen to your door.', text: 'Order online, track every step.' },
-];
-
 export const IMAGES = {
   logo: '/images/brand/logo.svg',
   logoPng: '/images/brand/logo.png',
-  // Hero image comes from heroImage config
-  hero: '/images/hero/hero.jpg',
+  // Full-bleed home hero. The owner drops the wide shots in
+  // /public/images/hero as hero-1.jpg, hero-2.jpg and hero-3.jpg.
+  hero: '/images/hero/hero-1.jpg',
   heroImage: '/images/hero/hero.jpg',
   heroCoffee: '/images/hero-coffee-beans.jpg',
+  // Story photo for the home page.
+  story: '/images/about/story.jpg',
   // TODO: final about image
   about: '/images/about-marble-bag.jpg',
   // TODO: final menu imagery
@@ -119,6 +141,16 @@ export const IMAGES = {
   // Generic dish placeholder when a dish has no image_url.
   // TODO: final placeholder asset
   placeholder: '/images/placeholder-cup-pistachios.jpg',
+};
+
+// Menu section photos live in /public/images/menus as <slug>.jpg. Only the
+// slugs listed here have a photo on disk; every other section renders a flat
+// pistachio tile instead. Drop the file in and add its slug here.
+export const MENU_SECTION_IMAGES = {
+  // breakfast: '/images/menus/breakfast.jpg',
+  // brunch: '/images/menus/brunch.jpg',
+  // desserts: '/images/menus/desserts.jpg',
+  // combos: '/images/menus/combos.jpg',
 };
 
 // --- Order code -------------------------------------------------------------

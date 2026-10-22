@@ -17,12 +17,54 @@ export const HERO_LOCATION = 'Spintex, Accra, Ghana';
 // the wording shown on the page.
 export const HERO_HOURS_TEXT = 'Mon\u2013Fri 8AM\u201311PM \u00b7 Sat\u2013Sun 8AM\u201312AM';
 
-// Home "about" teaser.
-export const HOME_ABOUT_TEASER = {
-  eyebrow: 'A neighbourhood table, done with care',
-  heading: 'A neighbourhood table, done with care',
-  body: 'Breakfast, brunch, coffee and something sweet, made in our kitchen in Spintex.',
-  body2: 'Order ahead for pickup, or have it delivered anywhere we cover in Accra.',
+// The hero. The headline is sentence case on purpose - no capital blocks.
+export const HOME_HERO = {
+  headline: 'Breakfast, brunch and the good kind of slow.',
+  subline: 'Coffee, desserts and shisha, made in our kitchen in Spintex, Accra.',
+};
+
+// The "Our menu" section: one tile per menu section.
+export const HOME_MENU = {
+  heading: 'Our menu',
+  intro: 'Four sections, one kitchen. Pick a section and order online for pickup or delivery.',
+};
+
+// The "Customer favourites" section: the dishes the owner marks as featured.
+export const HOME_FAVOURITES = {
+  heading: 'Customer favourites',
+};
+
+// The "Our story" section. Plain copy - nothing here that we cannot stand
+// behind, and no filler.
+export const HOME_STORY = {
+  heading: 'Our story',
+  body: 'Pistachio is a cafe in Spintex, Accra. We serve coffee, desserts and shisha, and we host evenings such as paint and sip. Order online for pickup or delivery, or come and sit with us.',
+  button: 'Read our story',
+};
+
+// The reviews section. Only approved reviews are shown; the form is always
+// there so a guest can leave one.
+export const HOME_REVIEWS = {
+  heading: 'Reviews',
+  formHeading: 'Tell us how we did',
+  formIntro: 'Tell us what you loved, or what we could do better.',
+  nameLabel: 'Your name',
+  ratingLabel: 'Rating',
+  reviewLabel: 'Your review',
+  submit: 'Send review',
+  sending: 'Sending',
+  success: 'Thanks for the review.',
+  missing: 'Please add your name, a rating and a short review.',
+  error: 'We could not send your review just now. Please try again.',
+};
+
+// The "Visit us" section.
+export const HOME_VISIT = {
+  heading: 'Visit us',
+  addressHeading: 'Where we are',
+  hoursHeading: 'When we are open',
+  directions: 'Get directions',
+  instagram: 'Instagram',
 };
 
 // --- About ------------------------------------------------------------------
@@ -67,31 +109,5 @@ export const CONTACT_INTRO = 'Questions about an order, a large order or a booki
 
 export const DELIVERY_ZONES_TEXT = 'We deliver within Spintex and the surrounding Accra areas. The fee and the time shown at checkout come from the zone you pick.';
 
-// --- Starter reviews (sample data) ------------------------------------------
-// These three reviews are SAMPLE/INVENTED. They render only in demo mode -
-// i.e. when no approved reviews exist yet. Label them as "sample" in code
-// comments; never present them as real customer feedback.
-
-export const STARTER_REVIEWS = [
-  {
-    name: 'Ama Owusu',
-    role: 'Regular, Saturday brunch',
-    rating: 5,
-    quote: 'The shakshuka is unreal and the staff remember my order. My weekend does not start without this place.',
-    sample: true,
-  },
-  {
-    name: 'Kwabena Asante',
-    role: 'First-time visitor',
-    rating: 5,
-    quote: 'Walked in for coffee, stayed two hours for the brunch board. Genuinely one of the best in the city.',
-    sample: true,
-  },
-  {
-    name: 'Linda Mensah',
-    role: 'Works nearby',
-    rating: 4,
-    quote: 'My go-to for a working lunch. Would love a few more vegan dessert options, but the coffee alone keeps me coming back.',
-    sample: true,
-  },
-];
+// There are no sample reviews. The storefront shows approved reviews from the
+// database and nothing else - never invented quotes.

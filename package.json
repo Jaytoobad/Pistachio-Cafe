@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint . --ext .js,.jsx",
     "photos": "node scripts/optimize-images.mjs",
-    "prebuild": "node scripts/check-encoding.mjs",
+    "prebuild": "node scripts/check-encoding.mjs && node scripts/build-image-manifest.mjs",
     "check:encoding": "node scripts/check-encoding.mjs",
     "check:styles": "node scripts/check-styles.mjs",
     "verify": "node scripts/verify.mjs"
