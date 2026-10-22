@@ -1,23 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
-import { BRAND } from '../config';
+import Seo from '../components/Seo';
 
 export default function NotFound() {
-  useDocumentTitle('Not Found | Pistachio Caf\u00e9');
   return (
-    <div className="sf-container">
-      <section className="sf-section" style={{ textAlign: 'center', paddingTop: 80 }}>
-        <h1 style={{ fontSize: 'clamp(2.5rem, 7vw, 4rem)', margin: 0 }}>404</h1>
-        <p style={{ color: 'var(--color-text-muted)', marginTop: 12, maxWidth: '36ch', marginInline: 'auto' }}>
-          We could not find that page. Head back home or browse the menu.
-        </p>
-        <div style={{ marginTop: 28, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link to="/" className="sf-btn sf-btn-primary">Back to home</Link>
-          <Link to="/menu" className="sf-btn sf-btn-ghost">See the menu</Link>
-        </div>
-        <p style={{ marginTop: 32, color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{BRAND.name} &middot; {BRAND.tagline}</p>
-      </section>
+    <div className="sf-container" style={{ maxWidth: 720, margin: '0 auto', padding: '3rem 1rem', textAlign: 'center' }}>
+      <Seo title="Page not found | Pistachio Cafe" description="The page you are looking for does not exist." />
+      <h1 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '0.75rem' }}>Page not found</h1>
+      <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', lineHeight: 1.7 }}>
+        That page doesn\u2019t exist or has moved.
+      </p>
+      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <Link to="/" className="btn btn-primary">Back home</Link>
+        <Link to="/menu" className="btn btn-outline">See the menu</Link>
+      </div>
     </div>
   );
 }

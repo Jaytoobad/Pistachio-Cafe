@@ -41,6 +41,9 @@ const StoreReviews = lazy(() => import('./storefront/pages/Reviews'));
 const StoreContact = lazy(() => import('./storefront/pages/Contact'));
 const StoreNotFound = lazy(() => import('./storefront/pages/NotFound'));
 const StoreAbout = lazy(() => import('./storefront/pages/About'));
+const StorePrivacy = lazy(() => import('./storefront/pages/policy/Privacy'));
+const StoreTerms = lazy(() => import('./storefront/pages/policy/Terms'));
+const StoreDeliveryInfo = lazy(() => import('./storefront/pages/policy/DeliveryInfo'));
 
 export default function App() {
   const location = useLocation();
@@ -50,7 +53,7 @@ export default function App() {
     return fromState || { pathname: '/' };
   }, [location]);
 
-return (
+  return (
     <AuthProvider>
       <ToastProvider>
         <CartProvider>
@@ -84,11 +87,14 @@ return (
                   <Route path="hours" element={<AdminHours />} />
                   <Route path="report" element={<AdminReport />} />
                   <Route path="86" element={<AdminEightySix />} />
-                  <Route path="*" element={
-                    <ProtectedAdminRoute>
-                      <Navigate to="/admin" replace />
-                    </ProtectedAdminRoute>
-                  } />
+                  <Route
+                    path="*"
+                    element={
+                      <ProtectedAdminRoute>
+                        <Navigate to="/admin" replace />
+                      </ProtectedAdminRoute>
+                    }
+                  />
                 </Route>
 
                 {/* Storefront routes inside the shared storefront layout */}
@@ -98,12 +104,16 @@ return (
                   <Route path="cart" element={<StoreCart />} />
                   <Route path="checkout" element={<StoreCheckout />} />
                   <Route path="track" element={<StoreTrack />} />
+                  <Route path="track/:orderId" element={<StoreTrack />} />
                   <Route path="track/:code" element={<StoreTrack />} />
                   <Route path="about" element={<StoreAbout />} />
                   <Route path="visit" element={<StoreVisit />} />
                   <Route path="gallery" element={<StoreGallery />} />
                   <Route path="reviews" element={<StoreReviews />} />
                   <Route path="contact" element={<StoreContact />} />
+                  <Route path="privacy" element={<StorePrivacy />} />
+                  <Route path="terms" element={<StoreTerms />} />
+                  <Route path="delivery-info" element={<StoreDeliveryInfo />} />
                   <Route path="*" element={<StoreNotFound />} />
                 </Route>
               </Routes>
@@ -114,7 +124,3 @@ return (
     </AuthProvider>
   );
 }
-
-
-
-

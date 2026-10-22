@@ -1,74 +1,41 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { BRAND, CONTACT, HAS_PHONE, HAS_WHATSAPP, DELIVERY_ZONES, DELIVERY_PROMISE, DEFAULT_DELIVERY_ZONE } from '../../config';
-import { DELIVERY_ZONES_TEXT } from '../../data/content';
+import { CONTACT, HOURS, DAY_LABELS, formatClock } from '../../config';
+import Seo from '../../components/Seo';
 
 export default function DeliveryInfo() {
+  const days = [1,2,3,4,5,6,0];
   return (
-    <div className="sf-container">
+    <div className="sf-container" style={{ maxWidth: 720, margin: '0 auto', padding: '2rem 1rem' }}>
+      <Seo title="Delivery info | Pistachio Cafe" description="Delivery zones, fees and opening hours." />
       <section className="sf-section">
-        <p className="sf-hero-eyebrow">Delivery info</p>
-        <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>How delivery works</h1>
-        <p style={{ color: 'var(--color-text-muted)', marginTop: 14, maxWidth: '56ch' }}>
-          Everything you need to know about getting your order from {BRAND.name} to your door.
+        <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', marginBottom: '0.75rem' }}>Delivery info</h1>
+        <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7 }}>
+          We offer pickup in store and delivery across parts of Accra, focused on Spintex.
         </p>
       </section>
 
-      <section className="sf-section" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: '32px 28px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 28 }}>
+      <section className="sf-section" style={{ marginTop: '1.5rem' }}>
+        <div style={{ display: 'grid', gap: 24 }}>
           <div>
-            <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem' }}>Delivery zones</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-              {DELIVERY_ZONES_TEXT}
-            </p>
-            <p style={{ margin: '8px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-              Zones and fees: {DELIVERY_ZONES.map((z) => `${z.name} ${CONTACT.currencySymbol || '\u20b5'}${z.fee}`).join(', ')}. Default zone is {DEFAULT_DELIVERY_ZONE.name}.
-            </p>
+            <h2 style={{ margin: '0 0 8px', fontSize: '1.1rem' }}>Hours</h2>
+            <div style={{ display: 'grid', gap: 6 }}>
+              {days.map((d) => {
+                const h = d === 0 || d === 6 ? HOURS.weekend : HOURS.weekday;
+                return (
+                  <div key={d} style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-text-muted)' }}>
+                    <span>{DAY_LABELS[d]}</span>
+                    <span>{formatClock(h.open)} &ndash; {formatClock(h.close)}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <div>
-            <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem' }}>Estimated time</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-              Orders typically arrive within {DELIVERY_PROMISE.delivery} minutes during opening hours. You will get a live status
-              update when your rider is on the way.
-            </p>
-          </div>
-          <div>
-            <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem' }}>Minimum order</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-              There is no minimum for pickup. Delivery minimums, where they apply, are shown at checkout.
-            </p>
+            <h2 style={{ margin: '0 0 8px', fontSize: '1.1rem' }}>Location</h2>
+            <p style={{ margin: 0, color: 'var(--color-text-muted)', lineHeight: 1.7 }}>{CONTACT.address}</p>
           </div>
         </div>
       </section>
-
-      <section className="sf-section" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20 }}>
-        <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
-          <h3 style={{ margin: '0 0 8px' }}>Contact</h3>
-          <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-            {HAS_PHONE && `Phone: ${CONTACT.phone}`}<br />
-            {HAS_WHATSAPP && `WhatsApp: ${CONTACT.whatsapp}`}<br />
-            Address: {CONTACT.address}
-          </p>
-        </div>
-        <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
-          <h3 style={{ margin: '0 0 8px' }}>Need help?</h3>
-            <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-              If your order is late or you have a special request, message us on Instagram and we will sort it out.
-            </p>
-          <div style={{ marginTop: 14, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            {HAS_PHONE && <a href={`tel:${CONTACT.phone}`} className="sf-btn sf-btn-primary">Call us</a>}
-            {HAS_WHATSAPP && <a href={`https://wa.me/${CONTACT.whatsapp}`} className="sf-btn sf-btn-ghost" target="_blank" rel="noopener noreferrer">WhatsApp</a>}
-            {!HAS_PHONE && !HAS_WHATSAPP && (
-              <a href={BRAND.instagramUrl} className="sf-btn sf-btn-primary" target="_blank" rel="noopener noreferrer">Message us on Instagram</a>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-        <Link to="/menu" className="sf-btn sf-btn-primary">Order now</Link>
-        <Link to="/contact" className="sf-btn sf-btn-ghost">Contact page</Link>
-      </div>
     </div>
   );
 }
