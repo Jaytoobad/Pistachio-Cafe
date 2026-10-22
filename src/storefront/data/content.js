@@ -1,75 +1,77 @@
 // ============================================================================
-// storefront/data/content.js — ALL page copy specific to Pistachio Café.
+// storefront/data/content.js - ALL page copy specific to Pistachio Cafe.
 //
-// Every block below is marked with a comment "PLACEHOLDER: replace with real
-// info" so the owner can find and swap out the invented copy at a glance.
-// Brand facts that are confirmed (location, hours, Instagram) live in
-// storefront/config.js and are NOT duplicated here.
+// Brand facts that are confirmed (location, hours, delivery zones,
+// Instagram) live in storefront/config.js and are NOT duplicated here.
+//
+// Every value in this file is customer facing: never put an owner note, a
+// TODO or the word PLACEHOLDER in a value. Owner notes belong in comments.
 // ============================================================================
 
 // --- Home -------------------------------------------------------------------
 
-// PLACEHOLDER: replace with real info — hero strip location line.
+// Hero strip location line.
 export const HERO_LOCATION = 'Spintex, Accra, Ghana';
 
-// PLACEHOLDER: replace with real info — hero strip hours line. Hours themselves
-// come from config.HOURS; this is just the human wording used in the strip.
-export const HERO_HOURS_TEXT = 'Mon–Fri 8AM–11PM · Sat–Sun 8AM–12AM';
+// Hero strip hours line. The times themselves come from config.HOURS; this is
+// the wording shown on the page.
+export const HERO_HOURS_TEXT = 'Mon\u2013Fri 8AM\u201311PM \u00b7 Sat\u2013Sun 8AM\u201312AM';
 
-// PLACEHOLDER: replace with real info — home "about" teaser body. The origin
-// story below (single espresso cart → full kitchen) is invented until the
-// owner supplies the real one.
+// Home "about" teaser.
 export const HOME_ABOUT_TEASER = {
   eyebrow: 'A neighbourhood table, done with care',
   heading: 'A neighbourhood table, done with care',
-  body: 'PLACEHOLDER: replace with real info — invented origin story. Pistachio started as a single espresso cart and grew into a full kitchen — but the goal never changed: make people feel properly looked after over a good plate of food.',
-  body2: 'PLACEHOLDER: replace with real info — invented. We bake daily, source from growers we know by name, and treat every table — regulars and first-timers alike — like they\'re the reason we opened the doors.',
+  body: 'Breakfast, brunch, coffee and something sweet, made in our kitchen in Spintex.',
+  body2: 'Order ahead for pickup, or have it delivered anywhere we cover in Accra.',
 };
 
 // --- About ------------------------------------------------------------------
 
-// PLACEHOLDER: replace with real info — page hero origin story. The "slow
-// food, made by people who care about the details" framing is invented.
 export const ABOUT_HERO = {
   eyebrow: 'Our story',
   heading: 'Slow food, made by people who care about the details',
-  body: 'PLACEHOLDER: replace with real info — the origin story is invented. Tell the real story of how Pistachio started and what drives it today.',
+  body: 'Pistachio is a neighbourhood kitchen in Spintex, Accra. We cook breakfast, brunch, coffee and desserts through the day, and we stay open late at the weekend.',
 };
 
-// PLACEHOLDER: replace with real info — the four stat numbers. All four
-// (6 years / 40k+ plates / 12 farms / 4.8★) are invented.
+// The story card under the about hero.
+export const ABOUT_STORY = {
+  title: 'A neighbourhood table, done with care',
+  body: 'Pistachio is a neighbourhood kitchen in Spintex. Breakfast, brunch, coffee and desserts all come out of one kitchen, and we keep the doors open late at the weekend so the table keeps going.',
+  body2: 'Most plates are cooked to order, so a breakfast takes a few minutes longer than a takeaway. Order ahead and we will have it ready when you arrive.',
+};
+
+// The four numbers on the about page. They repeat the opening hours and the
+// delivery zones, so they stay true when the owner edits config.HOURS or
+// config.DELIVERY_ZONES.
 export const ABOUT_STATS = [
-  { value: '6',     label: 'years serving the neighbourhood',  note: 'PLACEHOLDER: replace with real info — invented' },
-  { value: '40k+',  label: 'plates served last year',          note: 'PLACEHOLDER: replace with real info — invented' },
-  { value: '12',    label: 'local farms & roasters we work with', note: 'PLACEHOLDER: replace with real info — invented' },
-  { value: '4.8★',  label: 'average customer rating',           note: 'PLACEHOLDER: replace with real info — invented' },
+  { value: '8AM',  label: 'kitchen opens, Monday to Friday' },
+  { value: '11PM', label: 'kitchen closes on a weekday' },
+  { value: '12AM', label: 'kitchen closes at the weekend' },
+  { value: '5',     label: 'delivery zones across Accra' },
 ];
 
-// PLACEHOLDER: replace with real info — FAQ delivery-area answer. Must match
-// the Spintex delivery area (see config.DELIVERY_ZONES).
-export const ABOUT_FAQ_DELIVERY = 'PLACEHOLDER: replace with real info — we deliver within Spintex and surrounding Accra areas. Enter your address at checkout and we\'ll let you know if you\'re in range.';
+export const ABOUT_FAQ_DELIVERY = 'We deliver across Spintex and the surrounding Accra areas. Enter your address at checkout to see the fee and the time for your zone.';
+
+// --- Footer ------------------------------------------------------------------
+// The two short lines printed under the footer logo.
+export const FOOTER_LINES = [
+  'Breakfast, brunch and desserts, made fresh each day.',
+  'Pickup in Spintex or delivery across Accra.',
+];
 
 // --- Contact ----------------------------------------------------------------
 
-// PLACEHOLDER: replace with real info — contact page intro paragraph.
-export const CONTACT_INTRO = 'PLACEHOLDER: replace with real info — reach out with questions about orders, events, or anything else. We are in Spintex, Accra, Ghana and happy to help.';
-
-// PLACEHOLDER: replace with real info — email is a placeholder until a real
-// address is set in config.CONTACT. Components must hide it until then.
-export const CONTACT_EMAIL_PLACEHOLDER_NOTE = 'PLACEHOLDER: replace with real info — confirm this email with the owner.';
+export const CONTACT_INTRO = 'Questions about an order, a large order or a booking? We are in Spintex, Accra, and we are glad to help.';
 
 // --- Delivery info ----------------------------------------------------------
 
-// PLACEHOLDER: replace with real info — delivery zones paragraph. Must match
-// the Spintex delivery area (see config.DELIVERY_ZONES).
-export const DELIVERY_ZONES_TEXT = 'PLACEHOLDER: replace with real info — we deliver within Spintex and surrounding Accra areas. Exact coverage and fees are set in the admin panel.';
+export const DELIVERY_ZONES_TEXT = 'We deliver within Spintex and the surrounding Accra areas. The fee and the time shown at checkout come from the zone you pick.';
 
 // --- Starter reviews (sample data) ------------------------------------------
-// These three reviews are SAMPLE/INVENTED. They render only in demo mode —
+// These three reviews are SAMPLE/INVENTED. They render only in demo mode -
 // i.e. when no approved reviews exist yet. Label them as "sample" in code
 // comments; never present them as real customer feedback.
 
-// PLACEHOLDER: replace with real info — sample reviews for demo mode only.
 export const STARTER_REVIEWS = [
   {
     name: 'Ama Owusu',

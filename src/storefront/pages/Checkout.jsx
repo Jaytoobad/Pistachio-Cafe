@@ -6,7 +6,6 @@ import { useSettings } from '../context/SettingsContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { formatMoney } from '../data/products';
 import { DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE, getDeliveryZone } from '../config';
-import '../../styles/storefront.css';
 
 const PHONE_REGEX = /^(?:\+?233|0)?[1-9][0-9]{7,9}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -97,7 +96,7 @@ export default function Checkout() {
         handler.openIframe();
       } else {
         payBtnRef.current.disabled = true;
-        payBtnRef.current.textContent = 'Processing payment…';
+        payBtnRef.current.textContent = 'Processing payment\u2026';
         setTimeout(() => {
           completeOrder(form.fullname.trim(), form.email.trim(), form.phone.replace(/\s/g, ''), order_code);
         }, 1400);
@@ -130,9 +129,9 @@ export default function Checkout() {
 
   const renderSteps = (status) => {
     return ORDER_STEPS.map((label, i) => (
-      <div key={label} className={`old-step ${i < status ? 'is-done' : i === status ? 'is-current' : ''}`}>
-        <div className="old-step-dot">{i < status ? '✓' : i + 1}</div>
-        <div className="old-step-label">{label}</div>
+      <div key={label} className={'step ' + (i < status ? 'is-done' : i === status ? 'is-current' : '')}>
+        <div className="step-dot">{i < status ? '\u2713' : i + 1}</div>
+        <div className="step-label">{label}</div>
       </div>
     ));
   };
@@ -185,49 +184,49 @@ export default function Checkout() {
   }, []);
 
   return (
-    <div className="old-container min-h-dvh px-4 py-6 old-checkout-page">
+    <div className="container min-h-dvh py-6 checkout-page">
       {!storeOpen && (
         <div style={{ background: '#F8E1DE', border: '1px solid var(--color-error)', color: '#7A2E32', padding: '10px 16px', borderRadius: 'var(--radius-sm)', marginBottom: 12, fontSize: '0.9rem', textAlign: 'center' }}>
           Online orders are currently {acceptingOrders ? 'closed' : 'paused'}. Please try again later.
         </div>
       )}
-      <main id="main">
-        <section className="old-page-hero page-hero">
-          <div className="old-container">
-            <p className="old-page-hero-eyebrow page-hero-eyebrow text-muted">Last step</p>
+      <div>
+        <section className="page-hero">
+          <div className="container">
+            <p className="page-hero-eyebrow text-muted">Last step</p>
             <h1 className="page-hero-title text-charcoal font-serif">Checkout &amp; order tracking</h1>
             <p className="page-hero-desc text-muted">Pay securely with Paystack, then watch your order move from kitchen to counter in real time.</p>
           </div>
         </section>
 
-        <section className="old-section py-6">
-          <div className="old-container">
+        <section className="section">
+          <div className="container">
             <div ref={formRef} data-checkout-form-wrap>
               <form onSubmit={handlePay} data-checkout-form>
-                <div className="old-checkout-section checkout-section">
+                <div className="checkout-section">
                   <h3 className="text-charcoal font-serif">Your details</h3>
-                  <div className="old-form-grid-2 form-grid-2">
-                    <div className="old-form-row form-row">
+                  <div className="form-grid-2">
+                    <div className="form-row">
                       <label htmlFor="fullname" className="block text-xs text-muted uppercase tracking-wider mb-1">Full name</label>
                       <input type="text" id="fullname" name="fullname" required value={form.fullname} onChange={(e) => setForm((f) => ({ ...f, fullname: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
                       {errors.fullname && <span className="block text-xs" style={{ color: '#A8434B', marginTop: '4px' }}>{errors.fullname}</span>}
                     </div>
-                    <div className="old-form-row form-row">
+                    <div className="form-row">
                       <label htmlFor="phone" className="block text-xs text-muted uppercase tracking-wider mb-1">Phone number</label>
                       <input type="tel" id="phone" name="phone" required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
                       {errors.phone && <span className="block text-xs" style={{ color: '#A8434B', marginTop: '4px' }}>{errors.phone}</span>}
                     </div>
                   </div>
-                  <div className="old-form-row form-row">
+                  <div className="form-row">
                     <label htmlFor="email" className="block text-xs text-muted uppercase tracking-wider mb-1">Email address</label>
                     <input type="email" id="email" name="email" required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
                     {errors.email && <span className="block text-xs" style={{ color: '#A8434B', marginTop: '4px' }}>{errors.email}</span>}
                   </div>
                 </div>
 
-                <div className="old-checkout-section checkout-section">
+                <div className="checkout-section">
                   <h3 className="text-charcoal font-serif">Pickup or delivery?</h3>
-                  <div className="old-fulfil-toggle fulfil-toggle" style={{ gap: '0.5rem' }}>
+                  <div className="fulfil-toggle" style={{ gap: '0.5rem' }}>
                     <button
                       type="button"
                       data-fulfil="pickup"
@@ -249,16 +248,16 @@ export default function Checkout() {
                   </div>
                   {form.fulfilment === 'delivery' && (
                     <>
-                      <div className="old-form-row form-row">
+                      <div className="form-row">
                         <label htmlFor="address" className="block text-xs text-muted uppercase tracking-wider mb-1">Delivery address</label>
                         <textarea id="address" name="address" rows="2" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
                         {errors.address && <span className="block text-xs" style={{ color: '#A8434B', marginTop: '4px' }}>{errors.address}</span>}
                       </div>
-                      <div className="old-form-row form-row">
+                      <div className="form-row">
                         <label htmlFor="landmark" className="block text-xs text-muted uppercase tracking-wider mb-1">Landmark (optional)</label>
                         <input type="text" id="landmark" name="landmark" placeholder="e.g. near the Shell station" value={form.landmark} onChange={(e) => setForm((f) => ({ ...f, landmark: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
                       </div>
-                      <div className="old-form-row form-row">
+                      <div className="form-row">
                         <label htmlFor="zone" className="block text-xs text-muted uppercase tracking-wider mb-1">Delivery zone</label>
                         <select
                           id="zone"
@@ -269,34 +268,34 @@ export default function Checkout() {
                           style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }}
                         >
                           {DELIVERY_ZONES.map((z) => (
-                            <option key={z.id} value={z.id}>{z.name} — {formatMoney(z.fee)}</option>
+                            <option key={z.id} value={z.id}>{z.name} &mdash; {formatMoney(z.fee)}</option>
                           ))}
                         </select>
                         <span className="block text-xs text-muted" style={{ marginTop: '4px' }}>
-                          PLACEHOLDER: fee comes from the selected zone (default Spintex GHS 15).
+                          The delivery fee comes from the zone you pick.
                         </span>
                       </div>
                     </>
                   )}
-                  <div className="old-form-row form-row">
+                  <div className="form-row">
                     <label htmlFor="notes" className="block text-xs text-muted uppercase tracking-wider mb-1">Order notes (optional)</label>
                     <textarea id="notes" name="notes" rows="2" placeholder="Allergies, extra napkins, anything we should know" value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} className="w-full" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
                   </div>
                 </div>
 
-                <div className="old-checkout-section checkout-section">
+                <div className="checkout-section">
                   <h3 className="text-charcoal font-serif">Payment</h3>
                   <p className="text-muted text-sm">You'll be securely redirected to Paystack to complete payment by card, mobile money, or bank transfer.</p>
                   <button
                     type="submit"
-                    className="old-btn old-btn-accent old-btn-block btn-cafe btn-cafe-primary"
+                    className="btn btn-accent btn-block btn-cafe btn-cafe-primary"
                     data-pay-btn
                     ref={payBtnRef}
                     disabled={processing || !storeOpen}
                   >
-                    {processing ? 'Processing payment…' : 'Pay now'}
+                    {processing ? 'Processing payment\u2026' : 'Pay now'}
                   </button>
-                  <div className="old-pay-note pay-note" style={{ marginTop: '1rem' }}>
+                  <div className="pay-note" style={{ marginTop: '1rem' }}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true" style={{ width: '18px', height: '18px', flexShrink: 0, marginTop: '0.1rem' }}>
                       <rect x="3" y="11" width="18" height="10" rx="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -308,7 +307,7 @@ export default function Checkout() {
             </div>
 
             <aside className="order-summary-wrap" style={{ marginTop: '1.5rem' }}>
-              <div className="old-summary-card cart-summary" data-checkout-summary-wrap>
+              <div className="summary-card summary-card" data-checkout-summary-wrap>
                 <h3 className="text-charcoal font-serif">Order summary</h3>
                 <div data-checkout-summary>
                   {items.length === 0 ? (
@@ -316,12 +315,12 @@ export default function Checkout() {
                   ) : (
                     <>
                       {items.map((item) => (
-                        <div key={item.dish_id} className="old-order-line order-line">
-                          <span className="text-muted">{item.qty} × {item.name}</span>
+                        <div key={item.dish_id} className="order-line">
+                          <span className="text-muted">{item.qty} &times; {item.name}</span>
                           <span className="text-charcoal">{formatMoney(item.price * item.qty)}</span>
                         </div>
                       ))}
-                      <div className="old-order-line order-line order-line-total" style={{ fontWeight: 700, borderTop: '1px solid #E1D7BD', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
+                      <div className="order-line order-line-total" style={{ fontWeight: 700, borderTop: '1px solid #E1D7BD', paddingTop: '0.75rem', marginTop: '0.5rem' }}>
                         <span className="text-charcoal">Total due</span>
                         <span data-checkout-total className="text-charcoal">{formatMoney(total)}</span>
                       </div>
@@ -331,47 +330,47 @@ export default function Checkout() {
               </div>
 
               {orderId ? (
-                <div className="old-summary-card old-tracker is-active" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
+                <div className="summary-card tracker is-active" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
                   <h3 className="text-charcoal font-serif">Order tracking</h3>
-                  <p className="old-tracker-id text-charcoal">Order <strong data-order-id>{orderId}</strong></p>
-                  <div className="old-steps" data-steps>
+                  <p className="tracker-id text-charcoal">Order <strong data-order-id>{orderId}</strong></p>
+                  <div className="steps" data-steps>
                     {renderSteps(trackerStatus)}
                   </div>
                   <p style={{ fontSize: '0.85rem', color: 'var(--color-muted)', marginTop: '1.5rem' }}>We'll text you when it's ready. Thanks for ordering with us!</p>
                 </div>
               ) : (
-                <div className="old-summary-card old-tracker" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
+                <div className="summary-card tracker" style={{ position: 'static', marginTop: '1.5rem' }} data-tracker>
                   <h3 className="text-charcoal font-serif">Order tracking</h3>
-                  <p className="old-tracker-id text-muted">Order <strong data-order-id>—</strong></p>
-                  <div className="old-steps" data-steps>
+                  <p className="tracker-id text-muted">Order <strong data-order-id>&mdash;</strong></p>
+                  <div className="steps" data-steps>
                     {renderSteps(0)}
                   </div>
                   <p style={{ fontSize: '0.85rem', color: 'var(--color-muted)', marginTop: '1.5rem' }}>We'll text you when it's ready. Thanks for ordering with us!</p>
                 </div>
               )}
 
-              <div className="old-summary-card" style={{ position: 'static', marginTop: '1.5rem' }}>
+              <div className="summary-card" style={{ position: 'static', marginTop: '1.5rem' }}>
                 <h3 className="text-charcoal font-serif">Track an existing order</h3>
-                <form className="old-lookup-row lookup-row" data-lookup-form style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <label htmlFor="lookup-id" className="old-skip-link" style={{ display: 'none' }}>Order ID</label>
+                <form className="lookup-row" data-lookup-form style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <label htmlFor="lookup-id" className="skip-link" style={{ display: 'none' }}>Order ID</label>
                   <input type="text" id="lookup-id" placeholder="e.g. PI482913" required className="flex-1" style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
-                  <button type="submit" className="old-btn old-btn-outline btn-cafe btn-cafe-outline btn-cafe-sm">Track</button>
+                  <button type="submit" className="btn btn-outline btn-cafe btn-cafe-outline btn-cafe-sm">Track</button>
                 </form>
               </div>
             </aside>
           </div>
         </section>
-      </main>
+      </div>
 
-      <div className="old-checkout-sticky-bar">
-        <div className="old-sticky-total">Total due: {formatMoney(total)}</div>
+      <div className="checkout-sticky-bar">
+        <div className="sticky-total">Total due: {formatMoney(total)}</div>
         <button
           type="button"
-          className="old-btn old-btn-accent old-sticky-btn"
+          className="btn btn-accent sticky-btn"
           onClick={handlePay}
           disabled={processing || !storeOpen}
         >
-          {processing ? 'Processing…' : 'Pay now'}
+          {processing ? 'Processing\u2026' : 'Pay now'}
         </button>
       </div>
     </div>

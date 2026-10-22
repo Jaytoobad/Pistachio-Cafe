@@ -4,7 +4,7 @@ import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { BRAND } from '../config';
 
 export default function NotFound() {
-  useDocumentTitle('Not Found | Pistachio Café');
+  useDocumentTitle('Not Found | Pistachio Caf\u00e9');
   return (
     <div className="sf-container">
       <section className="sf-section" style={{ textAlign: 'center', paddingTop: 80 }}>
@@ -16,7 +16,7 @@ export default function NotFound() {
           <Link to="/" className="sf-btn sf-btn-primary">Back to home</Link>
           <Link to="/menu" className="sf-btn sf-btn-ghost">See the menu</Link>
         </div>
-        <p style={{ marginTop: 32, color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{BRAND.name} · {BRAND.tagline}</p>
+        <p style={{ marginTop: 32, color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{BRAND.name} &middot; {BRAND.tagline}</p>
       </section>
     </div>
   );

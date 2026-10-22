@@ -6,7 +6,6 @@ import { TRACK_STATUSES } from '../config';
 import Stepper from '../components/Stepper';
 import StatusPill from '../../lib/components/StatusPill';
 import { formatMoney, formatAccra } from '../../lib/format';
-import '../../styles/storefront.css';
 
 const POLL_MS = 12000;
 
@@ -18,7 +17,7 @@ export default function Track() {
   const [loading, setLoading] = useState(Boolean(code));
   const [error, setError] = useState(null);
   const [input, setInput] = useState('');
-  useDocumentTitle('Track Order | Pistachio Café');
+  useDocumentTitle('Track Order | Pistachio Caf\u00e9');
 
   const load = useCallback((lookupCode, lookupPhone) => {
     let active = true;
@@ -63,7 +62,7 @@ export default function Track() {
       <form onSubmit={handleSearch} style={{ marginTop: 24, display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         <input id="track-code" required value={input} onChange={(e) => setInput(e.target.value)} placeholder="Order code" style={{ minWidth: '140px', maxWidth: '100%', padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
         <input id="track-phone" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" type="tel" style={{ minWidth: '160px', maxWidth: '100%', padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
-        <button type="submit" className="old-btn old-btn-primary btn-cafe btn-cafe-primary">Track</button>
+        <button type="submit" className="btn btn-primary btn-cafe btn-cafe-primary">Track</button>
       </form>
     </section>
   );
@@ -117,7 +116,7 @@ export default function Track() {
           </div>
           <div>
             <h3 style={{ margin: '0 0 8px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-muted)' }}>Customer</h3>
-            <p style={{ margin: 0 }}>{order.customer_name || '—'}</p>
+            <p style={{ margin: 0 }}>{order.customer_name || '\u2014'}</p>
           </div>
           {order.estimated_minutes && (
             <div>
@@ -133,14 +132,14 @@ export default function Track() {
             {order.landmark && <p style={{margin:"0 0 4px", color:"var(--color-muted)", fontSize:"0.85rem"}}><strong className="text-charcoal">Landmark:</strong> {order.landmark}</p>}
             {order.rider && (
               <p style={{ margin: '4px 0 0', color: 'var(--color-muted)', fontSize: '0.85rem' }}>
-                <strong className="text-charcoal">Rider:</strong> {order.rider.name}{order.rider.phone ? ` — ${order.rider.phone}` : ""}
+                <strong className="text-charcoal">Rider:</strong> {order.rider.name}{order.rider.phone ? ` \u2014 ${order.rider.phone}` : ""}
               </p>
             )}
           </div>
         )}
 
         {order.fulfilment !== 'delivery' && order.rider && (
-          <p style={{ marginTop: 16, color: 'var(--color-muted)', fontSize: '0.85rem' }}><strong className="text-charcoal">Rider:</strong> {order.rider.name}{order.rider.phone ? ` — ${order.rider.phone}` : ''}</p>
+          <p style={{ marginTop: 16, color: 'var(--color-muted)', fontSize: '0.85rem' }}><strong className="text-charcoal">Rider:</strong> {order.rider.name}{order.rider.phone ? ` \u2014 ${order.rider.phone}` : ''}</p>
         )}
 
         {order.items && order.items.length > 0 && (

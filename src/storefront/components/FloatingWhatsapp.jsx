@@ -2,9 +2,10 @@ import { useLocation } from 'react-router-dom';
 import { CONTACT, HAS_WHATSAPP } from '../config';
 
 export default function FloatingWhatsapp() {
+  const { pathname } = useLocation();
+
   if (!HAS_WHATSAPP) return null;
 
-  const { pathname } = useLocation();
   const lifted = pathname === '/menu' || pathname === '/checkout';
   const text = "Hi%20Pistachio,%20I'd%20like%20to%20order";
 

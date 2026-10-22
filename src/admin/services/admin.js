@@ -1,7 +1,7 @@
 // src/admin/services/admin.js
 //
 // Single write/query layer for the admin panel. Talks to Supabase through the
-// shared client in src/lib/supabase.js. RLS + is_staff() enforce access — this
+// shared client in src/lib/supabase.js. RLS + is_staff() enforce access - this
 // layer never checks membership itself, it trusts the database.
 
 import { supabase } from '../../lib/supabase';
@@ -382,7 +382,7 @@ export async function fetchDashboardStats() {
     hourCounts[h] = (hourCounts[h] || 0) + 1;
   });
   const busiestHour = Object.entries(hourCounts).sort((a, b) => b[1] - a[1])[0];
-  const busiestHourLabel = busiestHour ? `${busiestHour[0]}:00 (${busiestHour[1]} orders)` : '—';
+  const busiestHourLabel = busiestHour ? `${busiestHour[0]}:00 (${busiestHour[1]} orders)` : '\u2014';
 
   const dishCounts = {};
   rows.forEach((o) => {

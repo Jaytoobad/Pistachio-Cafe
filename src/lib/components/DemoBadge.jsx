@@ -1,4 +1,4 @@
-﻿import { isSupabaseConfigured } from '../supabase';
+import { isSupabaseConfigured } from '../supabase';
 
 export default function DemoBadge() {
   if (import.meta.env.PROD) return null;

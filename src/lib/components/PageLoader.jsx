@@ -1,4 +1,4 @@
-﻿import { SkeletonGrid } from './Skeleton';
+import { SkeletonGrid } from './Skeleton';
 
 export default function PageLoader() {
   return (

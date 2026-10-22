@@ -2,8 +2,8 @@ import React from 'react';
 import { TRACK_STATUSES, TRACK_STATUS_LABELS } from '../config';
 
 // Build the display order of statuses for a given current status.
-// Standard flow: received → confirmed → preparing → ready → out_for_delivery
-// → delivered → completed. Cancelled orders are rendered by StatusPill.
+// Standard flow: received -> confirmed -> preparing -> ready -> out_for_delivery
+// -> delivered -> completed. Cancelled orders are rendered by StatusPill.
 function statusOrder(currentStatus) {
   if (currentStatus === 'cancelled') return [];
   return [...TRACK_STATUSES];
@@ -26,7 +26,7 @@ export default function Stepper({ currentStatus }) {
 
         return (
           <li key={status} className={cls}>
-            <span className="sf-step-dot">{isPast ? '✓' : index + 1}</span>
+            <span className="sf-step-dot">{isPast ? '\u2713' : index + 1}</span>
             <span>{label}</span>
           </li>
         );

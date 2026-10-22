@@ -11,9 +11,6 @@ export default function Privacy() {
         <p style={{ color: 'var(--color-text-muted)', marginTop: 14, maxWidth: '56ch' }}>
           How {BRAND.name} collects, uses and protects your data when you order online.
         </p>
-        <p style={{ color: 'var(--color-text-muted)', marginTop: 8, fontSize: '0.82rem' }}>
-          Draft — review and update before publishing.
-        </p>
       </section>
 
       <section className="sf-section" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: '32px 28px' }}>

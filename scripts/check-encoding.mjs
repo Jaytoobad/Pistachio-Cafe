@@ -35,6 +35,16 @@ const PATTERNS = [
   { label: 'replacement-char', chars: '\ufffd' },
 ];
 
+// A UTF-8 BOM (EF BB BF) must never be written to a source file. Windows
+// PowerShell 5.1 adds one whenever it saves UTF-8 text, which is how the
+// mojibake in this project started.
+const BOM = Buffer.from([0xef, 0xbb, 0xbf]);
+
+// Source files stay pure ASCII on purpose. Special characters are written as
+// HTML entities in JSX and as \u escapes in JS strings, so a file can never be
+// damaged by an editor that guesses the wrong encoding.
+const MAX_ASCII = 126;
+
 function isTextFile(filePath) {
   return TEXT_EXTENSIONS.has(filePath.slice(filePath.lastIndexOf('.')));
 }
@@ -77,9 +87,21 @@ function scan(filePath, findings) {
   } catch {
     return;
   }
+  const rel = relative(ROOT, filePath).split('\\').join('/');
+
+  if (raw.length >= 3 && raw[0] === BOM[0] && raw[1] === BOM[1] && raw[2] === BOM[2]) {
+    findings.push({
+      file: rel,
+      line: 1,
+      column: 1,
+      pattern: 'utf8-bom',
+      codePoints: 'U+FEFF',
+      snippet: 'file starts with a UTF-8 BOM',
+    });
+  }
+
   const text = raw.toString('utf8');
   const lines = text.split(/\r?\n/);
-  const rel = relative(ROOT, filePath).split('\\').join('/');
 
   lines.forEach((line, index) => {
     for (const pattern of PATTERNS) {
@@ -93,6 +115,20 @@ function scan(filePath, findings) {
         codePoints: describe(pattern.chars),
         snippet: line.trim().slice(0, 160),
       });
+    }
+
+    for (const ch of line) {
+      const code = ch.codePointAt(0);
+      if (code <= MAX_ASCII) continue;
+      findings.push({
+        file: rel,
+        line: index + 1,
+        column: line.indexOf(ch) + 1,
+        pattern: 'non-ascii',
+        codePoints: describe(ch),
+        snippet: line.trim().slice(0, 160),
+      });
+      break;
     }
   });
 }
@@ -138,4 +174,5 @@ for (const [file, items] of byFile) {
 
 console.log('');
 console.log('Fix: use HTML entities in JSX, \\u escapes in JS strings, and re-save as UTF-8 without BOM.');
+console.log('Every source file must stay pure ASCII.');
 process.exit(1);

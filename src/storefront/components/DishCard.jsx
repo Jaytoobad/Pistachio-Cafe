@@ -1,39 +1,14 @@
 import React from 'react';
 import { formatMoney } from '../../lib/format';
-import { IMAGES } from '../config';
 import SafeImg from './SafeImg';
-import { useFavourites } from '../context/FavouritesContext';
-
-const FOOD_ICON = '🍽️';
-
-const HEART_SVG = (
-  <svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M18.5 4.5c-1.2-1.2-3-1.2-4.2 0L12 6.8l-2.3-2.3c-1.2-1.2-3-1.2-4.2 0-1.2 1.2-1.2 3 0 4.2l4.5 4.5 4.5-4.5c1.2-1.2 1.2-3 0-4.2" />
-  </svg>
-);
-
-const HEART_FILLED_SVG = (
-  <svg width="20" height="20" viewBox="0 0 22 22" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M18.5 4.5c-1.2-1.2-3-1.2-4.2 0L12 6.8l-2.3-2.3c-1.2-1.2-3-1.2-4.2 0-1.2 1.2-1.2 3 0 4.2l4.5 4.5 4.5-4.5c1.2-1.2 1.2-3 0-4.2" />
-  </svg>
-);
 
 export default function DishCard({ dish, onAdd, onQuickView }) {
-  const { toggle, isFav } = useFavourites();
   const [qty, setQty] = React.useState(1);
   const [editingQty, setEditingQty] = React.useState(false);
   const price = Number(dish.price || 0);
 
   return (
-    <article className="dish-card card" style={{ position: 'relative' }}>
-      <button
-        type="button"
-        className="dish-fav"
-        aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
-        onClick={(e) => { e.stopPropagation(); toggle(dish.id); }}
-      >
-        {isFav ? HEART_FILLED_SVG : HEART_SVG}
-      </button>
+    <article className="dish-card card">
       <div
         className="dish-media"
         onClick={() => onQuickView?.(dish)}
@@ -44,7 +19,7 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
           label={dish.name || 'Dish'}
           loading="lazy"
           data-name={dish.name || 'Dish'}
-          className="w-full h-full object-cover"
+          className="dish-image"
         />
         {dish.menu_name || (dish.menu && dish.menu.name) ? (
           <span className="dish-tag">{dish.menu_name || dish.menu.name}</span>
@@ -64,7 +39,7 @@ export default function DishCard({ dish, onAdd, onQuickView }) {
                   aria-label="Decrease quantity"
                   onClick={() => setQty(qty - 1)}
                 >
-                  −
+                  &minus;
                 </button>
                 <span>{qty}</span>
                 <button

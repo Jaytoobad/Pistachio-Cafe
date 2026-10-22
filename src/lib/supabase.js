@@ -1,6 +1,6 @@
 // src/lib/supabase.js
 //
-// Supabase client. NEVER throws when env vars are missing — the app must keep
+// Supabase client. NEVER throws when env vars are missing - the app must keep
 // rendering in demo mode (no secrets set yet). Export `isSupabaseConfigured`
 // and a client (or null) so every data layer can check before calling.
 
@@ -15,7 +15,7 @@ if (!isSupabaseConfigured) {
   // Only warn in dev so production builds stay quiet.
   if (import.meta.env.DEV) {
     console.info(
-      '%cDemo mode active — Supabase env vars are not set. The site is showing mock data.',
+      '%cDemo mode active \u2014 Supabase env vars are not set. The site is showing mock data.',
       'color: #7FA356; font-weight: 600;',
     );
   }

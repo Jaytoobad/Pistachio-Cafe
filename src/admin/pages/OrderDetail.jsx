@@ -144,7 +144,7 @@ const statusRank = order ? STATUS_ORDER.indexOf(order.status) : -1;
 
       <div className="ticket">
         <div className="ticket-head">
-          <h2>Pistachio Café</h2>
+          <h2>Pistachio Caf&eacute;</h2>
           <p>Spintex, Accra &bull; Elegance you can taste</p>
         </div>
           <p style={{ margin: 0 }}>Order {order.order_code}</p>
@@ -257,7 +257,7 @@ const statusRank = order ? STATUS_ORDER.indexOf(order.status) : -1;
             className="btn-outline"
             style={{ padding: '6px 10px', fontSize: '0.9rem' }}
           >
-            <option value={order.status} disabled>— Change status —</option>
+            <option value={order.status} disabled>&mdash; Change status &mdash;</option>
             {STATUS_ORDER.filter((s) => STATUS_ORDER.indexOf(s) > statusRank).map((s) => (
               <option key={s} value={s}>{STATUS_LABELS[s]}</option>
             ))}
@@ -271,7 +271,7 @@ const statusRank = order ? STATUS_ORDER.indexOf(order.status) : -1;
             className="btn-outline"
             style={{ padding: '6px 10px', fontSize: '0.9rem' }}
           >
-            <option value="">— No rider —</option>
+            <option value="">&mdash; No rider &mdash;</option>
             {riders.filter((r) => r.is_active !== false).map((r) => (
               <option key={r.id} value={r.id}>{r.name}</option>
             ))}

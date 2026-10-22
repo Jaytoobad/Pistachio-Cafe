@@ -104,12 +104,12 @@ export default function AdminLayout() {
 
   useEffect(() => {
     document.title = pageTitle();
-    return () => { document.title = 'Pistachio Café — Admin'; };
+    return () => { document.title = 'Pistachio Caf\u00e9 \u2014 Admin'; };
   }, [location.pathname]);
 
   const exact = ALL_LINKS.find((l) => location.pathname === l.to);
   const page = exact ? exact.label : 'Admin';
-  const pageTitle = () => `${page} — Pistachio Admin`;
+  const pageTitle = () => `${page} \u2014 Pistachio Admin`;
 
   const saveSetting = async (key, value) => {
     try {
@@ -140,7 +140,7 @@ export default function AdminLayout() {
             </button>
           </div>
           <div className="control-group">
-            <button className={`topbar-toggle ${busy ? 'active' : ''}`} onClick={() => saveSetting('busy_minutes', busy ? 0 : 30)} title="Busy mode — adds extra minutes to ETA">
+            <button className={`topbar-toggle ${busy ? 'active' : ''}`} onClick={() => saveSetting('busy_minutes', busy ? 0 : 30)} title="Busy mode &mdash; adds extra minutes to ETA">
               <Icon name="clock" size="18" />
               <span className="toggle-label">Busy</span>
             </button>
@@ -159,7 +159,7 @@ export default function AdminLayout() {
         </div>
       </header>
       <aside className={`admin-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`} aria-label="Admin navigation">
-        <div className="admin-brand" onClick={() => setSidebarCollapsed((c) => !c)}><Icon name="home" size="20" color="var(--color-pistachio)" /><span>{sidebarCollapsed ? 'PC' : 'Pistachio Café'}</span></div>
+        <div className="admin-brand" onClick={() => setSidebarCollapsed((c) => !c)}><Icon name="home" size="20" color="var(--color-pistachio)" /><span>{sidebarCollapsed ? 'PC' : 'Pistachio Caf\u00e9'}</span></div>
         <nav>
           {GROUPS.map((group) => (
             <div key={group.label} className="nav-group">

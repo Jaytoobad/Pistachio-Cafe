@@ -77,7 +77,7 @@ export default function Subscribers() {
             {subscribers.map((s) => (
               <tr key={s.id}>
                 <td>{s.email}</td>
-                <td className="cell-muted">{s.created_at ? new Date(s.created_at).toLocaleDateString() : '—'}</td>
+                <td className="cell-muted">{s.created_at ? new Date(s.created_at).toLocaleDateString() : '\u2014'}</td>
                 <td className="table-actions">
                   <button className="btn btn-sm btn-outline" onClick={() => requestDelete(s)}>Remove</button>
                 </td>

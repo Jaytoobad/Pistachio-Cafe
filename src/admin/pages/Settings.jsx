@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchSettings, updateSettings } from '../services/admin';
 import { formatMoney } from '../../lib/format';
 import { useToast } from '../../lib/context/ToastContext';
@@ -30,10 +30,10 @@ export default function Settings() {
 
   const generalFields = [
     { key: 'delivery_enabled', label: 'Delivery enabled', type: 'checkbox' },
-    { key: 'delivery_fee', label: 'Delivery fee', type: 'number', prefix: 'GHâ‚µ' },
+    { key: 'delivery_fee', label: 'Delivery fee', type: 'number', prefix: 'GH\u20b5' },
     { key: 'contact_phone', label: 'Contact phone', type: 'text' },
     { key: 'address', label: 'Address', type: 'text' },
-    { key: 'cafe_name', label: 'CafÃ© name', type: 'text' },
+    { key: 'cafe_name', label: 'Caf&eacute; name', type: 'text' },
   ];
 
   async function handleSave(e) {

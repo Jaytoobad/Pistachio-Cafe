@@ -1,5 +1,5 @@
 // ============================================================================
-// storefront/config.js — single source of truth for the customer-facing site.
+// storefront/config.js - single source of truth for the customer-facing site.
 // Brand facts, image paths and contact details live here ONLY so that swapping
 // an image or correcting a phone number is a one-line change.
 // ============================================================================
@@ -7,7 +7,7 @@
 // --- Brand ------------------------------------------------------------------
 
 export const BRAND = {
-  name: 'Pistachio Café',
+  name: 'Pistachio Caf\u00e9',
   tagline: 'Elegance you can taste',
   // Location: Spintex, Accra, Ghana.
   location: 'Spintex, Accra, Ghana',
@@ -15,7 +15,7 @@ export const BRAND = {
   offerings: ['Coffee', 'Desserts', 'Shisha'],
   instagram: '@pistachio.ghana',
   instagramUrl: 'https://instagram.com/pistachio.ghana',
-  // PLACEHOLDER: replace with real info — Facebook, X and TikTok have no
+  // PLACEHOLDER: replace with real info - Facebook, X and TikTok have no
   // confirmed URLs yet. Keep them empty so components hide the icons.
   facebookUrl: '',
   xUrl: '',
@@ -23,12 +23,16 @@ export const BRAND = {
 };
 
 // --- Hours ------------------------------------------------------------------
-// Weekdays Mon–Fri, weekends Sat–Sun. Times are local Accra (UTC+0, no DST).
+// Weekdays Mon-Fri, weekends Sat-Sun. Times are local Accra (UTC+0, no DST).
 
 export const HOURS = {
-  weekday: { open: '08:00', close: '23:00' }, // 8AM – 11PM
-  weekend: { open: '08:00', close: '00:00' }, // 8AM – 12AM
+  weekday: { open: '08:00', close: '23:00' }, // 8AM - 11PM
+  weekend: { open: '08:00', close: '00:00' }, // 8AM - 12AM
 };
+
+// --- Announcement bar ------------------------------------------------------
+// One static line above the header. Leave it empty to hide the bar entirely.
+export const ANNOUNCEMENT = 'Pickup and delivery in Spintex and across Accra';
 
 // --- Contact ----------------------------------------------------------------
 // Phone, WhatsApp and email are placeholders until the owner confirms them.
@@ -38,10 +42,10 @@ export const CONTACT = {
   phone: '+233 00 000 0000',
   whatsapp: '233000000000',
   email: 'hello@pistachio.cafe',
-  // Street address — the neighbourhood is confirmed.
+  // Street address - the neighbourhood is confirmed.
   address: 'Spintex, Accra, Ghana',
   // Google Maps search link. Clicking it opens the Maps app / web view
-  // centred on the café's neighbourhood.
+  // centred on the cafe's neighbourhood.
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Pistachio+Cafe+Spintex+Accra',
 };
 
@@ -81,13 +85,13 @@ export const SITE_URL = import.meta.env.VITE_SITE_URL || 'https://pistachio-cafe
 // Products are stored in Ghana cedis (GHS). Paystack wants the amount in
 // pesewas (kobo), so multiply by 100 when talking to Paystack.
 export const CURRENCY = 'GHS';
-export const CURRENCY_SYMBOL = 'GH₵';
+export const CURRENCY_SYMBOL = 'GH\u20b5';
 export const TO_PAYSTACK = (cedis) => Math.round(Number(cedis || 0) * 100);
 export const FROM_PAYSTACK = (pesewas) => Number(pesewas || 0) / 100;
 
 // --- Payment ----------------------------------------------------------------
 // Public key is safe to ship to the browser. The secret key lives ONLY in
-// Supabase function secrets — never here, never prefixed with VITE_.
+// Supabase function secrets - never here, never prefixed with VITE_.
 export const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
 
 // --- Image paths ------------------------------------------------------------

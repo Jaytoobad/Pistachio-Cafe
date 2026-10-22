@@ -11,7 +11,6 @@ export const ROUTES = {
   privacy: '/privacy',
   terms: '/terms',
   deliveryInfo: '/delivery-info',
-  favourites: '/favourites',
 };
 
 export default ROUTES;

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 export default function Sidebar({ links, user, onLogout }) {
   return (
     <aside className="admin-sidebar" aria-label="Admin navigation">
-      <div className="admin-brand">Pistachio Café</div>
+      <div className="admin-brand">Pistachio Caf&eacute;</div>
       <nav>
         {links.map((l) => (
           <NavLink

@@ -8,7 +8,6 @@ import { formatMoney } from '../../lib/format';
 import { IMAGES } from '../config';
 import DishCard from '../components/DishCard';
 import DishDetailModal from '../components/DishDetailModal';
-import '../../styles/storefront.css';
 
 const FILTERS = [
   { label: 'All', value: 'all' },
@@ -41,22 +40,22 @@ export default function Menu() {
 
   return (
     <div className={`min-h-dvh menu-page${count > 0 ? ' has-cart' : ''}`}>
-      <main id="main">
+      <div>
         <section className="page-hero">
           <div className="container">
             <p className="page-hero-eyebrow">The full spread</p>
             <h1 className="page-hero-title">Breakfast, brunch & dessert</h1>
-            <p className="page-hero-desc">Everything's made fresh in-house. Add whatever catches your eye — you can review your order before you pay.</p>
+            <p className="page-hero-desc">Everything's made fresh in-house. Add whatever catches your eye &mdash; you can review your order before you pay.</p>
           </div>
         </section>
 
         <section className="section">
           <div className="container">
-            <div className="old-filter-row menu-filter-row">
+            <div className="filter-row menu-filter-row">
               {FILTERS.map((f) => (
                 <button
                   key={f.value}
-                  className="old-filter-pill filter-pill"
+                  className="filter-pill"
                   aria-pressed={activeFilter === f.value}
                   onClick={() => {
                     setActiveFilter(f.value);
@@ -82,13 +81,13 @@ export default function Menu() {
               ))}
               {filtered.length === 0 && (
                 <p className="text-muted text-sm" style={{ gridColumn: '1 / -1', textAlign: 'center', width: '100%' }}>
-                  No items in this category yet — check back soon.
+                  No items in this category yet &mdash; check back soon.
                 </p>
               )}
             </div>
           </div>
         </section>
-      </main>
+      </div>
 
       {quickView && (
         <DishDetailModal

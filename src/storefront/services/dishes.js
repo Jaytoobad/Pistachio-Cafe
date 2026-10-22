@@ -1,6 +1,6 @@
-﻿import { supabase } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 
-// Real Supabase queries for the storefront. These THROW on error — callers
+// Real Supabase queries for the storefront. These THROW on error - callers
 // that want a demo fallback must wrap them (see dishes.index.js).
 // The browser never sends prices; it only sends dish IDs + quantities.
 

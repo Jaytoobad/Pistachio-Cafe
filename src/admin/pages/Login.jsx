@@ -51,9 +51,9 @@ export default function Login() {
           <PasswordInput id="admin-password" name="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         {error && <p className="form-error" role="alert">{error}</p>}
-        <button className="btn btn-primary btn-block" disabled={loading} type="submit">{loading ? 'Signing in…' : 'Sign in'}</button>
+        <button className="btn btn-primary btn-block" disabled={loading} type="submit">{loading ? 'Signing in\u2026' : 'Sign in'}</button>
         <p className="auth-hint">Staff accounts only.</p>
-        <p className="auth-robots">Pistachio Cafe admin · Spintex, Accra</p>
+        <p className="auth-robots">Pistachio Cafe admin &middot; Spintex, Accra</p>
       </form>
     </div>
   );

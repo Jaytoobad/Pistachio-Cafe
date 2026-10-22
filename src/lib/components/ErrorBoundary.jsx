@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export class ErrorBoundary extends React.Component {
@@ -14,7 +14,7 @@ export class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     this.setState({ errorInfo });
     // Always log the real error to the console for debugging.
-    // Customers never see this text — only the friendly message below.
+    // Customers never see this text - only the friendly message below.
     console.error('ErrorBoundary caught:', error, errorInfo);
   }
 
@@ -36,7 +36,7 @@ function ErrorFallback({ error, onRetry }) {
   // Only surface a friendly message to customers; in dev we also log it
   // once here so it's visible next to the UI.
   if (import.meta.env.DEV && error) {
-    console.warn('ErrorBoundary UI — error.message:', error.message);
+    console.warn('ErrorBoundary UI \u2014 error.message:', error.message);
   }
 
   return (

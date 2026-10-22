@@ -45,7 +45,7 @@ export default function Dashboard() {
       <div className="page-header">
         <div>
           <h1>Dashboard</h1>
-          <p className="page-sub">Today at Pistachio Café</p>
+          <p className="page-sub">Today at Pistachio Caf&eacute;</p>
         </div>
       </div>
 

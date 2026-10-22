@@ -1,8 +1,8 @@
 // ============================================================================
-// EDGE FUNCTION: paystack-webhook  (Pistachio Café)
+// EDGE FUNCTION: paystack-webhook  (Pistachio Cafe)
 // ============================================================================
 // Paystack calls this URL directly (server-to-server) when a transaction's
-// status changes. This is the RELIABLE source of truth for payment status —
+// status changes. This is the RELIABLE source of truth for payment status -
 // customers can close their browser tab before the redirect-based verify
 // runs, but the webhook still fires. Both paths call the same fulfilment
 // logic, and both are idempotent on payment_reference, so whichever arrives

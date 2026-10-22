@@ -102,7 +102,7 @@ export default function Orders() {
     if (!next) return;
     try {
       await updateOrderStatus(order.id, next, `Moved to ${STATUS_LABELS[next]}`);
-      showToast(`Order ${order.order_code} → ${STATUS_LABELS[next]}`);
+      showToast(`Order ${order.order_code} \u2192 ${STATUS_LABELS[next]}`);
     } catch (err) {
       showToast(err?.message || 'Could not update order.', 'error');
     }

@@ -1,4 +1,4 @@
-﻿export const MOCK_MENUS = [
+export const MOCK_MENUS = [
   { id: 'm-breakfast', slug: 'breakfast', name: 'Breakfast', sort_order: 0, is_visible: true },
   { id: 'm-brunch', slug: 'brunch', name: 'Brunch', sort_order: 1, is_visible: true },
   { id: 'm-desserts', slug: 'desserts', name: 'Desserts', sort_order: 2, is_visible: true },

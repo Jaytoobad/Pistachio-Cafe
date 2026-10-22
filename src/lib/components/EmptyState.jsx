@@ -1,4 +1,4 @@
-﻿export function EmptyState({ title = 'Nothing here yet', description = 'Check back soon.', action = null }) {
+export function EmptyState({ title = 'Nothing here yet', description = 'Check back soon.', action = null }) {
   return (
     <div className="sf-empty">
       <h3>{title}</h3>

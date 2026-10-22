@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   fetchOrderById,
@@ -127,7 +127,7 @@ export default function OrderDrawer({ open, onClose, orderId }) {
     <div className="modal-overlay order-drawer-overlay" role="dialog" aria-modal="true" aria-label="Order details" onClick={onClose} style={{ alignItems: 'flex-start', justifyContent: 'center', paddingTop: 40 }}>
       <div className="modal order-drawer" onClick={(e) => e.stopPropagation()} style={{ minHeight: '40vh', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, paddingBottom: 14, borderBottom: '1px solid var(--color-border)' }}>
-          <h3 style={{ flex: 1 }}>Order {order ? order.order_code : 'â€”'}</h3>
+          <h3 style={{ flex: 1 }}>Order {order ? order.order_code : '\u2014'}</h3>
           <button className="btn btn-outline btn-sm" onClick={onClose}><Icon name="close" size="16" /></button>
         </div>
 
@@ -218,12 +218,12 @@ export default function OrderDrawer({ open, onClose, orderId }) {
                   className="btn-outline"
                   style={{ flex: 1, padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff' }}
                 >
-                  <option value={order.status} disabled>â€” Change status â€”</option>
+                  <option value={order.status} disabled>&mdash; Change status &mdash;</option>
                   {STATUS_ORDER.filter((s) => STATUS_ORDER.indexOf(s) > STATUS_ORDER.indexOf(order.status)).map((s) => (
                     <option key={s} value={s}>{STATUS_LABELS[s]}</option>
                   ))}
                 </select>
-                <button className="btn btn-primary btn-sm" onClick={() => handleStatus(selectedStatus)} disabled={!selectedStatus || saving.has('status')}>{saving.has('status') ? 'â€¦' : 'Move'}</button>
+                <button className="btn btn-primary btn-sm" onClick={() => handleStatus(selectedStatus)} disabled={!selectedStatus || saving.has('status')}>{saving.has('status') ? '\u2026' : 'Move'}</button>
               </div>
 
               {order.fulfilment === 'delivery' && order.status !== 'completed' && order.status !== 'cancelled' && (
@@ -236,7 +236,7 @@ export default function OrderDrawer({ open, onClose, orderId }) {
                     className="btn-outline"
                     style={{ flex: 1, padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff' }}
                   >
-                    <option value="">â€” No rider â€”</option>
+                    <option value="">&mdash; No rider &mdash;</option>
                     {riders.filter((r) => r.is_active !== false).map((r) => (
                       <option key={r.id} value={r.id}>{r.name}</option>
                     ))}
@@ -305,7 +305,7 @@ function ticketHtml(order) {
   @media print{body *{visibility:hidden}.ticket,.ticket *{visibility:visible}.ticket{position:static;width:80mm;margin:0;box-shadow:none;border:none;}body{background:#fff;padding:0;}}
   </style></head><body>
   <div class="ticket">
-    <div class="ticket-head"><h2>Pistachio CafÃ©</h2><p>Spintex, Accra &bull; Order ${escapeHtml(order.order_code)}</p><p>${formatAccra(order.created_at)} &bull; ${order.fulfilment === 'delivery' ? 'Delivery' : 'Pickup'}</p></div>
+    <div class="ticket-head"><h2>Pistachio Caf\u00e9</h2><p>Spintex, Accra &bull; Order ${escapeHtml(order.order_code)}</p><p>${formatAccra(order.created_at)} &bull; ${order.fulfilment === 'delivery' ? 'Delivery' : 'Pickup'}</p></div>
     <table class="ticket-items"><tbody>${items || '<tr><td>No items</td></tr>'}</tbody></table>
     <hr />
     <div class="ticket-total">Subtotal ${formatMoney(order.subtotal || 0)}<br />${order.delivery_fee > 0 ? `Delivery ${formatMoney(order.delivery_fee)}<br />` : ''}Total ${formatMoney(order.total || 0)}</div>

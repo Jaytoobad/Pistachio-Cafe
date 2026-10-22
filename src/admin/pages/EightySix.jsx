@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchDishes, fetchMenus, setDishAvailable, saveMenu } from '../services/admin';
 import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
@@ -86,10 +86,10 @@ export default function EightySix() {
         <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: 10 }}>Hiding a menu removes all its dishes from the storefront.</p>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           <select value={hideMenuId || ''} onChange={(e) => setHideMenuId(e.target.value || null)} className="field-input" style={{ minWidth: 200 }}>
-            <option value="">â€” Select menu â€”</option>
+            <option value="">&mdash; Select menu &mdash;</option>
             {menus.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
           </select>
-          <button className="btn btn-danger btn-sm" onClick={() => handleHideMenu(hideMenuId)} disabled={!hideMenuId || hideSaving}>{hideSaving ? 'Hidingâ€¦' : 'Hide menu'}</button>
+          <button className="btn btn-danger btn-sm" onClick={() => handleHideMenu(hideMenuId)} disabled={!hideMenuId || hideSaving}>{hideSaving ? 'Hiding\u2026' : 'Hide menu'}</button>
         </div>
       </div>
     </div>

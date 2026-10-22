@@ -17,7 +17,7 @@ const routes = [
   '/admin/login',
 ];
 
-test.describe('Pistachio Café — route smoke test', () => {
+test.describe('Pistachio Caf\u00e9 \u2014 route smoke test', () => {
   for (const route of routes) {
     test(`route ${route} renders without React errors`, async ({ page }) => {
       const errors = [];

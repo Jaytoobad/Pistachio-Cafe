@@ -38,7 +38,7 @@ export default function Customers() {
       { key: 'phone', label: 'Phone' },
       { key: 'email', label: 'Email' },
       { key: 'orders', label: 'Orders' },
-      { key: 'total_spent', label: 'Total spent (GH₵)' },
+      { key: 'total_spent', label: 'Total spent (GH\u20b5)' },
       { key: 'last_order', label: 'Last order' },
     ]);
     downloadCsv(content, 'customers.csv');

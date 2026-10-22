@@ -4,7 +4,7 @@ import { PAYSTACK_PUBLIC_KEY, TO_PAYSTACK, CURRENCY } from '../config';
 const FN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-order`;
 
 // Create an order and start Paystack payment.
-// The edge function recomputes the total from the dishes table — the browser
+// The edge function recomputes the total from the dishes table - the browser
 // only ever sends dish IDs and quantities.
 export async function createOrder({ items, customer_name, phone, email, fulfilment, address, landmark, notes, delivery_fee }) {
   const session = await supabase.auth.getSession();
@@ -37,7 +37,7 @@ export async function createOrder({ items, customer_name, phone, email, fulfilme
   return data;
 }
 
-// Verify a payment after Paystack redirects back. Never trusts the browser —
+// Verify a payment after Paystack redirects back. Never trusts the browser -
 // this asks Paystack directly and only marks the order paid on success.
 export async function verifyPayment(reference) {
   const session = await supabase.auth.getSession();
@@ -80,7 +80,7 @@ export function openPaystack({ reference, amount, email, publicKey, onSuccess, o
     const handler = Paystack.setup({
       key: publicKey || PAYSTACK_PUBLIC_KEY,
       email: email || 'customer@pistachio.cafe',
-      amount: TO_PAYSTACK(amount), // cedis → pesewas
+      amount: TO_PAYSTACK(amount), // cedis -> pesewas
       currency: CURRENCY,
       reference,
       callback: (resp) => {

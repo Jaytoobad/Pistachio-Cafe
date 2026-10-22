@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchDashboardStats, ORDER_STATUSES } from '../services/admin';
 import { formatMoney, formatAccra } from '../../lib/format';
@@ -32,7 +32,7 @@ export default function Today() {
 
   if (loading) return (
     <div className="page page-shell">
-      <div className="page-header"><h1>Today</h1><p className="page-sub">Today at Pistachio CafÃ©</p></div>
+      <div className="page-header"><h1>Today</h1><p className="page-sub">Today at Pistachio Caf&eacute;</p></div>
       <AdminSkeletonCards count={4} />
       <AdminSkeletonText width="100%" /> <AdminSkeletonText width="60%" />
       <AdminSkeletonCards count={5} />
@@ -40,7 +40,7 @@ export default function Today() {
   );
   if (error) return (
     <div className="page page-shell">
-      <div className="page-header"><h1>Today</h1><p className="page-sub">Today at Pistachio CafÃ©</p></div>
+      <div className="page-header"><h1>Today</h1><p className="page-sub">Today at Pistachio Caf&eacute;</p></div>
       <AdminErrorState message="Could not load today's dashboard." onRetry={load} />
     </div>
   );
@@ -60,7 +60,7 @@ export default function Today() {
       <div className="page-header">
         <div>
           <h1>Today</h1>
-          <p className="page-sub">Today at Pistachio CafÃ©</p>
+          <p className="page-sub">Today at Pistachio Caf&eacute;</p>
         </div>
         <div className="page-header-actions">
           <Link to="/admin/orders" className="btn btn-primary">View all orders</Link>
@@ -98,7 +98,7 @@ export default function Today() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, alignItems: 'start' }}>
         <div className="chart-wrap">
-          <h3 style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Revenue â€” last 7 days</h3>
+          <h3 style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Revenue &mdash; last 7 days</h3>
           <RevenueChart data={revenueChart} />
         </div>
         <div>

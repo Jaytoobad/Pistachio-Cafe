@@ -13,7 +13,12 @@ export default function DishDetailModal({ open, dish, onClose, onAdd }) {
   return (
     <div className="sf-modal" role="dialog" aria-modal="true" onClick={onClose}>
       <div className="sf-modal-content" onClick={e=>e.stopPropagation()}>
-        <button className="sf-modal-close" onClick={onClose} aria-label="Close">×</button>
+        <button className="sf-modal-close" onClick={onClose} aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <path d="m6 6 12 12" />
+            <path d="M18 6 6 18" />
+          </svg>
+        </button>
         <h3>{dish.name}</h3>
         <p>{dish.description}</p>
         <div className="sf-field">

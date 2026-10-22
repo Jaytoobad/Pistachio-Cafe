@@ -93,7 +93,7 @@ export default function MenuSections() {
       {blockedTarget && (
         <div className="card" style={{ padding: 14, marginBottom: 16 }}>
           <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--color-error)' }}>
-            Cannot delete &ldquo;{blockedTarget.name}&rdquo; — it has {dishCounts[blockedTarget.id] || 0} dish(s). Move those dishes to another menu first.
+            Cannot delete &ldquo;{blockedTarget.name}&rdquo; &mdash; it has {dishCounts[blockedTarget.id] || 0} dish(s). Move those dishes to another menu first.
           </p>
           <button className="btn btn-outline btn-sm" onClick={() => setBlockedTarget(null)}>OK</button>
         </div>

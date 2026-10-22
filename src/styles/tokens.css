@@ -1,6 +1,13 @@
-/* Pistachio Café — design tokens (mobile-first) */
+/* ============================================================================
+   Pistachio Cafe - design tokens
+   Colours, type scale and spacing live here. Nothing else in the project may
+   hard-code a brand colour: if a new colour is needed, add a token first.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap');
+
 :root {
-  /* Base spacing (4px scale) */
+  /* --- Spacing (4px scale) --- */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -19,7 +26,7 @@
   --space-20: 80px;
   --space-24: 96px;
 
-  /* Fluid typography */
+  /* --- Type scale --- */
   --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.8125rem);
   --text-sm: clamp(0.875rem, 0.825rem + 0.25vw, 0.9375rem);
   --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
@@ -30,17 +37,19 @@
   --text-4xl: clamp(2.25rem, 1.7rem + 2.75vw, 3.25rem);
   --text-5xl: clamp(2.75rem, 2rem + 3.75vw, 4.25rem);
 
-  /* Container */
+  /* --- Layout --- */
+  --container-max-width: 1200px;
+  --container-width: var(--container-max-width);
   --container-gutter-mobile: 16px;
   --container-gutter-tablet: 24px;
-  --container-max-width: 1200px;
-
-  /* Section spacing */
   --section-space-mobile: 56px;
   --section-space-tablet: 72px;
   --section-space-desktop: 96px;
+  --site-header-height: 64px;
+  --header-height: 72px;
+  --sidebar-width: 260px;
 
-  /* Colors */
+  /* --- Colour --- */
   --color-charcoal: #1A1A1A;
   --color-espresso: #201614;
   --color-muted: #5A554E;
@@ -61,44 +70,47 @@
   --color-warn: var(--color-ochre-dark);
   --color-ink: var(--color-charcoal);
   --color-ink-soft: var(--color-muted);
-  --color-forest: #201614;
+  --color-forest: var(--color-espresso);
   --color-pistachio: #7FA356;
   --color-cream: #FFFDF8;
   --color-cream-dim: #EFE8D6;
 
-  /* Typography */
+  /* --- Typography --- */
   --font-display: 'Fraunces', Georgia, serif;
   --font-body: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  /* Radii */
+  /* --- Radii --- */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 20px;
 
-  /* Shadows */
+  /* --- Shadows --- */
   --shadow-sm: 0 1px 3px rgba(27, 48, 34, 0.08);
   --shadow-md: 0 6px 20px rgba(27, 48, 34, 0.10);
   --shadow-lg: 0 12px 40px rgba(27, 48, 34, 0.14);
 
-  /* Layout */
-  --container-width: var(--container-max-width);
+  /* --- Motion --- */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
-  --sidebar-width: 260px;
-  --header-height: 72px;
 
-  /* Safe areas */
+  /* --- Safe areas --- */
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-left: env(safe-area-inset-left, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);
 
-  /* Touch */
+  /* --- Touch --- */
   --tap-min: 44px;
 
-  /* Viewport height */
+  /* --- Viewport height --- */
   --vh: 100dvh;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --site-header-height: 72px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

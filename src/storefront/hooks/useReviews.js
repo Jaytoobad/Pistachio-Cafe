@@ -6,7 +6,7 @@ import { fetchApprovedReviews } from '../services/reviews';
 // reviews (marked PLACEHOLDER in content.js), then silently replaces with
 // real rows from Supabase only if the request succeeds. On any error the
 // starter reviews stay. Starter reviews only show when no approved reviews
-// exist yet — once real rows arrive they are hidden.
+// exist yet - once real rows arrive they are hidden.
 export function useReviews() {
   const [reviews, setReviews] = useState(STARTER_REVIEWS);
   const [loading, setLoading] = useState(false);

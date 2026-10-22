@@ -1,8 +1,8 @@
 // ============================================================================
-// EDGE FUNCTION: verify-payment  (Pistachio Café)
+// EDGE FUNCTION: verify-payment  (Pistachio Cafe)
 // ============================================================================
 // Called by the React order-confirmation page after Paystack redirects the
-// customer back. It does NOT trust the redirect — it asks Paystack directly
+// customer back. It does NOT trust the redirect - it asks Paystack directly
 // "did this payment_reference actually succeed?" and only then marks the order
 // paid. Idempotent: if the order is already paid, it just returns the order.
 //

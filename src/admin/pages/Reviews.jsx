@@ -5,6 +5,31 @@ import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
 import ConfirmDialog from '../../lib/components/ConfirmDialog';
 
+const STAR_PATH = 'm12 3.6 2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 17l-5.25 2.75 1-5.85L3.5 9.75l5.9-.85z';
+
+function RatingStars({ rating }) {
+  const value = Math.max(0, Math.min(5, rating || 0));
+  return (
+    <span style={{ display: 'inline-flex', gap: 2, color: 'var(--color-ochre)' }} aria-label={`${value} out of 5`}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <svg
+          key={n}
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill={n <= value ? 'currentColor' : 'none'}
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d={STAR_PATH} />
+        </svg>
+      ))}
+    </span>
+  );
+}
+
 export default function Reviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,9 +112,9 @@ export default function Reviews() {
           <tbody>
             {reviews.map((r) => (
               <tr key={r.id}>
-                <td>{r.name || r.email || '—'}</td>
-                <td className="cell-muted">{r.name || '—'}</td>
-                <td>{'★'.repeat(r.rating || 0)}${'☆'.repeat(5 - (r.rating || 0))}</td>
+                <td>{r.name || r.email || '\u2014'}</td>
+                <td className="cell-muted">{r.name || '\u2014'}</td>
+                <td><RatingStars rating={r.rating} /></td>
                 <td className="cell-muted" style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.quote || ''}</td>
                 <td>
                   <button className={`btn btn-sm ${r.is_approved ? 'btn-outline' : 'btn-primary'}`} onClick={() => toggleApproved(r)}>

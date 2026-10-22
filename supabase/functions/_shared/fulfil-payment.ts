@@ -1,5 +1,5 @@
 // ============================================================================
-// EDGE FUNCTION: _shared/fulfil-payment  (Pistachio Café)
+// EDGE FUNCTION: _shared/fulfil-payment  (Pistachio Cafe)
 // ============================================================================
 // Shared payment fulfilment used by verify-payment (browser redirect) and
 // paystack-webhook (server-to-server). Both call verifyAndFulfil(), which asks
@@ -21,15 +21,15 @@ const PAYSTACK_SECRET_KEY = Deno.env.get('PAYSTACK_SECRET_KEY')!;
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY = Deno.env.get('SERVICE_ROLE_KEY') ?? Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-// The service-role client bypasses RLS — intentional; this code runs on the
+// The service-role client bypasses RLS - intentional; this code runs on the
 // server and carefully controls what it writes.
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
 // Every failure path sets `retryable`. Callers branch on this flag, never the
 // message text.
 //
-//   retryable: true  — transient; Paystack should redeliver the event.
-//   retryable: false — final; retrying cannot change the outcome.
+//   retryable: true  - transient; Paystack should redeliver the event.
+//   retryable: false - final; retrying cannot change the outcome.
 export type FulfilFailure = { error: string; retryable: boolean; orderId?: string | null };
 
 export async function verifyAndFulfil(paymentReference: string) {
@@ -94,7 +94,7 @@ export async function verifyAndFulfil(paymentReference: string) {
       await supabase.from('order_status_history').insert({
         order_id: payment.order_id,
         status: current?.status ?? 'cancelled',
-        note: 'Payment received for an order that was already closed. Not fulfilled — arrange a refund.',
+        note: 'Payment received for an order that was already closed. Not fulfilled \u2014 arrange a refund.',
       });
       return {
         error: 'This order was cancelled. Please contact us on WhatsApp so we can arrange your refund.',
@@ -124,7 +124,7 @@ export async function verifyAndFulfil(paymentReference: string) {
       await supabase.from('order_status_history').insert({
         order_id: payment.order_id,
         status: 'confirmed',
-        note: `Stock could not be decremented for ${item.dish_name} — adjust manually.`,
+        note: `Stock could not be decremented for ${item.dish_name} \u2014 adjust manually.`,
       });
     }
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND, CONTACT, HAS_PHONE, HAS_WHATSAPP, DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE, getContact } from '../../config';
+import { BRAND, CONTACT, HAS_PHONE, HAS_WHATSAPP, DELIVERY_ZONES, DELIVERY_PROMISE, DEFAULT_DELIVERY_ZONE } from '../../config';
 import { DELIVERY_ZONES_TEXT } from '../../data/content';
 
 export default function DeliveryInfo() {
@@ -22,13 +22,13 @@ export default function DeliveryInfo() {
               {DELIVERY_ZONES_TEXT}
             </p>
             <p style={{ margin: '8px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-              Zones and fees: {DELIVERY_ZONES.map((z) => `${z.name} ${CONTACT.currencySymbol || '₵'}${z.fee}`).join(', ')}. Default zone is {DEFAULT_DELIVERY_ZONE.name}.
+              Zones and fees: {DELIVERY_ZONES.map((z) => `${z.name} ${CONTACT.currencySymbol || '\u20b5'}${z.fee}`).join(', ')}. Default zone is {DEFAULT_DELIVERY_ZONE.name}.
             </p>
           </div>
           <div>
             <h3 style={{ margin: '0 0 10px', fontSize: '1.1rem' }}>Estimated time</h3>
             <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-              Orders typically arrive within 45–75 minutes during opening hours. You will get a live status
+              Orders typically arrive within {DELIVERY_PROMISE.delivery} minutes during opening hours. You will get a live status
               update when your rider is on the way.
             </p>
           </div>
@@ -49,18 +49,18 @@ export default function DeliveryInfo() {
             {HAS_WHATSAPP && `WhatsApp: ${CONTACT.whatsapp}`}<br />
             Address: {CONTACT.address}
           </p>
-          <p style={{ margin: '8px 0 0', color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>
-            Contact details are pending owner confirmation.
-          </p>
         </div>
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
           <h3 style={{ margin: '0 0 8px' }}>Need help?</h3>
-          <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-            If your order is late or you have a special request, call or message us on WhatsApp and we will sort it out.
-          </p>
+            <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+              If your order is late or you have a special request, message us on Instagram and we will sort it out.
+            </p>
           <div style={{ marginTop: 14, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {HAS_PHONE && <a href={`tel:${CONTACT.phone}`} className="sf-btn sf-btn-primary">Call us</a>}
             {HAS_WHATSAPP && <a href={`https://wa.me/${CONTACT.whatsapp}`} className="sf-btn sf-btn-ghost" target="_blank" rel="noopener noreferrer">WhatsApp</a>}
+            {!HAS_PHONE && !HAS_WHATSAPP && (
+              <a href={BRAND.instagramUrl} className="sf-btn sf-btn-primary" target="_blank" rel="noopener noreferrer">Message us on Instagram</a>
+            )}
           </div>
         </div>
       </section>

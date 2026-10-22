@@ -1,5 +1,5 @@
 // ========================================================================
-// PRODUCT CATALOG — ported from reference/old-static/js/products.js
+// PRODUCT CATALOG - ported from reference/old-static/js/products.js
 // Edit this file to change the menu.
 // ========================================================================
 
@@ -85,5 +85,5 @@ export function findProduct(id){
 export const CATEGORIES = ["breakfast", "brunch", "dessert"];
 
 export function formatMoney(n){
-  return "GH₵" + Number(n || 0).toFixed(2);
+  return "GH\u20b5" + Number(n || 0).toFixed(2);
 }

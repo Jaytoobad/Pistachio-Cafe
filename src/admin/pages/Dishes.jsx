@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchMenu, fetchDishes, saveDish, deleteDish, setDishAvailable, uploadDishImage, reorderDishes } from '../services/admin';
 import { slugify } from '../../lib/format';
 import { useToast } from '../../lib/context/ToastContext';
@@ -112,7 +112,7 @@ export default function Dishes() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <label>Section</label>
                 <select required value={editing.menu_id || ''} onChange={(e) => setEditing({ ...editing, menu_id: e.target.value })} className="field-input">
-                  <option value="">â€” Select section â€”</option>
+                  <option value="">&mdash; Select section &mdash;</option>
                   {menus.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
                 </select>
               </div>
@@ -142,7 +142,7 @@ export default function Dishes() {
                     {editing.image_url ? <img src={editing.image_url} alt="preview" /> : <span className="image-preview-empty">No image</span>}
                   </div>
                   <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => handleImage(e, editing)} disabled={uploading === editing.id} />
-                  {uploading === editing.id && <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Uploadingâ€¦</span>}
+                  {uploading === editing.id && <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Uploading&hellip;</span>}
                 </div>
                 <input value={editing.image_url || ''} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })} className="field-input" placeholder="or image URL" />
                 <span className="field-note">JPG, PNG or WEBP, max 5 MB. Auto-resized to 1200px.</span>
@@ -158,7 +158,7 @@ export default function Dishes() {
               </div>
               <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 6 }}>
                 <button type="button" className="btn btn-outline" onClick={() => setEditing(null)}>Cancel</button>
-                <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Savingâ€¦' : 'Save'}</button>
+                <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving\u2026' : 'Save'}</button>
               </div>
             </form>
           </div>

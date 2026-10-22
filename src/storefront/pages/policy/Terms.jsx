@@ -12,9 +12,6 @@ export default function Terms() {
           These terms cover ordering, payment, delivery and cancellation at {BRAND.name}.
           By placing an order you agree to them.
         </p>
-        <p style={{ color: 'var(--color-text-muted)', marginTop: 8, fontSize: '0.82rem' }}>
-          Draft — review and update before publishing.
-        </p>
       </section>
 
       <section className="sf-section" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: '32px 28px' }}>
@@ -42,7 +39,7 @@ export default function Terms() {
             <h3 style={{ margin: '0 0 10px', fontSize: '1.05rem' }}>4. Cancellation</h3>
             <p style={{ margin: 0, color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
               You can cancel before dispatch for a full refund. Once an order is out for delivery,
-              cancellation is not possible — contact us and we will arrange a refund where appropriate.
+              cancellation is not possible &mdash; contact us and we will arrange a refund where appropriate.
             </p>
           </div>
         </div>

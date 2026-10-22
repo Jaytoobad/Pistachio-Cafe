@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchReport, csvExport, downloadCsv } from '../services/admin';
 import { formatMoney } from '../../lib/format';
 import { useToast } from '../../lib/context/ToastContext';

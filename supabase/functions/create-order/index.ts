@@ -1,8 +1,8 @@
 // ============================================================================
-// EDGE FUNCTION: create-order  (Pistachio Café)
+// EDGE FUNCTION: create-order  (Pistachio Cafe)
 // ============================================================================
 // Called by the React checkout page. This is the ONLY place an order's total
-// is decided — the browser sends product IDs + quantities, never prices. We
+// is decided - the browser sends product IDs + quantities, never prices. We
 // look up real prices/stock from the database, calculate the trusted total
 // ourselves, create a 'pending_payment' order + order_items + a payments
 // record, then ask Paystack to start a transaction for that trusted amount.
@@ -64,7 +64,7 @@ if (!Array.isArray(items) || items.length === 0) {
     if (!customer_name || !phone) {
       return json({ error: 'Name and phone are required.' }, 400, corsHeaders);
     }
-    // Basic phone validation — digits only, 9-15 chars.
+    // Basic phone validation - digits only, 9-15 chars.
     const phoneDigits = String(phone).replace(/\D/g, '');
     if (phoneDigits.length < 9 || phoneDigits.length > 15) {
       return json({ error: 'Enter a valid phone number.' }, 400, corsHeaders);
@@ -189,7 +189,7 @@ const { error: itemsError } = await supabase.from('order_items').insert(
     );
     if (itemsError) throw itemsError;
 
-    // Record the payment intent. The column is `payment_reference` — the
+    // Record the payment intent. The column is `payment_reference` - the
     // webhook/verify paths look it up by this name and must stay idempotent.
     const { error: paymentError } = await supabase.from('payments').insert({
       order_id: order.id,

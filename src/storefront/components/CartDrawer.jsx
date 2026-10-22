@@ -6,7 +6,7 @@ import { useToast } from '../../lib/context/ToastContext';
 import { formatMoney } from '../../lib/format';
 import QuantityStepper from './QuantityStepper';
 import SafeImg from './SafeImg';
-import { CLOSE_SVG } from './SiteHeader';
+import { CLOSE_SVG } from './icons';
 
 export default function CartDrawer({ open, onClose }) {
   const { items, updateQty, remove, subtotal } = useCart();

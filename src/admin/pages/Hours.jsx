@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { fetchSettings, updateSettings } from '../services/admin';
 import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
@@ -120,7 +120,7 @@ export default function Hours() {
         <h3 style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Storefront preview (today)</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: '0.9rem' }}>
           <span style={{ fontWeight: 600 }}>{isOpenPreview ? 'Open now' : 'Closed'}</span>
-          <span style={{ color: 'var(--color-text-muted)' }}>{accraDay} {current.open} â€“ {current.close}</span>
+          <span style={{ color: 'var(--color-text-muted)' }}>{accraDay} {current.open} &ndash; {current.close}</span>
         </div>
       </div>
     </div>

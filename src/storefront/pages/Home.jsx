@@ -1,7 +1,7 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { BRAND, HOURS, CONTACT, HAS_PHONE, IMAGES, isPlaceholderContact, DELIVERY_PROMISE } from '../config';
-import { HOME_ABOUT_TEASER, STARTER_REVIEWS } from '../data/content';
+import { HOME_ABOUT_TEASER, HERO_HOURS_TEXT, STARTER_REVIEWS } from '../data/content';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { useDishes } from '../hooks/useDishes';
@@ -9,14 +9,60 @@ import { useMenus } from '../hooks/useMenus';
 import { useReviews } from '../hooks/useReviews';
 import { useStoreStatus } from '../hooks/useStoreStatus';
 import { submitReview } from '../services/reviews';
-import { subscribeNewsletter } from '../services/newsletter';
 import { isSupabaseConfigured } from '../../lib/supabase';
 import DishCard from '../components/DishCard';
 import DishDetailModal from '../components/DishDetailModal';
 import ReviewCard from '../components/ReviewCard';
-import '../../styles/storefront.css';
 
 const REVIEWS_KEY = 'pi_reviews';
+
+function TruckIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 7h11v9H3z" />
+      <path d="M14 10h4l3 3v3h-7z" />
+      <circle cx="7" cy="18" r="1.6" />
+      <circle cx="17.5" cy="18" r="1.6" />
+    </svg>
+  );
+}
+
+function FreshIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 11a7 7 0 0 1 14 0z" />
+      <path d="M5 11h14a7 7 0 0 1-14 0z" />
+      <circle cx="9.5" cy="9" r="1" />
+      <circle cx="14" cy="7.5" r="1" />
+    </svg>
+  );
+}
+
+function TrackIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16 16 4 4" />
+    </svg>
+  );
+}
+
+function StarIcon({ filled }) {
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m12 3.6 2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 17l-5.25 2.75 1-5.85L3.5 9.75l5.9-.85z" />
+    </svg>
+  );
+}
 
 function escapeHtml(str) {
   const div = document.createElement('div');
@@ -110,34 +156,12 @@ export default function Home() {
 
   const handleStar = (n) => setReviewForm((f) => ({ ...f, rating: n }));
 
-  // Newsletter
-  const [nlEmail, setNlEmail] = useState('');
-  const [nlSubmitting, setNlSubmitting] = useState(false);
-  const [nlMessage, setNlMessage] = useState('');
-  const handleNewsletter = async (e) => {
-    e.preventDefault();
-    const hp = e.target.querySelector('input[name="website"]');
-    if (hp && hp.value) return;
-    setNlSubmitting(true);
-    setNlMessage('');
-    try {
-      const res = await subscribeNewsletter(nlEmail);
-      if (res.alreadySubscribed) setNlMessage('You are already subscribed.');
-      else setNlMessage('Thanks for subscribing!');
-      setNlEmail('');
-    } catch (err) {
-      setNlMessage(err?.message || 'Something went wrong.');
-    } finally {
-      setNlSubmitting(false);
-    }
-  };
-
   // Open/closed badge
   const isOpen = storeStatus.toLowerCase().startsWith('open');
 
   return (
     <>
-      <main id="main" className="site-main">
+      <div className="site-main">
         {/* ============ HERO ============ */}
         <section
           className="hero-full"
@@ -168,7 +192,7 @@ export default function Home() {
               <div style={{ borderTop: '1px solid rgba(255,255,255,0.22)', marginTop: '1.5rem', paddingTop: '1.1rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem 2.25rem', maxWidth: '780px' }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)', marginBottom: '0.35rem' }}>Hours</div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>Monâ€“Fri 8AMâ€“11PM Â· Satâ€“Sun 8AMâ€“12AM</div>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', color: '#fff' }}>{HERO_HOURS_TEXT}</div>
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.72)', marginBottom: '0.35rem' }}>Location</div>
@@ -183,12 +207,12 @@ export default function Home() {
         <section style={{ background: '#FFFDF8', borderBottom: '1px solid #E7E2D8' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 24px', display: 'flex', gap: '24px', overflowX: 'auto', flexWrap: 'wrap' }}>
             {[
-              { icon: 'ðŸšš', text: 'Fast delivery in Spintex & Accra' },
-              { icon: 'ðŸ³', text: 'Made fresh daily' },
-              { icon: 'ðŸ“', text: 'Track your order live' },
+              { icon: <TruckIcon />, text: 'Fast delivery in Spintex and Accra' },
+              { icon: <FreshIcon />, text: 'Made fresh daily' },
+              { icon: <TrackIcon />, text: 'Track your order live' },
             ].map((it, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap', fontSize: '0.9rem', fontWeight: 600, color: '#1A1A1A' }}>
-                <span style={{ fontSize: '1.2rem' }}>{it.icon}</span> {it.text}
+                <span style={{ display: 'inline-flex', color: '#D97706' }}>{it.icon}</span> {it.text}
               </div>
             ))}
           </div>
@@ -197,14 +221,14 @@ export default function Home() {
         {/* ============ SHOP BY MENU CAROUSEL ============ */}
         <section style={{ padding: '96px 0 56px' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>Shop by menu</h2>
-            <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
+            <h2 className="home-section-title">Shop by menu</h2>
+            
             <div
               ref={menuScrollRef}
               onScroll={handleMenuScroll}
               style={{ display: 'flex', gap: '16px', overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', paddingBottom: '8px' }}
             >
-              {menus.map((m, i) => (
+              {menus.map((m) => (
                 <Link
                   key={m.id}
                   to={`/menu?category=${m.slug}`}
@@ -229,12 +253,9 @@ export default function Home() {
                     onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%)' }} />
-                  <span style={{ position: 'absolute', top: '12px', left: '12px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
                   <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px' }}>
                     <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 600, marginBottom: '4px' }}>{m.name}</div>
-                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.85 }}>ORDER NOW â†’</div>
+                    <div style={{ fontSize: '0.75rem', opacity: 0.85 }}>Order now</div>
                   </div>
                 </Link>
               ))}
@@ -244,8 +265,8 @@ export default function Home() {
                 <div style={{ height: '100%', width: `${menuProgress * 100}%`, background: '#D97706', transition: 'width 100ms ease' }} />
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <button type="button" onClick={() => scrollMenu(-1)} aria-label="Previous" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid #E7E2D8', background: '#fff', cursor: 'pointer' }}>â€¹</button>
-                <button type="button" onClick={() => scrollMenu(1)} aria-label="Next" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid #E7E2D8', background: '#fff', cursor: 'pointer' }}>â€º</button>
+                <button type="button" onClick={() => scrollMenu(-1)} aria-label="Previous" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid #E7E2D8', background: '#fff', cursor: 'pointer' }}>&lsaquo;</button>
+                <button type="button" onClick={() => scrollMenu(1)} aria-label="Next" style={{ width: '40px', height: '40px', borderRadius: '50%', border: '1px solid #E7E2D8', background: '#fff', cursor: 'pointer' }}>&rsaquo;</button>
               </div>
             </div>
           </div>
@@ -254,8 +275,8 @@ export default function Home() {
         {/* ============ POPULAR RIGHT NOW ============ */}
         <section style={{ padding: '0 0 96px' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>Popular right now</h2>
-            <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
+            <h2 className="home-section-title">Popular right now</h2>
+            
             <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem' }}>
               {featured.map((p) => (
                 <DishCard key={p.id} dish={p} onAdd={addToCart} onQuickView={setQuickView} />
@@ -267,15 +288,15 @@ export default function Home() {
         {/* ============ SWEET TREATS ============ */}
         <section style={{ padding: '0 0 96px' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>Sweet treats</h2>
-            <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
+            <h2 className="home-section-title">Sweet treats</h2>
+            
             <div className="grid grid-cols-2" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1rem' }}>
               {desserts.slice(0, 4).map((p) => (
                 <DishCard key={p.id} dish={p} onAdd={addToCart} onQuickView={setQuickView} />
               ))}
             </div>
             <div style={{ textAlign: 'center', marginTop: '32px' }}>
-              <Link to="/menu" className="btn btn-outline" style={{ border: '1.5px solid #1A1A1A', color: '#1A1A1A', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>VIEW ALL</Link>
+              <Link to="/menu" className="btn btn-outline" style={{ border: '1.5px solid #1A1A1A', color: '#1A1A1A', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>See the full menu</Link>
             </div>
           </div>
         </section>
@@ -283,8 +304,8 @@ export default function Home() {
         {/* ============ HOW IT WORKS ============ */}
         <section style={{ padding: '0 0 96px', background: '#F5F2EB' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '56px 24px' }}>
-            <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>How it works</h2>
-            <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
+            <h2 className="home-section-title">How it works</h2>
+            
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '24px' }}>
               {[
                 { title: 'Choose', text: 'Browse the menu and pick your favourites.' },
@@ -314,7 +335,7 @@ export default function Home() {
               <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.75rem', margin: '0 0 12px' }}>{HOME_ABOUT_TEASER.heading}</h2>
               <p style={{ color: '#5A554E', lineHeight: 1.6, margin: '0 0 12px' }}>{HOME_ABOUT_TEASER.body}</p>
               <p style={{ color: '#5A554E', lineHeight: 1.6, margin: '0 0 24px' }}>{HOME_ABOUT_TEASER.body2}</p>
-              <Link to="/about" style={{ border: '1.5px solid #1A1A1A', color: '#1A1A1A', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>READ OUR STORY</Link>
+              <Link to="/about" style={{ border: '1.5px solid #1A1A1A', color: '#1A1A1A', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>Read our story</Link>
             </div>
           </div>
         </section>
@@ -322,8 +343,8 @@ export default function Home() {
         {/* ============ REVIEWS ============ */}
         <section style={{ padding: '0 0 96px' }} id="reviews">
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-            <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>What people are saying</h2>
-            <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 32px' }} />
+            <h2 className="home-section-title">What people are saying</h2>
+            
             {visibleReviews.length > 0 && (
               <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', scrollSnapType: 'x mandatory', paddingBottom: '16px', scrollbarWidth: 'none' }}>
                 {visibleReviews.map((r, idx) => (
@@ -351,7 +372,9 @@ export default function Home() {
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '4px' }}>Rating</label>
                   <div style={{ display: 'flex', gap: '4px' }}>
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <button key={star} type="button" onClick={() => handleStar(star)} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: star <= reviewForm.rating ? '#C7862A' : '#E7E2D8' }}>â˜…</button>
+                      <button key={star} type="button" onClick={() => handleStar(star)} aria-label={`${star} of 5 stars`} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: star <= reviewForm.rating ? '#C7862A' : '#E7E2D8' }}>
+                        <StarIcon filled={star <= reviewForm.rating} />
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -360,7 +383,7 @@ export default function Home() {
                   <textarea rows={3} required value={reviewForm.quote} onChange={(e) => setReviewForm((f) => ({ ...f, quote: e.target.value }))} style={{ width: '100%', padding: '0.75em 0.9em', border: '1.5px solid #E7E2D8', borderRadius: '6px', background: '#FFFDF8' }} />
                 </div>
                 <button type="submit" disabled={submitting} style={{ background: '#D97706', color: '#fff', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, border: 'none', cursor: 'pointer', minHeight: '44px' }}>
-                  {submitting ? 'Submittingâ€¦' : 'Submit review'}
+                  {submitting ? 'Submitting\u2026' : 'Submit review'}
                 </button>
                 <div style={{ paddingBottom: '96px' }} />
               </form>
@@ -371,19 +394,19 @@ export default function Home() {
         {/* ============ VISIT US ============ */}
         <section style={{ padding: '0 0 96px', background: '#2D5A3D', color: '#fff' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '56px 24px', textAlign: 'center' }}>
-            <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px', color: '#fff' }}>Visit us</h2>
-            <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 24px' }} />
+            <h2 className="home-section-title home-section-title--center">Visit us</h2>
+            
             <p style={{ margin: '0 0 8px', fontSize: '1.1rem' }}>{BRAND.location}</p>
             <p style={{ margin: '0 0 16px', fontSize: '0.9rem', opacity: 0.85 }}>
-              Monâ€“Fri 8AMâ€“11PM Â· Satâ€“Sun 8AMâ€“12AM
+              {HERO_HOURS_TEXT}
               <span style={{ marginLeft: '8px', padding: '2px 8px', borderRadius: '999px', background: isOpen ? '#EAF3EC' : '#F1ECE9', color: isOpen ? '#3D6A46' : '#6B5F5A', fontSize: '0.7rem', fontWeight: 700 }}>
                 {isOpen ? 'Open' : 'Closed'}
               </span>
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer" style={{ background: '#D97706', color: '#fff', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none' }}>GET DIRECTIONS</a>
+              <a href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer" style={{ background: '#D97706', color: '#fff', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none' }}>Get directions</a>
               {HAS_PHONE && CONTACT.phone && !isPlaceholderContact(CONTACT.phone) && (
-                <a href={`tel:${CONTACT.phone}`} style={{ border: '1.5px solid #fff', color: '#fff', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none' }}>CALL</a>
+                <a href={`tel:${CONTACT.phone}`} style={{ border: '1.5px solid #fff', color: '#fff', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none' }}>Call us</a>
               )}
               {BRAND.instagramUrl && (
                 <a href={BRAND.instagramUrl} target="_blank" rel="noopener noreferrer" style={{ border: '1.5px solid #fff', color: '#fff', padding: '0.85rem 1.6rem', borderRadius: '6px', fontWeight: 600, textDecoration: 'none' }}>Instagram</a>
@@ -391,30 +414,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        {/* ============ NEWSLETTER ============ */}
-        <section style={{ padding: '0 0 96px' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '56px 24px', textAlign: 'center' }}>
-            <h2 style={{ textAlign: 'center', textTransform: 'uppercase', fontFamily: 'var(--font-display)', letterSpacing: '0.12em', fontSize: '1.5rem', margin: '0 0 8px' }}>Newsletter</h2>
-            <div style={{ width: '56px', height: '2px', background: '#D97706', margin: '0 auto 24px' }} />
-            <form onSubmit={handleNewsletter} style={{ display: 'flex', gap: '8px', maxWidth: '480px', margin: '0 auto', flexWrap: 'wrap' }}>
-              <input type="text" name="website" tabIndex={-1} autoComplete="off" style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true" />
-              <input
-                type="email"
-                value={nlEmail}
-                onChange={(e) => setNlEmail(e.target.value)}
-                placeholder="you@email.com"
-                required
-                style={{ flex: 1, minWidth: '200px', padding: '0.75em 0.9em', border: '1.5px solid #E7E2D8', borderRadius: '6px', background: '#FFFDF8' }}
-              />
-              <button type="submit" disabled={nlSubmitting} style={{ background: '#D97706', color: '#fff', padding: '0.75em 1.5em', borderRadius: '6px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
-                {nlSubmitting ? 'Joiningâ€¦' : 'Join'}
-              </button>
-            </form>
-            {nlMessage && <p style={{ marginTop: '12px', fontSize: '0.9rem', color: '#5A554E' }}>{nlMessage}</p>}
-          </div>
-        </section>
-      </main>
+      </div>
 
       {quickView && (
         <DishDetailModal

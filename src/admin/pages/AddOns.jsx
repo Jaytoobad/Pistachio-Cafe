@@ -79,7 +79,7 @@ export default function AddOns() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <label>Dish</label>
                 <select required value={editing.dish_id || ''} onChange={(e) => setEditing({ ...editing, dish_id: e.target.value })} className="field-input">
-                  <option value="">— Select dish —</option>
+                  <option value="">&mdash; Select dish &mdash;</option>
                   {dishes.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
                 </select>
               </div>
@@ -103,7 +103,7 @@ export default function AddOns() {
               </div>
               <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 6 }}>
                 <button type="button" className="btn btn-outline" onClick={() => setEditing(null)}>Cancel</button>
-                <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
+                <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving\u2026' : 'Save'}</button>
               </div>
             </form>
           </div>

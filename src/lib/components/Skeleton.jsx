@@ -1,4 +1,4 @@
-﻿export function SkeletonCard() {
+export function SkeletonCard() {
   return (
     <article className="sf-product-card">
       <div className="sf-product-media">

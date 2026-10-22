@@ -1,4 +1,4 @@
-﻿import { isSupabaseConfigured, supabase } from '../supabase';
+import { isSupabaseConfigured, supabase } from '../supabase';
 import { MOCK_MENUS, MOCK_DISHES } from '../../storefront/data/mockData';
 
 function toSafeResult(data) {
