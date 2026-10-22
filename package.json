@@ -12,6 +12,7 @@
     "prebuild": "node scripts/check-encoding.mjs && node scripts/build-image-manifest.mjs",
     "check:encoding": "node scripts/check-encoding.mjs",
     "check:styles": "node scripts/check-styles.mjs",
+    "check:links": "node scripts/check-links.mjs",
     "verify": "node scripts/verify.mjs"
   },
   "dependencies": {
