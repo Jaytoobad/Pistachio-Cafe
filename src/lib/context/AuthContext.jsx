@@ -5,16 +5,16 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [isStaff, setIsStaff] = useState(null);
+  const [membership, setMembership] = useState(null);
   const [loading, setLoading] = useState(true);
 
   async function loadMembership(u) {
-    if (!u) { setIsStaff(false); return; }
+    if (!u) { setMembership(null); return; }
     try {
-      const { data } = await supabase.from('staff').select('user_id').eq('user_id', u.id).maybeSingle();
-      setIsStaff(Boolean(data));
+      const { data } = await supabase.from('staff').select('user_id, role, is_active').eq('user_id', u.id).maybeSingle();
+      setMembership(data || null);
     } catch {
-      setIsStaff(false);
+      setMembership(null);
     }
   }
 
@@ -32,8 +32,11 @@ export function AuthProvider({ children }) {
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  const isStaff = Boolean(membership);
+  const isAdmin = Boolean(membership && membership.role === 'admin' && membership.is_active !== false);
+
   return (
-    <AuthContext.Provider value={{ user, isStaff, loading }}>
+    <AuthContext.Provider value={{ user, membership, isStaff, isAdmin, loading }}>
       {children}
     </AuthContext.Provider>
   );

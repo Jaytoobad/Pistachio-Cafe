@@ -42,7 +42,7 @@ export default function Staff() {
     if (!newUserId || adding) return;
     setAdding(true);
     try {
-      await addStaff(newUserId, newRole);
+      await addStaff({ userId: newUserId, role: newRole });
       showToast('Staff member added');
       setNewUserId(''); setNewRole('staff'); load();
     } catch (err) { showToast(err?.message || 'Could not add staff member.', 'error'); } finally { setAdding(false); }

@@ -5,37 +5,35 @@ import { signOut } from '../../lib/services/auth';
 import { supabase } from '../../lib/supabase';
 import { fetchSettings, updateSettings } from '../services/admin';
 import Icon from '../components/Icon';
-import PageLoader from '../../lib/components/PageLoader';
 import MobileTabBar from './MobileTabBar';
 
 const GROUPS = [
   {
-    label: 'Operate',
-    icon: 'home',
+    label: 'Today & orders',
+    icon: 'dashboard',
     items: [
       { to: '/admin/today', label: 'Today', icon: 'dashboard' },
       { to: '/admin/orders', label: 'Orders', icon: 'orders' },
     ],
   },
   {
-    label: 'Catalogue',
+    label: 'Menus & dishes',
     icon: 'menu',
     items: [
       { to: '/admin/menu', label: 'Menus', icon: 'menu' },
       { to: '/admin/dishes', label: 'Dishes', icon: 'dishes' },
-      { to: '/admin/addons', label: 'Add-ons', icon: 'addon' },
     ],
   },
   {
-    label: 'Delivery',
+    label: 'Riders & delivery zones',
     icon: 'riders',
     items: [
       { to: '/admin/riders', label: 'Riders', icon: 'riders' },
-      { to: '/admin/zones', label: 'Zones', icon: 'zones' },
+      { to: '/admin/zones', label: 'Delivery zones', icon: 'zones' },
     ],
   },
   {
-    label: 'People',
+    label: 'Customers, reviews, subscribers & staff',
     icon: 'customers',
     items: [
       { to: '/admin/customers', label: 'Customers', icon: 'customers' },
@@ -45,31 +43,51 @@ const GROUPS = [
     ],
   },
   {
-    label: 'Shop',
+    label: 'Settings',
     icon: 'settings',
     items: [
       { to: '/admin/settings', label: 'Settings', icon: 'settings' },
-      { to: '/admin/hours', label: 'Opening hours', icon: 'hours' },
-      { to: '/admin/report', label: 'Daily report', icon: 'report' },
-      { to: '/admin/86', label: '86 list', icon: 'tag' },
     ],
   },
 ];
 
 const ALL_LINKS = GROUPS.flatMap((g) => g.items);
 
+const PAGE_TITLES = {
+  '/admin/today': 'Today',
+  '/admin/orders': 'Orders',
+  '/admin/menu': 'Menus',
+  '/admin/dishes': 'Dishes',
+  '/admin/riders': 'Riders',
+  '/admin/zones': 'Delivery zones',
+  '/admin/customers': 'Customers',
+  '/admin/reviews': 'Reviews',
+  '/admin/subscribers': 'Subscribers',
+  '/admin/staff': 'Staff',
+  '/admin/settings': 'Settings',
+};
+
+function pageTitleFor(pathname) {
+  const exact = PAGE_TITLES[pathname];
+  if (exact) return exact;
+  if (pathname === '/admin' || pathname === '/admin/') return 'Today';
+  const seg = pathname.split('/').filter(Boolean).pop();
+  return seg ? seg.charAt(0).toUpperCase() + seg.slice(1) : 'Admin';
+}
+
 export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [settings, setSettings] = useState({});
   const [settingsLoading, setSettingsLoading] = useState(true);
-  const [openOrders, setOpenOrders] = useState(true);
-  const [busy, setBusy] = useState(false);
-  const [openOverride, setOpenOverride] = useState(true);
+  const [acceptingOrders, setAcceptingOrders] = useState(true);
   const [newOrderCount, setNewOrderCount] = useState(0);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const page = pageTitleFor(location.pathname);
 
   useEffect(() => {
     let active = true;
@@ -77,9 +95,7 @@ export default function AdminLayout() {
       try {
         const s = await fetchSettings();
         setSettings(s);
-        setOpenOrders(s.accepting_orders !== false);
-        setBusy(!!s.busy_minutes);
-        setOpenOverride(s.is_open !== false);
+        setAcceptingOrders(s.accepting_orders !== false);
       } catch (e) {
         if (import.meta.env.DEV) console.warn('settings load failed', e);
       } finally {
@@ -90,7 +106,7 @@ export default function AdminLayout() {
   }, []);
 
   useEffect(() => {
-    if (!user || !supabase) return;
+    if (!user) return;
     const channel = supabase.channel('admin-topbar');
     const handleInsert = (payload) => {
       const order = payload.new;
@@ -103,27 +119,31 @@ export default function AdminLayout() {
   }, [user]);
 
   useEffect(() => {
-    document.title = pageTitle();
+    document.title = `${page} \u2014 Pistachio Admin`;
     return () => { document.title = 'Pistachio Caf\u00e9 \u2014 Admin'; };
-  }, [location.pathname]);
+  }, [location.pathname, page]);
 
-  const exact = ALL_LINKS.find((l) => location.pathname === l.to);
-  const page = exact ? exact.label : 'Admin';
-  const pageTitle = () => `${page} \u2014 Pistachio Admin`;
-
-  const saveSetting = async (key, value) => {
+  async function saveSetting(key, value) {
     try {
       await updateSettings({ [key]: value });
       setSettings((s) => ({ ...s, [key]: value }));
     } catch (e) {
-      // swallow; surfaced elsewhere
+      // swallowed; setting still toggled optimistically above
     }
-  };
+  }
 
   async function handleLogout() {
     await signOut();
     navigate('/admin/login', { replace: true });
   }
+
+  const exact = ALL_LINKS.find((l) => location.pathname === l.to);
+  const activeTo = exact ? exact.to : null;
+
+  const visibleGroups = isAdmin ? GROUPS : GROUPS.map((g) => ({
+    ...g,
+    items: g.items.filter((i) => i.to === '/admin/today' || i.to === '/admin/orders'),
+  })).filter((g) => g.items.length > 0);
 
   return (
     <div className="admin-shell">
@@ -131,37 +151,42 @@ export default function AdminLayout() {
         <button className="sidebar-toggle" aria-label="Toggle navigation" onClick={() => setSidebarCollapsed((c) => !c)}>
           <Icon name={sidebarCollapsed ? 'chevronRight' : 'menu'} size="22" />
         </button>
-        <div className="admin-topbar-title">{page}</div>
+        <h1 className="admin-title">{page}</h1>
         <div className="admin-topbar-controls">
-          <div className="control-group">
-            <button className={`topbar-toggle ${openOrders ? 'active' : ''}`} onClick={() => saveSetting('accepting_orders', !openOrders)} title={openOrders ? 'Pause online orders' : 'Resume online orders'}>
-              <Icon name={openOrders ? 'pause' : 'play'} size="18" />
-              <span className="toggle-label">{openOrders ? 'Paused' : 'Open'}</span>
-            </button>
+          {isAdmin && (
+            <div className="control-group accepting-switch">
+              <input
+                id="accepting-orders"
+                type="checkbox"
+                checked={acceptingOrders}
+                onChange={(e) => {
+                  setAcceptingOrders(e.target.checked);
+                  saveSetting('accepting_orders', e.target.checked);
+                }}
+              />
+              <label htmlFor="accepting-orders">Accepting online orders</label>
+            </div>
+          )}
+          <div className="control-group user-menu" onClick={(e) => { e.stopPropagation(); setUserMenuOpen((o) => !o); }}>
+            <div className="user-email" title={user?.email || ''}>{user?.email || 'Signed in'}</div>
+            <Icon name="chevronDown" size="14" style={{ marginLeft: 6 }} />
+            {userMenuOpen && (
+              <div className="user-menu-popup">
+                <div className="user-menu-item" role="button" onClick={() => { setUserMenuOpen(false); }}>{user?.email}</div>
+                <button className="user-menu-item admin-logout" onClick={handleLogout}>Sign out</button>
+              </div>
+            )}
           </div>
-          <div className="control-group">
-            <button className={`topbar-toggle ${busy ? 'active' : ''}`} onClick={() => saveSetting('busy_minutes', busy ? 0 : 30)} title="Busy mode &mdash; adds extra minutes to ETA">
-              <Icon name="clock" size="18" />
-              <span className="toggle-label">Busy</span>
-            </button>
-          </div>
-          <div className="control-group">
-            <button className={`topbar-toggle ${openOverride ? 'active' : ''}`} onClick={() => saveSetting('is_open', !openOverride)} title="Open/closed override">
-              <Icon name={openOverride ? 'pause' : 'play'} size="18" />
-              <span className="toggle-label">{openOverride ? 'Closed' : 'Open'}</span>
-            </button>
-          </div>
-          <div className="new-order-badge" title={`New paid orders: ${newOrderCount}`}>
-            <Icon name="orders" size="18" />
+          <div className="control-group new-order-badge" title={`New paid orders: ${newOrderCount}`} aria-label={`New paid orders: ${newOrderCount}`}>
+            <Icon name="orders" size="16" />
             <span className="badge-count">{newOrderCount}</span>
           </div>
-          <button className="admin-logout" onClick={handleLogout}><Icon name="logout" size="16" style={{ marginRight: 6 }} /> Sign out</button>
         </div>
       </header>
       <aside className={`admin-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`} aria-label="Admin navigation">
         <div className="admin-brand" onClick={() => setSidebarCollapsed((c) => !c)}><Icon name="home" size="20" color="var(--color-pistachio)" /><span>{sidebarCollapsed ? 'PC' : 'Pistachio Caf\u00e9'}</span></div>
         <nav>
-          {GROUPS.map((group) => (
+          {visibleGroups.map((group) => (
             <div key={group.label} className="nav-group">
               <h3 className="nav-group-label">{group.label}</h3>
               {group.items.map((item) => {
@@ -189,12 +214,12 @@ export default function AdminLayout() {
         </div>
       </aside>
       <main className="admin-main"><Outlet /></main>
-      <MobileTabBar links={ALL_LINKS} location={location} />
+
       <div className={`drawer-overlay ${drawerOpen ? 'open' : ''}`} onClick={() => setDrawerOpen(false)}></div>
       <div className={`mobile-drawer ${drawerOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
         <button className="drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Close menu"><Icon name="close" size="20" /></button>
         <nav>
-          {GROUPS.map((group) => (
+          {visibleGroups.map((group) => (
             <div key={group.label} className="nav-group">
               <h3 className="nav-group-label">{group.label}</h3>
               {group.items.map((item) => {
@@ -221,6 +246,10 @@ export default function AdminLayout() {
           <button className="admin-logout" onClick={handleLogout}><Icon name="logout" size="16" style={{ marginRight: 6 }} /> Sign out</button>
         </div>
       </div>
+
+      <MobileTabBar onMore={() => setDrawerOpen(true)} />
+
+      {loading ? <div className="admin-shell-loading" /> : null}
     </div>
   );
 }

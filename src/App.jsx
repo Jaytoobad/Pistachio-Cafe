@@ -14,7 +14,6 @@ const AdminLogin = lazy(() => import('./admin/pages/Login'));
 const AdminLayout = lazy(() => import('./admin/layout/AdminLayout'));
 const AdminToday = lazy(() => import('./admin/pages/Today'));
 const AdminOrders = lazy(() => import('./admin/pages/Orders'));
-const AdminOrderDetail = lazy(() => import('./admin/pages/OrderDetail'));
 const AdminMenuSections = lazy(() => import('./admin/pages/MenuSections'));
 const AdminDishes = lazy(() => import('./admin/pages/Dishes'));
 const AdminAddOns = lazy(() => import('./admin/pages/AddOns'));
@@ -73,7 +72,6 @@ export default function App() {
                   <Route index element={<AdminToday />} />
                   <Route path="today" element={<Navigate to="/admin" replace />} />
                   <Route path="orders" element={<AdminOrders />} />
-                  <Route path="orders/:id" element={<AdminOrderDetail />} />
                   <Route path="menu" element={<AdminMenuSections />} />
                   <Route path="dishes" element={<AdminDishes />} />
                   <Route path="addons" element={<AdminAddOns />} />

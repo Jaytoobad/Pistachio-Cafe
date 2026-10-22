@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchMenu, fetchDishes, saveDish, deleteDish, setDishAvailable, uploadDishImage, reorderDishes } from '../services/admin';
+import { fetchMenus, fetchDishes, saveDish, deleteDish, setDishAvailable, uploadDishImage } from '../services/admin';
 import { slugify } from '../../lib/format';
 import { useToast } from '../../lib/context/ToastContext';
-import PageLoader from '../../lib/components/PageLoader';
 import { AdminErrorState } from '../components/States';
 import ConfirmDialog from '../../lib/components/ConfirmDialog';
 import Icon from '../components/Icon';
@@ -23,7 +22,7 @@ export default function Dishes() {
   const load = useCallback(async () => {
     setLoading(true); setLoadError(false);
     try {
-      const [m, d] = await Promise.all([fetchMenu(), fetchDishes()]);
+      const [m, d] = await Promise.all([fetchMenus(), fetchDishes()]);
       setMenus((m || []).slice().sort((a, b) => a.sort_order - b.sort_order));
       setDishes((d || []).slice().sort((a, b) => a.sort_order - b.sort_order));
     } catch { setLoadError(true); } finally { setLoading(false); }
@@ -36,7 +35,7 @@ export default function Dishes() {
     if (saving) return;
     const d = editing;
     if (!d.name) { showToast('Name is required.', 'error'); return; }
-    if (!d.menu_id) { showToast('Section is required.', 'error'); return; }
+    if (!d.menu_id) { showToast('Menu is required.', 'error'); return; }
     setSaving(true);
     try {
       const payload = {
@@ -80,21 +79,23 @@ export default function Dishes() {
 
   const menuName = (id) => menus.find((m) => m.id === id)?.name || id;
 
-  if (loading) return <PageLoader />;
-  if (loadError) {
-    return (
-      <div className="page page-shell"><div className="page-header"><h1>Dishes</h1></div>
-        <AdminErrorState message="Could not load dishes." onRetry={load} /></div>
-    );
-  }
+  if (loading) return (
+    <div className="page page-shell">
+      <div className="page-header"><h1>Dishes</h1><p className="page-sub">Add, edit and remove dishes per menu</p></div>
+      <div style={{ padding: 40 }}><div className="sk-text" style={{ width: 120, height: 16 }} /></div>
+    </div>
+  );
+  if (loadError) return (
+    <div className="page page-shell">
+      <div className="page-header"><h1>Dishes</h1><p className="page-sub">Add, edit and remove dishes per menu</p></div>
+      <AdminErrorState message="Could not load dishes." onRetry={load} />
+    </div>
+  );
 
   return (
     <div className="page page-shell">
       <div className="page-header">
-        <div>
-          <h1>Dishes</h1>
-          <p className="page-sub">Add, edit and remove dishes per menu section</p>
-        </div>
+        <div><h1>Dishes</h1><p className="page-sub">Add, edit and remove dishes per menu</p></div>
         <button className="btn btn-primary" onClick={() => setEditing({ ...emptyDish })}><Icon name="plus" size="16" style={{ marginRight: 6 }} /> Add dish</button>
       </div>
 
@@ -110,9 +111,9 @@ export default function Dishes() {
                 <input required value={editing.name || ''} onChange={(e) => setEditing({ ...editing, name: e.target.value })} className="field-input" />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <label>Section</label>
+                <label>Menu</label>
                 <select required value={editing.menu_id || ''} onChange={(e) => setEditing({ ...editing, menu_id: e.target.value })} className="field-input">
-                  <option value="">&mdash; Select section &mdash;</option>
+                  <option value="">&mdash; Select menu &mdash;</option>
                   {menus.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
                 </select>
               </div>
@@ -142,7 +143,7 @@ export default function Dishes() {
                     {editing.image_url ? <img src={editing.image_url} alt="preview" /> : <span className="image-preview-empty">No image</span>}
                   </div>
                   <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => handleImage(e, editing)} disabled={uploading === editing.id} />
-                  {uploading === editing.id && <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Uploading&hellip;</span>}
+                  {uploading === editing.id && <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Uploading\u2026</span>}
                 </div>
                 <input value={editing.image_url || ''} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })} className="field-input" placeholder="or image URL" />
                 <span className="field-note">JPG, PNG or WEBP, max 5 MB. Auto-resized to 1200px.</span>
@@ -165,29 +166,38 @@ export default function Dishes() {
         </div>
       )}
 
-      <div className="data-table-wrap">
-        <table className="data-table">
-          <thead><tr><th>Name</th><th>Section</th><th>Price</th><th>Available</th><th>Featured</th><th>Photo</th><th>Actions</th></tr></thead>
-          <tbody>
-            {dishes.map((d) => (
-              <tr key={d.id}>
-                <td className="cell-primary">{d.name}</td>
-                <td className="cell-muted">{menuName(d.menu_id)}</td>
-                <td>{Number(d.price).toFixed(2)}</td>
-                <td><button className="btn btn-sm btn-outline" onClick={() => setDishAvailable(d.id, !d.is_available)}>{d.is_available ? 'Yes' : 'No'}</button></td>
-                <td>{d.is_featured ? 'Yes' : 'No'}</td>
-                <td><img src={d.image_url || '/images/placeholder-cup-pistachios.jpg'} alt="" style={{ width: 32, height: 32, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} /></td>
-                <td className="table-actions">
-                  <button className="btn btn-sm btn-outline" onClick={() => setEditing({ ...d, tags: Array.isArray(d.tags) ? d.tags.join(', ') : (d.tags || '') })}>Edit</button>
-                  <button className="btn btn-sm btn-outline" onClick={() => setDeleteTarget(d)}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(200px, 100%), 1fr))', gap: 12 }}>
+        {dishes.map((d) => (
+          <div key={d.id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 8, overflow: 'hidden' }}>
+            <div className="dish-media" style={{ position: 'relative', aspectRatio: '4 / 3', overflow: 'hidden', background: 'var(--color-pistachio-tint)' }}>
+              {d.image_url ? <img src={d.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div className="dish-photo-missing" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="dishes" size="24" style={{ color: 'var(--color-sage)' }} /></div>}
+              {!d.is_available && <span className="soldout-badge" style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(168, 67, 75, 0.9)', color: '#fff', fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: 'var(--radius-sm)', textTransform: 'uppercase' }}>Sold out</span>}
+              {d.is_featured && <span className="featured-badge" style={{ position: 'absolute', top: 8, right: 8, background: 'var(--color-ochre)', color: '#fff', fontSize: '0.7rem', fontWeight: 700, padding: '2px 8px', borderRadius: 'var(--radius-sm)', textTransform: 'uppercase' }}>Featured</span>}
+            </div>
+            <div style={{ padding: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontWeight: 700, color: 'var(--color-ink)', fontSize: '0.95rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{d.name}</div>
+                  <div style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', marginTop: 2 }}>{menuName(d.menu_id)}</div>
+                </div>
+                <div style={{ fontWeight: 700, color: 'var(--color-ink)' }}>{Number(d.price).toFixed(2)}</div>
+              </div>
+              {d.tags && d.tags.length && <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {d.tags.map((t) => (
+                  <span key={t} style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', border: '1px solid var(--color-border)', padding: '2px 8px', borderRadius: '100px' }}>{t}</span>
+                ))}
+              </div>}
+              <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+                <button className="btn btn-sm btn-outline" onClick={() => setDishAvailable(d.id, !d.is_available)}>{d.is_available ? 'Mark sold out' : 'Mark available'}</button>
+                {d.is_hidden ? <button className="btn btn-sm btn-outline" onClick={() => setDishAvailable(d.id, d.is_available)}>Unhide</button> : <button className="btn btn-sm btn-outline" onClick={() => setDishAvailable(d.id, d.is_available)}>Hide</button>}
+                <button className="btn btn-sm btn-outline" onClick={() => setEditing({ ...d, tags: Array.isArray(d.tags) ? d.tags.join(', ') : (d.tags || '') })}>Edit</button>
+                <button className="btn btn-sm btn-outline" onClick={() => setDeleteTarget(d)}>Delete</button>
+              </div>
+            </div>
+          </div>
+        ))}
+        {dishes.length === 0 && <div style={{ gridColumn: '1 / -1' }}><AdminEmptyState title="No dishes yet" description="Add your first dish." /></div>}
       </div>
-      {dishes.length === 0 && <p className="empty-state">No dishes yet.</p>}
     </div>
   );
 }
-

@@ -41,6 +41,17 @@ const ROUTES = [
   '/terms',
   '/delivery-info',
   '/admin/login',
+  '/admin/today',
+  '/admin/orders',
+  '/admin/dishes',
+  '/admin/menu',
+  '/admin/riders',
+  '/admin/zones',
+  '/admin/reviews',
+  '/admin/subscribers',
+  '/admin/customers',
+  '/admin/staff',
+  '/admin/settings',
 ];
 
 const WIDTHS = [390, 768, 1440];

@@ -48,7 +48,7 @@ export async function fetchOrderById(id) {
 export async function fetchOrderHistory(orderId) {
   const { data, error } = await supabase
     .from('order_status_history')
-    .select('status, note, changed_by, created_at')
+    .select('status, note, created_at')
     .eq('order_id', orderId)
     .order('created_at', { ascending: true });
   if (error) throw error;
@@ -63,32 +63,31 @@ export async function updateOrder(id, patch) {
   if (error) throw error;
 }
 
-export async function updateOrderStatus(id, status, note, changedBy) {
+export async function updateOrderStatus(id, status, note) {
   const { error } = await supabase.from('orders').update({ status, updated_at: new Date().toISOString() }).eq('id', id);
   if (error) throw error;
   try {
-    await supabase.from('order_status_history').insert({ order_id: id, status, note: note || null, changed_by: changedBy || null });
+    await supabase.from('order_status_history').insert({ order_id: id, status, note: note || null });
   } catch (err) {
-    // History is best-effort if the schema lacks changed_by / RLS blocks it.
     if (import.meta.env.DEV) console.warn('order_status_history insert skipped:', err);
   }
 }
 
-export async function cancelOrder(id, reason, changedBy) {
+export async function cancelOrder(id, reason) {
   const { error } = await supabase.from('orders').update({ status: 'cancelled', updated_at: new Date().toISOString() }).eq('id', id);
   if (error) throw error;
   try {
-    await supabase.from('order_status_history').insert({ order_id: id, status: 'cancelled', note: reason || 'Order cancelled.', changed_by: changedBy || null });
+    await supabase.from('order_status_history').insert({ order_id: id, status: 'cancelled', note: reason || 'Order cancelled.' });
   } catch (err) {
     if (import.meta.env.DEV) console.warn('order_status_history insert skipped:', err);
   }
 }
 
-export async function setRider(orderId, riderId, changedBy) {
+export async function setRider(orderId, riderId) {
   const { error } = await supabase.from('orders').update({ rider_id: riderId, updated_at: new Date().toISOString() }).eq('id', orderId);
   if (error) throw error;
   try {
-    await supabase.from('order_status_history').insert({ order_id: orderId, note: 'Rider assigned.', changed_by: changedBy || null });
+    await supabase.from('order_status_history').insert({ order_id: orderId, note: 'Rider assigned.' });
   } catch (err) {
     if (import.meta.env.DEV) console.warn('order_status_history insert skipped:', err);
   }
@@ -301,9 +300,9 @@ export async function fetchStaff() {
   return data || [];
 }
 
-export async function addStaff(userId, role = 'staff') {
+export async function addStaff({ userId, fullName, email, role = 'staff' }) {
   if (!STAFF_ROLES.includes(role)) role = 'staff';
-  const { data, error } = await supabase.from('staff').insert({ user_id: userId, role, is_active: true }).select().single();
+  const { data, error } = await supabase.from('staff').insert({ user_id: userId, full_name: fullName || null, email: email || null, role, is_active: true }).select().single();
   if (error) throw error;
   return data;
 }

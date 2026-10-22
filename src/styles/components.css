@@ -3254,6 +3254,114 @@
   color: var(--color-error);
 }
 
+.soldout-badge,
+.featured-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.admin-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+
+.control-group.accepting-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-group.accepting-switch label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.control-group.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.user-menu-popup {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  min-width: 160px;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  z-index: 60;
+  color: var(--color-ink);
+}
+
+.user-menu-item {
+  display: block;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.user-menu-item.admin-logout {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.user-menu-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.admin-shell-loading {
+  display: none;
+}
+
+.admin-header .control-group {
+  flex-shrink: 0;
+}
+
+@media (max-width: 699px) {
+  .admin-header {
+    padding: 0 10px 0 8px;
+    gap: 8px;
+  }
+  .admin-title {
+    font-size: 0.9rem;
+  }
+  .admin-header .control-group.accepting-switch {
+    display: none;
+  }
+  .admin-header .control-group.user-menu {
+    display: none;
+  }
+  .admin-header .control-group.new-order-badge {
+    display: none;
+  }
+  .mobile-tabbar .tab-link.active {
+    color: var(--color-primary);
+  }
+}
+
 .admin-view-shop,
 .admin-logout {
   font-size: 0.8rem;
@@ -3771,6 +3879,22 @@
 .auth-brand {
   margin-bottom: 24px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-logo {
+  display: block;
+}
+
+.auth-wordmark {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: 0.02em;
 }
 
 .auth-hint {

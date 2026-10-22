@@ -31,9 +31,11 @@ export default function Settings() {
   const generalFields = [
     { key: 'delivery_enabled', label: 'Delivery enabled', type: 'checkbox' },
     { key: 'delivery_fee', label: 'Delivery fee', type: 'number', prefix: 'GH\u20b5' },
+    { key: 'minimum_order', label: 'Minimum order', type: 'number', prefix: 'GH\u20b5' },
+    { key: 'promo_banner', label: 'Announcement text', type: 'text' },
     { key: 'contact_phone', label: 'Contact phone', type: 'text' },
     { key: 'address', label: 'Address', type: 'text' },
-    { key: 'cafe_name', label: 'Caf&eacute; name', type: 'text' },
+    { key: 'cafe_name', label: 'Caf\u00e9 name', type: 'text' },
   ];
 
   async function handleSave(e) {

@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchSubscribers, deleteSubscriber } from '../services/admin';
+import { fetchSubscribers, deleteSubscriber, csvExport, downloadCsv } from '../services/admin';
 import { useToast } from '../../lib/context/ToastContext';
 import PageLoader from '../../lib/components/PageLoader';
 import ConfirmDialog from '../../lib/components/ConfirmDialog';
+import Icon from '../components/Icon';
 
 export default function Subscribers() {
   const [subscribers, setSubscribers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [search, setSearch] = useState('');
   const { showToast } = useToast();
 
   const load = useCallback(async () => {
@@ -24,6 +26,19 @@ export default function Subscribers() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const filtered = subscribers.filter((s) =>
+    (s.email || '').toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleExport = () => {
+    const content = csvExport(filtered, [
+      { key: 'email', label: 'Email' },
+      { key: 'created_at', label: 'Subscribed' },
+    ]);
+    downloadCsv(content, 'subscribers.csv');
+    showToast('Subscribers exported');
+  };
 
   function requestDelete(s) { setDeleteTarget(s); }
   async function doDelete() {
@@ -56,6 +71,10 @@ export default function Subscribers() {
           <h1>Subscribers</h1>
           <p className="page-sub">Newsletter mailing list</p>
         </div>
+        <div className="page-header-actions">
+          <input type="text" placeholder="Search subscribers" value={search} onChange={(e) => setSearch(e.target.value)} className="field-input" style={{ width: 220 }} />
+          <button className="btn btn-outline btn-sm" onClick={handleExport}><Icon name="download" size="16" style={{ marginRight: 6 }} /> CSV export</button>
+        </div>
       </div>
 
       <ConfirmDialog
@@ -74,7 +93,7 @@ export default function Subscribers() {
             <tr><th>Email</th><th>Subscribed</th><th>Actions</th></tr>
           </thead>
           <tbody>
-            {subscribers.map((s) => (
+            {filtered.map((s) => (
               <tr key={s.id}>
                 <td>{s.email}</td>
                 <td className="cell-muted">{s.created_at ? new Date(s.created_at).toLocaleDateString() : '\u2014'}</td>
