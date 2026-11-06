@@ -29,6 +29,11 @@ export const HOME_MENU = {
   intro: 'Four sections, one kitchen. Pick a section and order online for pickup or delivery.',
 };
 
+// The breakfast table (3D) section.
+export const HOME_BREAKFAST_TABLE = {
+  heading: 'The breakfast table',
+};
+
 // The "Customer favourites" section: the dishes the owner marks as featured.
 export const HOME_FAVOURITES = {
   heading: 'Customer favourites',
