@@ -18,12 +18,12 @@ export default function Visit() {
       >
         <div>
           <section className="sf-section">
-            <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', marginBottom: '0.75rem', fontFamily: 'var(--font-display)' }}>Visit us</h1>
+            <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', marginBottom: '0.75rem' }}>Visit us</h1>
             <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, fontSize: 'var(--text-lg)' }}>{CONTACT.address}</p>
           </section>
 
           <section className="sf-section" style={{ marginTop: '1.5rem' }}>
-            <h2 style={{ margin: '0 0 12px', fontSize: '1.1rem', fontFamily: 'var(--font-display)' }}>Opening hours</h2>
+            <h2 style={{ margin: '0 0 12px', fontSize: '1.1rem' }}>Opening hours</h2>
             <ul className="list-nudge" style={{ display: 'grid', gap: 6, maxWidth: 420, listStyle: 'none', padding: 0, margin: 0 }}>
               {days.map((d) => {
                 const h = d === 0 || d === 6 ? HOURS.weekend : HOURS.weekday;

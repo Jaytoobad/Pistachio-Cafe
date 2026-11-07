@@ -18,7 +18,7 @@ export default function Contact() {
         <div>
           <section className="sf-section">
             <p className="sf-hero-eyebrow">Get in touch</p>
-            <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontFamily: 'var(--font-display)' }}>Contact us</h1>
+            <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>Contact us</h1>
             <p style={{ color: 'var(--color-text-muted)', marginTop: 14, maxWidth: '48ch', fontSize: 'var(--text-lg)', lineHeight: 1.7 }}>
               {CONTACT_INTRO}
             </p>

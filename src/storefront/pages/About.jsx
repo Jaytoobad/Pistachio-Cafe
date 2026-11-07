@@ -18,7 +18,7 @@ export default function About() {
         reverse={false}
       >
         <div>
-          <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', marginBottom: '0.75rem', fontFamily: 'var(--font-display)' }}>Our story</h1>
+          <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', marginBottom: '0.75rem' }}>Our story</h1>
           <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, fontSize: 'var(--text-lg)' }}>
             Pistachio Cafe is a neighborhood spot in {BRAND.location} serving coffee, desserts and shisha with care.
           </p>

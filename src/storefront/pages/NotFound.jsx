@@ -17,7 +17,7 @@ export default function NotFound() {
         reverse={true}
       >
         <div style={{ textAlign: 'center' }}>
-          <h1 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '0.75rem', fontFamily: 'var(--font-display)' }}>Page not found</h1>
+          <h1 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '0.75rem' }}>Page not found</h1>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', lineHeight: 1.7, fontSize: 'var(--text-lg)' }}>
             That page doesn\u2019t exist or has moved.
           </p>
