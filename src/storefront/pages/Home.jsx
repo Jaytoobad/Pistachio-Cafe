@@ -14,7 +14,6 @@ import {
 } from '../config';
 import {
   HOME_FAVOURITES,
-  HOME_BREAKFAST_TABLE,
   HOME_HERO,
   HOME_MENU,
   HOME_REVIEWS,
@@ -30,7 +29,7 @@ import { useReviews } from '../hooks/useReviews';
 import { currentStoreStatus } from '../hooks/useStoreStatus';
 import { submitReview } from '../services/reviews';
 import DishCard from '../components/DishCard';
-import BreakfastTable from '../components/BreakfastTable';
+import SteamVideo from '../components/SteamVideo';
 import DishDetailModal from '../components/DishDetailModal';
 import ReviewCard from '../components/ReviewCard';
 import StarRating from '../components/StarRating';
@@ -152,14 +151,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Breakfast table (3D) */}
-      <section className="home-breakfast-table" aria-labelledby="home-breakfast-table-title">
-        <h2 id="home-breakfast-table-title" className="home-breakfast-table-title">
-          {HOME_BREAKFAST_TABLE.heading}
-        </h2>
-        <BreakfastTable />
-      </section>
-
       {/* 2. Our menu */}
       <section className="home-section" aria-labelledby="home-menu-title">
         <div className="container">
@@ -207,6 +198,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Steam coffee video band */}
+      <SteamVideo />
 
       {/* 4. Our story */}
       <section className="home-section" aria-labelledby="home-story-title">
