@@ -4328,3 +4328,246 @@
     transition: none !important;
   }
 }
+
+/* ============================================================================
+   Split-view sections - image on one side, content on the other (desktop);
+   stacked on mobile. Used across About, Contact, Visit, Track, Reviews.
+   ========================================================================== */
+
+.split-view {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg);
+  padding-top: var(--section-space-mobile);
+  padding-bottom: var(--section-space-mobile);
+}
+
+@media (min-width: 768px) {
+  .split-view {
+    padding-top: var(--section-space-tablet);
+    padding-bottom: var(--section-space-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .split-view {
+    padding-top: var(--section-space-desktop);
+    padding-bottom: var(--section-space-desktop);
+  }
+}
+
+.split-view-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .split-view-wrap {
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--space-8);
+  }
+}
+
+.split-view-panel {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.split-view-image {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+.split-view-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.split-view-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform var(--transition-base);
+}
+
+.split-view-wrap:hover .split-view-image {
+  transform: scale(1.03);
+}
+
+.split-view-image-caption {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 2;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: #fff;
+  background: rgba(26, 26, 26, 0.55);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  line-height: 1.4;
+}
+
+.split-view-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .split-view-content {
+    padding: var(--space-6) var(--space-8);
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+
+.split-view-content-inner {
+  max-width: 48ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split-view-wrap:hover .split-view-image {
+    transform: none;
+  }
+}
+
+/* ============================================================================
+   Placeholder images - intentional, on-brand blocks for pages whose photo
+   has not been uploaded yet. Never a broken-image icon.
+   ========================================================================== */
+
+.placeholder-image {
+  position: relative;
+  width: 100%;
+  background: var(--color-pistachio-tint);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-sage);
+}
+
+.placeholder-image-surface {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.placeholder-image-label {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-sage-dark);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================================
+   Micro-interactions - subtle lifts and fades that make the site feel
+   hand-crafted rather than generated.
+   ========================================================================== */
+
+.card-lift {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-tactile {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-fast);
+}
+
+.btn-tactile:active {
+  transform: scale(0.96);
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.link-nudge {
+  display: inline-block;
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.link-nudge:hover {
+  transform: translateX(4px);
+}
+
+.section-head h2 {
+  position: relative;
+  display: inline-block;
+}
+
+.section-head h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 3px;
+  background: var(--color-ochre);
+  border-radius: 2px;
+  transition: width var(--transition-base);
+}
+
+.section-head:hover h2::after {
+  width: 100%;
+}
+
+/* List item hover nudge for hours and detail lists */
+.list-nudge li {
+  transition: padding-left var(--transition-fast), color var(--transition-fast);
+}
+
+.list-nudge li:hover {
+  padding-left: 8px;
+  color: var(--color-charcoal);
+}
+
+/* Focus-visible polish for keyboard users */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-ochre);
+  outline-offset: 2px;
+}

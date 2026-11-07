@@ -6,6 +6,7 @@ import { useSettings } from '../context/SettingsContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { formatMoney } from '../data/products';
 import { DELIVERY_ZONES, DEFAULT_DELIVERY_ZONE, getDeliveryZone } from '../config';
+import SplitView from '../components/SplitView';
 
 const PHONE_REGEX = /^(?:\+?233|0)?[1-9][0-9]{7,9}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -192,11 +193,18 @@ export default function Checkout() {
       )}
       <div>
         <section className="page-hero">
-          <div className="container">
-            <p className="page-hero-eyebrow text-muted">Last step</p>
-            <h1 className="page-hero-title text-charcoal font-serif">Checkout &amp; order tracking</h1>
-            <p className="page-hero-desc text-muted">Pay securely with Paystack, then watch your order move from kitchen to counter in real time.</p>
-          </div>
+          <SplitView
+            imageSrc="/images/poster-three-cups-wide.jpg"
+            imageAlt="Three cups of coffee on a table"
+            imageCaption="Pay securely, track your order"
+            reverse={true}
+          >
+            <div className="container">
+              <p className="page-hero-eyebrow text-muted">Last step</p>
+              <h1 className="page-hero-title text-charcoal font-serif">Checkout &amp; order tracking</h1>
+              <p className="page-hero-desc text-muted">Pay securely with Paystack, then watch your order move from kitchen to counter in real time.</p>
+            </div>
+          </SplitView>
         </section>
 
         <section className="section">
