@@ -4218,7 +4218,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Steam video band - cinematic coffee video between menu and story
+   Steam video band - steaming cup video on one side, cafe info on the other
    ------------------------------------------------------------------------- */
 
 .home-steam-video {
@@ -4243,21 +4243,34 @@
   }
 }
 
-.steam-video-band {
-  position: relative;
-  width: 100%;
+.steam-video-split {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
   max-width: var(--container-max-width);
   margin-left: auto;
   margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .steam-video-split {
+    flex-direction: row;
+    gap: var(--space-8);
+    align-items: center;
+  }
+}
+
+.steam-video-panel {
+  width: 100%;
+  position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-bg);
 }
 
 .steam-video {
-  position: relative;
   width: 100%;
-  height: 320px;
+  height: 300px;
   object-fit: cover;
   object-position: center;
   display: block;
@@ -4265,51 +4278,48 @@
 }
 
 @media (min-width: 768px) {
+  .steam-video-panel {
+    flex: 0 0 45%;
+    max-width: 45%;
+  }
+
   .steam-video {
     height: 420px;
   }
 }
 
 @media (min-width: 1024px) {
+  .steam-video-panel {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
   .steam-video {
     height: 500px;
   }
 }
 
-.steam-video-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(to bottom, rgba(26, 26, 26, 0.25) 0%, rgba(26, 26, 26, 0.05) 60%, rgba(26, 26, 26, 0.15) 100%);
+.steam-video-text-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.steam-video-tagline {
-  position: absolute;
-  left: var(--container-gutter-mobile);
-  bottom: var(--space-6);
-  z-index: 2;
-  margin: 0;
+.steam-video-heading {
+  margin: 0 0 var(--space-4) 0;
   font-family: var(--font-display);
   font-size: var(--text-3xl);
   font-weight: 600;
-  color: #fff;
+  color: var(--color-espresso);
   line-height: 1.2;
-  max-width: 42ch;
-  text-shadow: 0 1px 2px rgba(26, 26, 26, 0.4);
 }
 
-@media (min-width: 768px) {
-  .steam-video-tagline {
-    left: var(--container-gutter-tablet);
-    bottom: var(--space-8);
-    font-size: var(--text-4xl);
-  }
-}
-
-@media (min-width: 1024px) {
-  .steam-video-tagline {
-    bottom: var(--space-10);
-  }
+.steam-video-body {
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--color-ink);
+  line-height: 1.6;
 }
 
 @media (prefers-reduced-motion: reduce) {

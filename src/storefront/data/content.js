@@ -42,6 +42,12 @@ export const HOME_STORY = {
   button: 'Read our story',
 };
 
+// The steam video band: a short line about the cafe next to the steaming cup.
+export const HOME_STEAM_VIDEO = {
+  heading: 'Pistachio Caf\u00e9',
+  body: 'Coffee, desserts and shisha in Spintex, Accra. Order online for pickup or delivery, or come and sit with us.',
+};
+
 // The reviews section. Only approved reviews are shown; the form is always
 // there so a guest can leave one.
 export const HOME_REVIEWS = {

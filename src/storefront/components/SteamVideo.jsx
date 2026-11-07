@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { BRAND } from '../config';
+import { HOME_STEAM_VIDEO } from '../data/content';
 
 /* global IntersectionObserver */
 
@@ -32,23 +32,26 @@ export default function SteamVideo() {
   }, []);
 
   return (
-    <section className="home-section home-steam-video" aria-label="Steaming coffee">
-      <div className="steam-video-band">
-        <video
-          ref={videoRef}
-          className="steam-video"
-          autoPlay={playing}
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          poster="/images/home/cup-steam.jpg"
-          aria-hidden="true"
-        >
-          <source src="/videos/cup-steam.mp4" type="video/mp4" />
-        </video>
-        <div className="steam-video-overlay" aria-hidden="true" />
-        <p className="steam-video-tagline">{BRAND.tagline}</p>
+    <section className="home-section home-steam-video" aria-label={HOME_STEAM_VIDEO.heading}>
+      <div className="steam-video-split">
+        <div className="steam-video-panel" aria-hidden="true">
+          <video
+            ref={videoRef}
+            className="steam-video"
+            autoPlay={playing}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/images/home/cup-steam.jpg"
+          >
+            <source src="/videos/cup-steam.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div className="steam-video-text-panel">
+          <h2 className="steam-video-heading">{HOME_STEAM_VIDEO.heading}</h2>
+          <p className="steam-video-body">{HOME_STEAM_VIDEO.body}</p>
+        </div>
       </div>
     </section>
   );
