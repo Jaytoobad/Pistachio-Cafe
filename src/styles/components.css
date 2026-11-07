@@ -4271,15 +4271,26 @@
   position: absolute;
   left: var(--container-gutter-mobile);
   bottom: var(--space-6);
-  max-width: 40ch;
+  max-width: 42ch;
   margin: 0;
   font-family: var(--font-display);
   font-size: var(--text-3xl);
   font-weight: 600;
   color: var(--color-espresso);
   line-height: 1.2;
+  z-index: 2;
+  text-shadow: 0 1px 0 rgba(255, 253, 248, 0.6);
+}
+
+.breakfast-table-title-veil {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 140px;
   z-index: 1;
-  text-shadow: 0 1px 0 rgba(255, 253, 248, 0.7);
+  background: linear-gradient(to top, var(--color-bg) 0%, rgba(245, 242, 235, 0) 100%);
+  pointer-events: none;
 }
 
 @media (min-width: 768px) {
@@ -4288,11 +4299,19 @@
     bottom: var(--space-8);
     font-size: var(--text-4xl);
   }
+
+  .breakfast-table-title-veil {
+    height: 170px;
+  }
 }
 
 @media (min-width: 1024px) {
   .home-breakfast-table-title {
     bottom: var(--space-10);
+  }
+
+  .breakfast-table-title-veil {
+    height: 200px;
   }
 }
 
