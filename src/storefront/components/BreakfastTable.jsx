@@ -7,10 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const COLOURS = {
   table: 0x5B7052,
-  tableEdge: 0x4A5B42,
   placemat: 0xEFE8D6,
-  cup: 0xFFFFFF,
-  cupShadow: 0xE7E2D8,
   coffee: 0x3E2723,
   foam: 0xF5F2EB,
   saucer: 0xFFFFFF,
@@ -59,7 +56,7 @@ export default function BreakfastTable() {
 
     const camera = new THREE.PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
     camera.position.set(0, 2.6, 5.2);
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, -0.3, 0);
 
     const ambient = new THREE.AmbientLight(0xFFFFFF, 0.5);
     scene.add(ambient);
@@ -81,10 +78,6 @@ export default function BreakfastTable() {
     const fillLight = new THREE.PointLight(0xFFEADA, 0.45);
     fillLight.position.set(-2.5, 2, 2);
     scene.add(fillLight);
-
-    const rimLight = new THREE.DirectionalLight(0xFFFFFF, 0.35);
-    rimLight.position.set(-2, 4, -2);
-    scene.add(rimLight);
 
     const group = new THREE.Group();
     scene.add(group);
@@ -115,52 +108,6 @@ export default function BreakfastTable() {
     placemat.position.y = -0.298;
     placemat.receiveShadow = true;
     group.add(placemat);
-
-    const cup = new THREE.Group();
-    const cupBody = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.48, 0.52, 0.85, SEGMENTS),
-      new THREE.MeshStandardMaterial({ color: COLOURS.cup, roughness: 0.35, metalness: 0.05 })
-    );
-    cupBody.position.y = 0.425;
-    cupBody.castShadow = true;
-    cupBody.receiveShadow = true;
-    cup.add(cupBody);
-
-    const cupBottom = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.48, 0.48, 0.05, SEGMENTS),
-      new THREE.MeshStandardMaterial({ color: COLOURS.cupShadow, roughness: 0.5 })
-    );
-    cupBottom.position.y = 0;
-    cupBottom.castShadow = true;
-    cup.add(cupBottom);
-
-    const handle = new THREE.Mesh(
-      new THREE.TorusGeometry(0.13, 0.032, 12, 24, Math.PI),
-      new THREE.MeshStandardMaterial({ color: COLOURS.cupShadow, roughness: 0.5 })
-    );
-    handle.position.set(0.61, 0.425, 0);
-    handle.rotation.z = Math.PI / 2;
-    handle.castShadow = true;
-    cup.add(handle);
-
-    const coffee = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.44, 0.44, 0.24, SEGMENTS),
-      new THREE.MeshStandardMaterial({ color: COLOURS.coffee, roughness: 0.25 })
-    );
-    coffee.position.y = 0.59;
-    coffee.castShadow = true;
-    cup.add(coffee);
-
-    const foamTop = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.45, 0.45, 0.045, SEGMENTS),
-      new THREE.MeshStandardMaterial({ color: COLOURS.foam, roughness: 0.75 })
-    );
-    foamTop.position.y = 0.725;
-    cup.add(foamTop);
-
-    cup.position.set(-1.2, -0.5, 0);
-    cup.castShadow = true;
-    group.add(cup);
 
     const saucer = new THREE.Mesh(
       new THREE.CylinderGeometry(0.92, 0.92, 0.07, SEGMENTS),
@@ -272,8 +219,8 @@ export default function BreakfastTable() {
     const steamPos = new Float32Array(40 * 3);
     const steamMat = new THREE.PointsMaterial({ color: 0xFFFFFF, size: 0.05, transparent: true, opacity: 0.3 });
     const steam = new THREE.Points(steamGeo, steamMat);
-    steam.position.set(-1.2, 0.85, 0);
-    cup.add(steam);
+    steam.position.set(-1.2, 0.45, 0);
+    group.add(steam);
 
     for (let i = 0; i < 40; i++) {
       steamParticles.push({
@@ -324,21 +271,14 @@ export default function BreakfastTable() {
       },
     });
 
-    const steamInterval = setInterval(() => {
-      updateSteam();
-      render();
-    }, 33);
-
     function render() {
       const t = window.performance.now() * 0.001;
 
-      group.rotation.y = Math.sin(t * 0.25) * 0.015 + progress * 0.04;
-      group.rotation.x = Math.cos(t * 0.18) * 0.01;
+      group.rotation.y = Math.sin(t * 0.25) * 0.01 + progress * 0.02;
+      group.rotation.x = Math.cos(t * 0.18) * 0.005;
 
-      cup.rotation.z = Math.sin(t * 0.4) * 0.008;
-
-      camera.position.z = 5.2 + progress * 0.6;
-      camera.position.y = 2.6 - progress * 0.15;
+      camera.position.z = 5.2 + progress * 0.4;
+      camera.position.y = 2.6 - progress * 0.1;
       camera.lookAt(0, -0.3, 0);
 
       renderer.render(scene, camera);
@@ -346,8 +286,6 @@ export default function BreakfastTable() {
     render();
 
     return () => {
-      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
-      clearInterval(steamInterval);
       window.removeEventListener('resize', resize);
       scrollTrigger.kill();
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
@@ -370,6 +308,19 @@ export default function BreakfastTable() {
       <h2 id="home-breakfast-table-title" className="home-breakfast-table-title">
         The breakfast table
       </h2>
+      <div className="breakfast-table-cup">
+        <video
+          className="breakfast-table-cup-video"
+          poster="/images/home/cup-steam.jpg"
+          playsInline
+          autoPlay
+          muted
+          loop
+        >
+          <source src="/videos/cup-steam.webm" type="video/webm" />
+          <source src="/videos/cup-steam.mp4" type="video/mp4" />
+        </video>
+      </div>
       <div className="breakfast-table-fallback" aria-hidden="true">
         <div className="fallback-table" />
         <div className="fallback-cup" />
