@@ -38,7 +38,7 @@
 /* --- Sections ------------------------------------------------------------ */
 
 .section {
-  padding: var(--section-space-mobile) 0;
+  padding: var(--space-10) 0;
 }
 
 @media (min-width: 768px) {
