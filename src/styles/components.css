@@ -2811,6 +2811,13 @@
   overflow: hidden;
   border-radius: 12px;
   background: var(--color-pistachio-tint);
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .home-story-media {
+    padding: var(--space-6);
+  }
 }
 
 .home-story-media img {
@@ -4281,15 +4288,19 @@
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  background: rgba(26, 22, 20, 0.45);
+  padding-bottom: 18%;
+  pointer-events: none;
 }
 
 .steam-video-logo img {
-  max-width: 70%;
+  width: clamp(120px, 32%, 220px);
   height: auto;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  opacity: 0.68;
+  filter: sepia(0.2) saturate(0.85) contrast(1.02) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  mix-blend-mode: multiply;
+  transform: perspective(400px) rotateX(-2deg);
 }
 
 @media (min-width: 768px) {
@@ -4383,8 +4394,18 @@
 @media (min-width: 768px) {
   .split-view-wrap {
     flex-direction: row;
-    align-items: stretch;
-    gap: var(--space-8);
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .split-view-panel {
+    flex: 1 1 50%;
+  }
+
+  .split-view-content {
+    padding: var(--space-6) var(--space-8);
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 }
 
@@ -4413,7 +4434,7 @@
 
 @media (min-width: 768px) {
   .split-view-image-wrap {
-    padding: var(--space-6) var(--space-8);
+    padding: var(--space-6);
   }
 }
 
@@ -4447,8 +4468,8 @@
 .split-view-content {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   padding: var(--space-4);
 }
 
