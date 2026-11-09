@@ -1,14 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../../lib/context/ToastContext';
 import { useDishes } from '../hooks/useDishes';
 import { useMenus } from '../hooks/useMenus';
 import { formatMoney } from '../../lib/format';
-import { IMAGES } from '../config';
 import DishCard from '../components/DishCard';
 import DishDetailModal from '../components/DishDetailModal';
-import SplitView from '../components/SplitView';
 
 const FILTERS = [
   { label: 'All', value: 'all' },
@@ -34,7 +32,7 @@ export default function Menu() {
   const [activeFilter, setActiveFilter] = useState(category);
   const [quickView, setQuickView] = useState(null);
 
-  const { dishes, loading } = useDishes(category !== 'all' ? category : null);
+  const { dishes } = useDishes(category !== 'all' ? category : null);
   const { menus } = useMenus();
 
   const filtered = dishes;
@@ -43,18 +41,11 @@ export default function Menu() {
     <div className={`min-h-dvh menu-page${count > 0 ? ' has-cart' : ''}`}>
       <div>
         <section className="page-hero">
-          <SplitView
-            imageSrc="/images/hero-flatlay.jpg"
-            imageAlt="Dishes from the kitchen at Pistachio Cafe"
-            imageCaption="Breakfast, brunch and dessert"
-            reverse={true}
-          >
-            <div className="container">
-              <p className="page-hero-eyebrow">The full spread</p>
-              <h1 className="page-hero-title">Breakfast, brunch & dessert</h1>
-              <p className="page-hero-desc">Everything's made fresh in-house. Add whatever catches your eye &mdash; you can review your order before you pay.</p>
-            </div>
-          </SplitView>
+          <div className="container">
+            <p className="page-hero-eyebrow">The full spread</p>
+            <h1 className="page-hero-title">Breakfast, brunch & dessert</h1>
+            <p className="page-hero-desc">Everything's made fresh in-house. Add whatever catches your eye &mdash; you can review your order before you pay.</p>
+          </div>
         </section>
 
         <section className="section">

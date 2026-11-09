@@ -1,30 +1,19 @@
 import React from 'react';
 import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
-import { BRAND, HOURS, CONTACT, HAS_PHONE, HAS_WHATSAPP, HAS_EMAIL, getContact } from '../config';
+import { BRAND, HOURS, CONTACT, HAS_PHONE, HAS_WHATSAPP, HAS_EMAIL } from '../config';
 import { CONTACT_INTRO } from '../data/content';
-import SplitView from '../components/SplitView';
-import PlaceholderImage from '../components/PlaceholderImage';
 
 export default function Contact() {
   useDocumentTitle('Contact | Pistachio Caf\u00e9');
   return (
     <div className="contact-page" style={{ minHeight: '100dvh' }}>
-      {/* Split view: cafe photo left, contact info right (desktop); stacked on mobile */}
-      <SplitView
-        imageSrc="/images/menu-marble-closeup.jpg"
-        imageAlt="A close-up of a dish at Pistachio Cafe"
-        imageCaption="Pistachio Caf\u00e9 \u2014 Spintex, Accra"
-      >
-        <div>
-          <section className="sf-section">
-            <p className="sf-hero-eyebrow">Get in touch</p>
-            <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}>Contact us</h1>
-            <p style={{ color: 'var(--color-text-muted)', marginTop: 14, maxWidth: '48ch', fontSize: 'var(--text-lg)', lineHeight: 1.7 }}>
-              {CONTACT_INTRO}
-            </p>
-          </section>
+      <section className="section">
+        <div className="container">
+          <p className="page-hero-eyebrow">Get in touch</p>
+          <h1 className="page-hero-title">Contact us</h1>
+          <p className="page-hero-desc">{CONTACT_INTRO}</p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: 32 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginTop: 'var(--space-8)', marginBottom: 32 }}>
             {HAS_PHONE && (
               <div className="card-lift" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
                 <h3 style={{ margin: '0 0 8px' }}>Phone</h3>
@@ -34,7 +23,7 @@ export default function Contact() {
             {HAS_WHATSAPP && (
               <div className="card-lift" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
                 <h3 style={{ margin: '0 0 8px' }}>WhatsApp</h3>
-                <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }} className="link-nudge">Message us on WhatsApp</a>
+                <a href={`https://wa.me/${CONTACT.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }}>Message us on WhatsApp</a>
                 <p style={{ margin: '6px 0 0', color: 'var(--color-text-muted)', fontSize: '0.82rem' }}>Chat with us directly.</p>
               </div>
             )}
@@ -51,12 +40,10 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="card-lift" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22 }}>
+          <div className="card-lift" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 22, marginBottom: 20 }}>
             <h3 style={{ margin: '0 0 8px' }}>Map</h3>
-            <a href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }} className="link-nudge">Open in Google Maps</a>
-            <p style={{ margin: '6px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-              {CONTACT.address}
-            </p>
+            <a href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-forest)', fontWeight: 600, textDecoration: 'none' }}>Open in Google Maps</a>
+            <p style={{ margin: '6px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>{CONTACT.address}</p>
           </div>
 
           <div className="card-lift" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 24 }}>
@@ -71,12 +58,10 @@ export default function Contact() {
                 <strong>{HOURS.weekend.open} &ndash; {HOURS.weekend.close}</strong>
               </li>
             </ul>
-            <p style={{ margin: '12px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-              Location: {CONTACT.address}.
-            </p>
+            <p style={{ margin: '12px 0 0', color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>Location: {CONTACT.address}.</p>
           </div>
         </div>
-      </SplitView>
+      </section>
     </div>
   );
 }
