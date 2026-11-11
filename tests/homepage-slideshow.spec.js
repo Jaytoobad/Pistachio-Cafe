@@ -30,6 +30,8 @@ test('homepage slideshow advances automatically and menu categories scroll witho
   const categoryTrack = page.locator('.home-menu-grid');
   await expect(page.locator('.home-menu-tile')).toHaveCount(4);
   await expect(categoryTrack).toHaveCSS('scrollbar-width', 'none');
+  // The category track advances on its own, and resumes after a pause.
+  await expect.poll(() => categoryTrack.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
   await page.getByRole('button', { name: 'Next menu categories' }).click();
   await expect.poll(() => categoryTrack.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
 

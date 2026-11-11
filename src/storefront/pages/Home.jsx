@@ -82,6 +82,66 @@ export default function Home() {
     carousel.scrollBy({ left: direction * (tile.getBoundingClientRect().width + gap), behavior: 'smooth' });
   };
 
+  // Autoplay the menu category track, but pause whenever the user touches it
+  // so a swipe, a wheel flick or an arrow click stays under their control.
+  useEffect(() => {
+    const carousel = menuCarouselRef.current;
+    if (!carousel) return undefined;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+
+    let timer = null;
+    let resumeTimer = null;
+    let paused = false;
+
+    const advance = () => {
+      const tiles = carousel.querySelectorAll('.home-menu-tile');
+      if (tiles.length < 2) return;
+      const tile = tiles[0];
+      const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap) || 0;
+      const step = tile.getBoundingClientRect().width + gap;
+      const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+      const next = carousel.scrollLeft + step;
+      if (next >= maxScroll - 1) {
+        carousel.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        carousel.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    };
+
+    const start = () => {
+      window.clearInterval(timer);
+      timer = window.setInterval(advance, 4500);
+    };
+
+    const pause = () => {
+      paused = true;
+      window.clearInterval(timer);
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(() => { paused = false; start(); }, 4000);
+    };
+
+    const onUserInput = (event) => {
+      // Ignore events that come from the arrow buttons themselves.
+      if (event.target.closest('.home-menu-carousel-arrow')) return;
+      pause();
+    };
+
+    start();
+    carousel.addEventListener('scroll', onUserInput, { passive: true });
+    carousel.addEventListener('wheel', onUserInput, { passive: true });
+    carousel.addEventListener('touchstart', onUserInput, { passive: true });
+    carousel.addEventListener('mousedown', onUserInput);
+
+    return () => {
+      window.clearInterval(timer);
+      window.clearTimeout(resumeTimer);
+      carousel.removeEventListener('scroll', onUserInput);
+      carousel.removeEventListener('wheel', onUserInput);
+      carousel.removeEventListener('touchstart', onUserInput);
+      carousel.removeEventListener('mousedown', onUserInput);
+    };
+  }, []);
+
   const visibleMenus = menus.filter((menu) => menu.is_visible !== false);
 
   // Up to four featured dishes, never the same dish twice.
