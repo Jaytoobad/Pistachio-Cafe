@@ -25,8 +25,6 @@ export const HOME_HERO = {
   showImage: 'Show image',
   previousImage: 'Previous image',
   nextImage: 'Next image',
-  pauseSlideshow: 'Pause slideshow',
-  playSlideshow: 'Play slideshow',
 };
 
 // The "Our menu" section: one tile per menu section.

@@ -2957,11 +2957,6 @@
   background: currentColor;
 }
 
-.home-hero-play {
-  border-left: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 0 999px 999px 0;
-}
-
 /* The outline hero button: white text on a white border, so it reads over
    the photo. */
 .btn-cafe-outline-light {
@@ -3074,8 +3069,12 @@
   padding: 2px 2px var(--space-3);
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
-  scrollbar-color: var(--color-sage) var(--color-border);
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.home-menu-grid::-webkit-scrollbar {
+  display: none;
 }
 
 @media (min-width: 768px) {
