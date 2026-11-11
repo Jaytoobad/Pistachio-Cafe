@@ -129,6 +129,7 @@ export const IMAGES = {
   // Full-bleed home hero. The owner drops the wide shots in
   // /public/images/hero as hero-1.jpg, hero-2.jpg and hero-3.jpg.
   hero: '/images/hero/hero-1.jpg',
+  heroSecond: '/images/hero/hero-pistachio-cup.jpg',
   heroImage: '/images/hero/hero.jpg',
   heroCoffee: '/images/hero-coffee-beans.jpg',
   // Story photo for the home page.

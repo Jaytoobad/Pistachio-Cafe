@@ -6,7 +6,7 @@ import PlaceholderImage from '../components/PlaceholderImage';
 
 export default function NotFound() {
   return (
-    <div className="notfound-page" style={{ minHeight: '100dvh' }}>
+    <div className="notfound-page">
       <Seo title="Page not found | Pistachio Cafe" description="The page you are looking for does not exist." />
 
       {/* Split view: placeholder image left, friendly 404 content right (desktop); stacked on mobile */}

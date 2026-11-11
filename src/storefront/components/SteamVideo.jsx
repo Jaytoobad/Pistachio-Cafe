@@ -65,7 +65,7 @@ export default function SteamVideo() {
           </video>
         </div>
         <div className="steam-video-text-panel">
-          <h2 className="steam-video-heading">{HOME_STEAM_VIDEO.heading}</h2>
+          <h2 className="home-section-title steam-video-heading">{HOME_STEAM_VIDEO.heading}</h2>
           <p className="steam-video-body">{HOME_STEAM_VIDEO.body}</p>
         </div>
       </div>

@@ -5,7 +5,7 @@ import Seo from '../components/Seo';
 export default function Visit() {
   const days = [1, 2, 3, 4, 5, 6, 0];
   return (
-    <div className="visit-page" style={{ minHeight: '100dvh' }}>
+    <div className="visit-page">
       <Seo title="Visit | Pistachio Cafe" description="Location and hours for Pistachio Cafe in Spintex, Accra." />
 
       <section className="section">

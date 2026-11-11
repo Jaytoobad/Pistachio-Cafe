@@ -21,12 +21,21 @@ export const HERO_HOURS_TEXT = 'Mon\u2013Fri 8AM\u201311PM \u00b7 Sat\u2013Sun 8
 export const HOME_HERO = {
   headline: 'Breakfast, brunch and the good kind of slow.',
   subline: 'Coffee, desserts and shisha, made in our kitchen in Spintex, Accra.',
+  slideControlsLabel: 'Homepage photos',
+  showImage: 'Show image',
+  previousImage: 'Previous image',
+  nextImage: 'Next image',
+  pauseSlideshow: 'Pause slideshow',
+  playSlideshow: 'Play slideshow',
 };
 
 // The "Our menu" section: one tile per menu section.
 export const HOME_MENU = {
   heading: 'Our menu',
   intro: 'Four sections, one kitchen. Pick a section and order online for pickup or delivery.',
+  carouselLabel: 'Menu categories',
+  previousCategories: 'Previous menu categories',
+  nextCategories: 'Next menu categories',
 };
 
 // The "Customer favourites" section: the dishes the owner marks as featured.
