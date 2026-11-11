@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 const BASE = process.env.BASE_URL || 'http://localhost:5173';
 
-test('homepage hero and menu categories work as responsive slideshows', async ({ page }) => {
+test('homepage slideshow advances automatically and menu categories scroll without a visible scrollbar', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.route('**/rest/v1/**', async (route) => {
     const isOptions = route.request().method() === 'OPTIONS';
@@ -21,13 +21,15 @@ test('homepage hero and menu categories work as responsive slideshows', async ({
   await page.goto(BASE);
   const activeHero = page.locator('.home-hero-media img.is-active');
   await expect(activeHero).toHaveAttribute('src', '/images/hero/hero-1.jpg');
+  await expect(page.getByRole('button', { name: /Pause slideshow|Play slideshow/ })).toHaveCount(0);
+  await expect(activeHero).toHaveAttribute('src', '/images/hero/hero-pistachio-cup.jpg', { timeout: 8000 });
 
-  await page.getByRole('button', { name: 'Pause slideshow' }).click();
-  await page.getByRole('button', { name: 'Next image' }).click();
-  await expect(activeHero).toHaveAttribute('src', '/images/hero/hero-pistachio-cup.jpg');
+  await page.getByRole('button', { name: 'Previous image' }).click();
+  await expect(activeHero).toHaveAttribute('src', '/images/hero/hero-1.jpg');
 
   const categoryTrack = page.locator('.home-menu-grid');
   await expect(page.locator('.home-menu-tile')).toHaveCount(4);
+  await expect(categoryTrack).toHaveCSS('scrollbar-width', 'none');
   await page.getByRole('button', { name: 'Next menu categories' }).click();
   await expect.poll(() => categoryTrack.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
 
