@@ -1,27 +1,37 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND } from '../config';
+import { IMAGES } from '../config';
+import { ABOUT_HERO, ABOUT_STORY } from '../data/content';
 import Seo from '../components/Seo';
 
 export default function About() {
   return (
-    <div className="about-page" style={{ minHeight: '100dvh' }}>
+    <div>
       <Seo title="Our story | Pistachio Cafe" description="The story of Pistachio Cafe in Spintex, Accra." />
 
       <section className="section">
-        <div className="container">
-          <p className="page-hero-eyebrow">Our story</p>
-          <h1 className="page-hero-title">Our story</h1>
-          <p className="page-hero-desc">
-            Pistachio Cafe is a neighborhood spot in {BRAND.location} serving coffee, desserts and shisha with care.
-          </p>
-          <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.7, fontSize: 'var(--text-lg)', marginTop: 'var(--space-4)', maxWidth: '60ch' }}>
-            We focus on warm service and fresh, made-to-order treats. Find us in Spintex, Accra. You can order online for pickup or delivery.
-          </p>
-          <div style={{ marginTop: 'var(--space-6)', display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
-            <Link to="/menu" className="btn btn-primary">See the menu</Link>
-            <Link to="/visit" className="btn btn-outline">Visit us</Link>
+        <div className="container about-hero-grid">
+          <div className="about-copy">
+            <p className="page-hero-eyebrow">{ABOUT_HERO.eyebrow}</p>
+            <h1 className="page-hero-title">{ABOUT_HERO.heading}</h1>
+            <p className="page-hero-desc">{ABOUT_HERO.body}</p>
+            <div className="about-actions">
+              <Link to="/menu" className="btn btn-primary">See the menu</Link>
+              <Link to="/visit" className="btn btn-outline">Visit us</Link>
+            </div>
           </div>
+          <figure className="about-photo">
+            <img src={IMAGES.story} alt="Coffee served beside Pistachio Cafe packaging." loading="lazy" />
+          </figure>
+        </div>
+      </section>
+
+      <section className="section section-alt">
+        <div className="container about-story-copy">
+          <h2>{ABOUT_STORY.title}</h2>
+          <p>{ABOUT_STORY.body}</p>
+          <p>{ABOUT_STORY.body2}</p>
+          <Link to="/events" className="btn btn-outline">See cafe events</Link>
         </div>
       </section>
     </div>

@@ -10,11 +10,17 @@ export default function SteamVideo() {
     const video = videoRef.current;
     if (!video) return;
 
+    const handleLoadedData = () => {
+      const rect = video.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) tryPlay();
+    };
+
     const tryPlay = () => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         video.pause();
         return;
       }
+      video.playbackRate = 1.35;
       const playPromise = video.play();
       if (playPromise && typeof playPromise.catch === 'function') {
         playPromise.catch(() => {});
@@ -32,15 +38,14 @@ export default function SteamVideo() {
       },
       { threshold: 0.15 }
     );
-
     observer.observe(video);
-    video.addEventListener('loadeddata', () => {
-      const rect = video.getBoundingClientRect();
-      const inView = rect.top < window.innerHeight && rect.bottom > 0;
-      if (inView) tryPlay();
-    });
+    observer.observe(video);
+    video.addEventListener('loadeddata', handleLoadedData);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      video.removeEventListener('loadeddata', handleLoadedData);
+    };
   }, []);
 
   return (
@@ -54,7 +59,7 @@ export default function SteamVideo() {
             loop
             playsInline
             preload="auto"
-            poster="/images/home/cup-steam.jpg"
+            poster="/images/home/cup-steam-branded-frame.jpg"
           >
             <source src="/videos/cup-steam-branded.webm" type="video/webm" />
             <source src="/videos/cup-steam-branded.mp4" type="video/mp4" />

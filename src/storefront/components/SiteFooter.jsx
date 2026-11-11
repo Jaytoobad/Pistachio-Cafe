@@ -9,6 +9,7 @@ import SafeImg from './SafeImg';
 const exploreLinks = [
   { to: '/menu', label: 'Menu' },
   { to: '/about', label: 'Our story' },
+  { to: '/events', label: 'Events' },
   { to: '/visit', label: 'Visit us' },
   { to: '/track', label: 'Track an order' },
 ];

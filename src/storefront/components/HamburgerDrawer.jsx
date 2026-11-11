@@ -8,6 +8,7 @@ import { CLOSE_SVG } from './icons';
 const navLinks = [
   { to: '/menu', label: 'Menu' },
   { to: '/about', label: 'Our story' },
+  { to: '/events', label: 'Events' },
   { to: '/visit', label: 'Visit' },
   { to: '/track', label: 'Track order' },
 ];

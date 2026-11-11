@@ -40,6 +40,7 @@ export const HOME_STORY = {
   heading: 'Our story',
   body: 'Pistachio is a cafe in Spintex, Accra. We serve coffee, desserts and shisha, and we host evenings such as paint and sip. Order online for pickup or delivery, or come and sit with us.',
   button: 'Read our story',
+  eventsButton: 'Explore cafe events',
 };
 
 // The steam video band: a short line about the cafe next to the steaming cup.
@@ -86,6 +87,16 @@ export const ABOUT_STORY = {
   title: 'A neighbourhood table, done with care',
   body: 'Pistachio is a neighbourhood kitchen in Spintex. Breakfast, brunch, coffee and desserts all come out of one kitchen, and we keep the doors open late at the weekend so the table keeps going.',
   body2: 'Most plates are cooked to order, so a breakfast takes a few minutes longer than a takeaway. Order ahead and we will have it ready when you arrive.',
+};
+
+export const EVENTS_PAGE = {
+  eyebrow: 'Gather at Pistachio',
+  heading: 'Good food, good company, a little something extra',
+  intro: 'We host paint-and-sip evenings and other get-togethers at our cafe in Spintex. New dates and booking details will be shared here and on Instagram.',
+  emptyHeading: 'No upcoming dates just yet',
+  emptyBody: 'Follow us on Instagram to hear when the next evening is planned.',
+  instagramLabel: 'Follow us on Instagram',
+  visitLabel: 'Plan your visit',
 };
 
 // The four numbers on the about page. They repeat the opening hours and the

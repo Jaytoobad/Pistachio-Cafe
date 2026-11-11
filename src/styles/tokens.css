@@ -4,7 +4,7 @@
    hard-code a brand colour: if a new colour is needed, add a token first.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap');
 
 :root {
   /* --- Spacing (4px scale) --- */
@@ -79,8 +79,8 @@
   --color-cream-dim: #EFE8D6;
 
   /* --- Typography --- */
-  --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --font-body: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-display: 'Cormorant Garamond', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-body: 'Work Sans', 'Segoe UI', sans-serif;
 
   /* --- Radii --- */
   --radius-sm: 6px;

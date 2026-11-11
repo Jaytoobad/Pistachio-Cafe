@@ -33,6 +33,7 @@ const ROUTES = [
   '/checkout',
   '/track',
   '/about',
+  '/events',
   '/visit',
   '/gallery',
   '/contact',

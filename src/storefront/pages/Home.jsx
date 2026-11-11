@@ -216,6 +216,9 @@ export default function Home() {
             <Link to="/about" className="btn-cafe btn-cafe-outline">
               {HOME_STORY.button}
             </Link>
+            <Link to="/events" className="btn-cafe btn-cafe-outline">
+              {HOME_STORY.eventsButton}
+            </Link>
           </div>
         </div>
       </section>

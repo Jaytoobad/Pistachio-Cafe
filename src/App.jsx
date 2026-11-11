@@ -40,6 +40,7 @@ const StoreReviews = lazy(() => import('./storefront/pages/Reviews'));
 const StoreContact = lazy(() => import('./storefront/pages/Contact'));
 const StoreNotFound = lazy(() => import('./storefront/pages/NotFound'));
 const StoreAbout = lazy(() => import('./storefront/pages/About'));
+const StoreEvents = lazy(() => import('./storefront/pages/Events'));
 const StorePrivacy = lazy(() => import('./storefront/pages/policy/Privacy'));
 const StoreTerms = lazy(() => import('./storefront/pages/policy/Terms'));
 const StoreDeliveryInfo = lazy(() => import('./storefront/pages/policy/DeliveryInfo'));
@@ -105,6 +106,7 @@ export default function App() {
                   <Route path="track/:orderId" element={<StoreTrack />} />
                   <Route path="track/:code" element={<StoreTrack />} />
                   <Route path="about" element={<StoreAbout />} />
+                  <Route path="events" element={<StoreEvents />} />
                   <Route path="visit" element={<StoreVisit />} />
                   <Route path="gallery" element={<StoreGallery />} />
                   <Route path="reviews" element={<StoreReviews />} />

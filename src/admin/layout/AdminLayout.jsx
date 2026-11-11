@@ -9,23 +9,26 @@ import MobileTabBar from './MobileTabBar';
 
 const GROUPS = [
   {
-    label: 'Today & orders',
+    label: 'Overview',
     icon: 'dashboard',
     items: [
       { to: '/admin/today', label: 'Today', icon: 'dashboard' },
       { to: '/admin/orders', label: 'Orders', icon: 'orders' },
+      { to: '/admin/report', label: 'Reports', icon: 'report' },
     ],
   },
   {
-    label: 'Menus & dishes',
+    label: 'Menu',
     icon: 'menu',
     items: [
       { to: '/admin/menu', label: 'Menus', icon: 'menu' },
       { to: '/admin/dishes', label: 'Dishes', icon: 'dishes' },
+      { to: '/admin/addons', label: 'Add-ons', icon: 'addon' },
+      { to: '/admin/86', label: '86 board', icon: 'tag' },
     ],
   },
   {
-    label: 'Riders & delivery zones',
+    label: 'Delivery',
     icon: 'riders',
     items: [
       { to: '/admin/riders', label: 'Riders', icon: 'riders' },
@@ -33,7 +36,7 @@ const GROUPS = [
     ],
   },
   {
-    label: 'Customers, reviews, subscribers & staff',
+    label: 'Guests & team',
     icon: 'customers',
     items: [
       { to: '/admin/customers', label: 'Customers', icon: 'customers' },
@@ -43,9 +46,10 @@ const GROUPS = [
     ],
   },
   {
-    label: 'Settings',
+    label: 'Cafe operations',
     icon: 'settings',
     items: [
+      { to: '/admin/hours', label: 'Opening hours', icon: 'hours' },
       { to: '/admin/settings', label: 'Settings', icon: 'settings' },
     ],
   },
@@ -58,12 +62,16 @@ const PAGE_TITLES = {
   '/admin/orders': 'Orders',
   '/admin/menu': 'Menus',
   '/admin/dishes': 'Dishes',
+  '/admin/addons': 'Add-ons',
+  '/admin/86': '86 board',
   '/admin/riders': 'Riders',
   '/admin/zones': 'Delivery zones',
   '/admin/customers': 'Customers',
   '/admin/reviews': 'Reviews',
   '/admin/subscribers': 'Subscribers',
   '/admin/staff': 'Staff',
+  '/admin/hours': 'Opening hours',
+  '/admin/report': 'Reports',
   '/admin/settings': 'Settings',
 };
 

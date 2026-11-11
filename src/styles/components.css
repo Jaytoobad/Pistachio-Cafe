@@ -3103,8 +3103,7 @@
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .nav-link {
@@ -3112,6 +3111,7 @@
   align-items: center;
   gap: 12px;
   width: 100%;
+  min-height: 44px;
   padding: 10px 16px;
   border: 0;
   border-left: 3px solid transparent;
@@ -4045,6 +4045,7 @@
   flex-direction: column;
   align-items: center;
   min-width: 64px;
+  min-height: 56px;
   padding: 6px 4px 8px;
   border: 0;
   background: none;
@@ -4052,6 +4053,7 @@
   font-size: 0.65rem;
   white-space: nowrap;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .tab-link.active {
@@ -4619,6 +4621,117 @@
 .list-nudge li:hover {
   padding-left: 8px;
   color: var(--color-charcoal);
+}
+
+/* --- Story and events pages --------------------------------------------- */
+
+.about-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.about-copy {
+  min-width: 0;
+  max-width: 58ch;
+}
+
+.about-copy .page-hero-title,
+.events-intro .page-hero-title {
+  font-size: var(--text-4xl);
+}
+
+.about-copy .page-hero-desc,
+.events-intro .page-hero-desc {
+  font-size: var(--text-lg);
+  line-height: 1.7;
+}
+
+.about-actions,
+.events-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.about-photo {
+  width: 100%;
+  height: clamp(240px, 72vw, 440px);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-pistachio-tint);
+}
+
+.about-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.about-story-copy {
+  max-width: 72ch;
+}
+
+.about-story-copy h2 {
+  font-size: var(--text-3xl);
+}
+
+.about-story-copy p {
+  color: var(--color-text-muted);
+  line-height: 1.75;
+}
+
+.events-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-10);
+  align-items: start;
+}
+
+.events-intro {
+  max-width: 60ch;
+}
+
+.events-empty {
+  min-width: 0;
+  padding: var(--space-6);
+  border-left: 3px solid var(--color-sage);
+  background: var(--color-surface);
+}
+
+.events-empty-label {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.events-empty h2 {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-2xl);
+}
+
+.events-empty > p:not(.events-empty-label) {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 768px) {
+  .about-hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    gap: var(--space-10);
+  }
+
+  .about-photo {
+    height: min(52vw, 520px);
+  }
+
+  .events-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+    gap: var(--space-12);
+  }
 }
 
 /* Focus-visible polish for keyboard users */
