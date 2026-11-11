@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   BRAND,
@@ -48,6 +48,8 @@ export default function Home() {
   const { reviews } = useReviews();
 
   const [quickView, setQuickView] = useState(null);
+  const [heroSlide, setHeroSlide] = useState(0);
+  const [heroPaused, setHeroPaused] = useState(false);
   const [reviewName, setReviewName] = useState('');
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
@@ -61,8 +63,25 @@ export default function Home() {
 
   // Photos that are really on the site. A missing one falls back to the flat
   // pistachio tile, and the hero falls back to its green gradient.
-  const heroPhoto = imageExists(IMAGES.hero) ? IMAGES.hero : null;
+  const heroPhotos = [IMAGES.hero, IMAGES.heroSecond].filter(imageExists);
   const storyPhoto = imageExists(IMAGES.story) ? IMAGES.story : null;
+  const menuCarouselRef = useRef(null);
+
+  useEffect(() => {
+    if (heroPaused || heroPhotos.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = window.setInterval(() => {
+      setHeroSlide((current) => (current + 1) % heroPhotos.length);
+    }, 6500);
+    return () => window.clearInterval(timer);
+  }, [heroPaused, heroPhotos.length]);
+
+  const scrollMenuCategories = (direction) => {
+    const carousel = menuCarouselRef.current;
+    const tile = carousel?.querySelector('.home-menu-tile');
+    if (!carousel || !tile) return;
+    const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap) || 0;
+    carousel.scrollBy({ left: direction * (tile.getBoundingClientRect().width + gap), behavior: 'smooth' });
+  };
 
   const visibleMenus = menus.filter((menu) => menu.is_visible !== false);
 
@@ -127,9 +146,16 @@ export default function Home() {
       {/* 1. Hero */}
       <section className="home-hero" aria-labelledby="home-hero-title">
         <div className="home-hero-media" aria-hidden="true">
-          {heroPhoto && (
-            <img src={heroPhoto} alt="" onError={(event) => { event.currentTarget.style.display = 'none'; }} />
-          )}
+          {heroPhotos.map((photo, index) => (
+            <img
+              key={photo}
+              src={photo}
+              alt=""
+              className={index === heroSlide ? 'is-active' : undefined}
+              fetchPriority={index === 0 ? 'high' : undefined}
+              onError={(event) => { event.currentTarget.style.display = 'none'; }}
+            />
+          ))}
         </div>
         <div className="home-hero-overlay" aria-hidden="true" />
         <div className="container home-hero-inner">
@@ -149,16 +175,79 @@ export default function Home() {
             {status.isOpen ? 'Open now' : 'Closed'} &middot; Today {formatClock(todayHours.open)}&ndash;{formatClock(todayHours.close)}
           </p>
         </div>
+        {heroPhotos.length > 1 && (
+          <div className="home-hero-controls" role="group" aria-label={HOME_HERO.slideControlsLabel}>
+            <button
+              type="button"
+              className="home-hero-arrow"
+              aria-label={HOME_HERO.previousImage}
+              onClick={() => setHeroSlide((current) => (current - 1 + heroPhotos.length) % heroPhotos.length)}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <div className="home-hero-dots">
+              {heroPhotos.map((photo, index) => (
+                <button
+                  key={photo}
+                  type="button"
+                  className={`home-hero-dot${index === heroSlide ? ' is-active' : ''}`}
+                  aria-label={`${HOME_HERO.showImage} ${index + 1}`}
+                  aria-pressed={index === heroSlide}
+                  onClick={() => setHeroSlide(index)}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              className="home-hero-arrow"
+              aria-label={HOME_HERO.nextImage}
+              onClick={() => setHeroSlide((current) => (current + 1) % heroPhotos.length)}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="home-hero-arrow home-hero-play"
+              aria-label={heroPaused ? HOME_HERO.playSlideshow : HOME_HERO.pauseSlideshow}
+              onClick={() => setHeroPaused((paused) => !paused)}
+            >
+              {heroPaused ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M7 5h4v14H7zM15 5h4v14h-4z" />
+                </svg>
+              )}
+            </button>
+          </div>
+        )}
       </section>
 
       {/* 2. Our menu */}
       <section className="home-section" aria-labelledby="home-menu-title">
         <div className="container">
           <div className="home-section-head">
-            <h2 id="home-menu-title">{HOME_MENU.heading}</h2>
+            <h2 id="home-menu-title" className="home-section-title">{HOME_MENU.heading}</h2>
             <p>{HOME_MENU.intro}</p>
           </div>
-          <div className="home-menu-grid">
+          <div className="home-menu-carousel" role="region" aria-label={HOME_MENU.carouselLabel}>
+            <button
+              type="button"
+              className="home-menu-carousel-arrow"
+              aria-label={HOME_MENU.previousCategories}
+              onClick={() => scrollMenuCategories(-1)}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <div className="home-menu-grid" ref={menuCarouselRef} tabIndex={0} aria-label={HOME_MENU.carouselLabel}>
             {visibleMenus.map((menu) => {
               const count = dishes.filter((dish) => dish.menu_id === menu.id).length;
               const photoPath = MENU_SECTION_IMAGES[menu.slug] || `/images/menus/${menu.slug}.jpg`;
@@ -181,6 +270,17 @@ export default function Home() {
                 </Link>
               );
             })}
+            </div>
+            <button
+              type="button"
+              className="home-menu-carousel-arrow"
+              aria-label={HOME_MENU.nextCategories}
+              onClick={() => scrollMenuCategories(1)}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
           </div>
         </div>
       </section>
@@ -189,7 +289,7 @@ export default function Home() {
       <section className="home-section home-section-alt" aria-labelledby="home-favourites-title">
         <div className="container">
           <div className="home-section-head">
-            <h2 id="home-favourites-title">{HOME_FAVOURITES.heading}</h2>
+            <h2 id="home-favourites-title" className="home-section-title">{HOME_FAVOURITES.heading}</h2>
           </div>
           <div className="dish-grid">
             {featured.map((dish) => (
@@ -211,7 +311,7 @@ export default function Home() {
             )}
           </div>
           <div className="home-story-text">
-            <h2 id="home-story-title">{HOME_STORY.heading}</h2>
+            <h2 id="home-story-title" className="home-section-title">{HOME_STORY.heading}</h2>
             <p>{HOME_STORY.body}</p>
             <Link to="/about" className="btn-cafe btn-cafe-outline">
               {HOME_STORY.button}
@@ -227,7 +327,7 @@ export default function Home() {
       <section className="home-section home-section-alt" aria-labelledby="home-reviews-title">
         <div className="container">
           <div className="home-section-head">
-            <h2 id="home-reviews-title">{HOME_REVIEWS.heading}</h2>
+            <h2 id="home-reviews-title" className="home-section-title">{HOME_REVIEWS.heading}</h2>
           </div>
 
           {visibleReviews.length > 0 && (
@@ -285,8 +385,8 @@ export default function Home() {
       <section className="home-section" aria-labelledby="home-visit-title">
         <div className="container home-visit">
           <div className="home-visit-address">
-            <h2 id="home-visit-title">{HOME_VISIT.heading}</h2>
-            <h3>{HOME_VISIT.addressHeading}</h3>
+            <h2 id="home-visit-title" className="home-section-title">{HOME_VISIT.heading}</h2>
+            <h3 className="home-section-title">{HOME_VISIT.addressHeading}</h3>
             <p>{CONTACT.address}</p>
             <p className="home-visit-actions">
               <a href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer" className="btn-cafe btn-cafe-primary">
@@ -309,7 +409,7 @@ export default function Home() {
           </div>
 
           <div className="home-visit-hours">
-            <h3>{HOME_VISIT.hoursHeading}</h3>
+            <h3 className="home-section-title">{HOME_VISIT.hoursHeading}</h3>
             <ul className="home-hours">
               {hoursRows.map((row) => (
                 <li key={row.dayIndex} className={row.isToday ? 'home-hours-today' : undefined}>

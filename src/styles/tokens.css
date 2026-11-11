@@ -4,7 +4,14 @@
    hard-code a brand colour: if a new colour is needed, add a token first.
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap');
+@import '@fontsource/cormorant-garamond/latin-400.css';
+@import '@fontsource/cormorant-garamond/latin-500.css';
+@import '@fontsource/cormorant-garamond/latin-600.css';
+@import '@fontsource/cormorant-garamond/latin-700.css';
+@import '@fontsource/work-sans/latin-400.css';
+@import '@fontsource/work-sans/latin-500.css';
+@import '@fontsource/work-sans/latin-600.css';
+@import '@fontsource/work-sans/latin-700.css';
 
 :root {
   /* --- Spacing (4px scale) --- */

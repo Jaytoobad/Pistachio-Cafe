@@ -6,7 +6,7 @@ import { CONTACT_INTRO } from '../data/content';
 export default function Contact() {
   useDocumentTitle('Contact | Pistachio Caf\u00e9');
   return (
-    <div className="contact-page" style={{ minHeight: '100dvh' }}>
+    <div className="contact-page">
       <section className="section">
         <div className="container">
           <p className="page-hero-eyebrow">Get in touch</p>

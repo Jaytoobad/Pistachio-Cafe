@@ -12,6 +12,7 @@ export const LOCAL_IMAGE_FILES = [
   '/images/hero-coffee-beans.jpg',
   '/images/hero-flatlay.jpg',
   '/images/hero/hero-1.jpg',
+  '/images/hero/hero-pistachio-cup.jpg',
   '/images/hero/hero.jpg',
   '/images/home/cup-steam-branded-frame.jpg',
   '/images/home/cup-steam-frame.jpg',
