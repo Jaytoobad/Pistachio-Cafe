@@ -1,32 +1,44 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { HOME_STEAM_VIDEO } from '../data/content';
 
 /* global IntersectionObserver */
 
 export default function SteamVideo() {
   const videoRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    const tryPlay = () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        video.pause();
+        return;
+      }
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
-        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (entry.isIntersecting && !prefersReduced) {
-          video.play().catch(() => {});
-          setPlaying(true);
+        if (entry.isIntersecting) {
+          tryPlay();
         } else {
           video.pause();
-          setPlaying(false);
         }
       },
       { threshold: 0.15 }
     );
 
     observer.observe(video);
+    video.addEventListener('loadeddata', () => {
+      const rect = video.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (inView) tryPlay();
+    });
 
     return () => observer.disconnect();
   }, []);
@@ -38,13 +50,13 @@ export default function SteamVideo() {
           <video
             ref={videoRef}
             className="steam-video"
-            autoPlay={playing}
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="auto"
             poster="/images/home/cup-steam.jpg"
           >
+            <source src="/videos/cup-steam.webm" type="video/webm" />
             <source src="/videos/cup-steam.mp4" type="video/mp4" />
           </video>
           <div className="steam-video-logo">
