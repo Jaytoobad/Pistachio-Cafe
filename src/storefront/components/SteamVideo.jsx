@@ -56,12 +56,9 @@ export default function SteamVideo() {
             preload="auto"
             poster="/images/home/cup-steam.jpg"
           >
-            <source src="/videos/cup-steam.webm" type="video/webm" />
-            <source src="/videos/cup-steam.mp4" type="video/mp4" />
+            <source src="/videos/cup-steam-branded.webm" type="video/webm" />
+            <source src="/videos/cup-steam-branded.mp4" type="video/mp4" />
           </video>
-          <div className="steam-video-logo">
-            <img src="/images/brand/logo.svg" alt="" />
-          </div>
         </div>
         <div className="steam-video-text-panel">
           <h2 className="steam-video-heading">{HOME_STEAM_VIDEO.heading}</h2>
