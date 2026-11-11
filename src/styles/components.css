@@ -2810,14 +2810,7 @@
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 12px;
-  background: var(--color-pistachio-tint);
-  padding: var(--space-4);
-}
-
-@media (min-width: 768px) {
-  .home-story-media {
-    padding: var(--space-6);
-  }
+  background: transparent;
 }
 
 .home-story-media img {
@@ -4276,8 +4269,7 @@
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: var(--color-pistachio-tint);
-  padding: var(--space-4);
+  background: transparent;
 }
 
 .steam-video {
@@ -4286,24 +4278,17 @@
   object-fit: cover;
   object-position: center;
   display: block;
-  border-radius: calc(var(--radius-lg) - 4px);
   background: var(--color-bg);
 }
 
 .steam-video-logo {
   position: absolute;
-  inset: var(--space-4);
+  inset: 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 18%;
   pointer-events: none;
-}
-
-@media (min-width: 768px) {
-  .steam-video-logo {
-    inset: var(--space-6);
-  }
 }
 
 .steam-video-logo img {
@@ -4319,7 +4304,6 @@
   .steam-video-panel {
     flex: 0 0 45%;
     max-width: 45%;
-    padding: var(--space-6);
   }
 
   .steam-video {
@@ -4331,7 +4315,6 @@
   .steam-video-panel {
     flex: 0 0 50%;
     max-width: 50%;
-    padding: var(--space-6);
   }
 
   .steam-video {
@@ -4449,14 +4432,7 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: var(--color-surface);
-  padding: var(--space-4);
-}
-
-@media (min-width: 768px) {
-  .split-view-image-wrap {
-    padding: var(--space-6);
-  }
+  background: transparent;
 }
 
 .split-view-image {
