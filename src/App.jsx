@@ -103,7 +103,6 @@ export default function App() {
                   <Route path="cart" element={<StoreCart />} />
                   <Route path="checkout" element={<StoreCheckout />} />
                   <Route path="track" element={<StoreTrack />} />
-                  <Route path="track/:orderId" element={<StoreTrack />} />
                   <Route path="track/:code" element={<StoreTrack />} />
                   <Route path="about" element={<StoreAbout />} />
                   <Route path="events" element={<StoreEvents />} />

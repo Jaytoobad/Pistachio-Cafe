@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useDocumentTitle from '../../lib/hooks/useDocumentTitle';
 import { trackOrder } from '../services/tracking.index';
 import Stepper from '../components/Stepper';
 import StatusPill from '../../lib/components/StatusPill';
 import { formatMoney, formatAccra } from '../../lib/format';
+import { TRACK_ORDER_PAGE } from '../data/content';
 
 const POLL_MS = 12000;
 
@@ -16,24 +17,40 @@ export default function Track() {
   const [loading, setLoading] = useState(Boolean(code));
   const [error, setError] = useState(null);
   const [input, setInput] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastChecked, setLastChecked] = useState(null);
+  const requestIdRef = useRef(0);
   useDocumentTitle('Track Order | Pistachio Caf\u00e9');
 
-  const load = useCallback((lookupCode, lookupPhone) => {
-    let active = true;
-    setLoading(true);
+  const load = useCallback(async (lookupCode, lookupPhone, { showLoading = false, manual = false } = {}) => {
+    const requestId = ++requestIdRef.current;
+    if (showLoading) setLoading(true);
+    if (manual) setRefreshing(true);
     setError(null);
-    trackOrder(lookupCode, lookupPhone)
-      .then((data) => { if (active) setOrder(data ?? null); })
-      .catch(() => { if (active) setError('Could not look up this order. Try again.'); })
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
+    try {
+      const data = await trackOrder(lookupCode, lookupPhone);
+      if (requestId !== requestIdRef.current) return;
+      setOrder(data ?? null);
+      setLastChecked(new Date().toISOString());
+    } catch {
+      if (requestId === requestIdRef.current) {
+        setError(showLoading ? TRACK_ORDER_PAGE.lookupError : TRACK_ORDER_PAGE.refreshError);
+      }
+    } finally {
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    }
   }, []);
 
   useEffect(() => {
     if (!code) return;
     const storedPhone = localStorage.getItem(`pistachio:track:${code}`) || '';
     setPhone(storedPhone);
-    return load(code, storedPhone);
+    setInput(code);
+    load(code, storedPhone, { showLoading: true });
+    return () => { requestIdRef.current += 1; };
   }, [code, load]);
 
   useEffect(() => {
@@ -43,7 +60,7 @@ export default function Track() {
       load(code, phone);
     }, POLL_MS);
     return () => clearInterval(id);
-  }, [code, order, phone, load]);
+  }, [code, order?.status, phone, load]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -54,25 +71,59 @@ export default function Track() {
     navigate(`/track/${encodeURIComponent(c)}`);
   };
 
+  const handleRefresh = () => {
+    load(code, phone, { manual: true });
+  };
+
+  const guidance = order?.status === 'ready'
+    ? (order.fulfilment === 'delivery' ? TRACK_ORDER_PAGE.guidance.readyDelivery : TRACK_ORDER_PAGE.guidance.readyPickup)
+    : ({
+      received: TRACK_ORDER_PAGE.guidance.received,
+      confirmed: TRACK_ORDER_PAGE.guidance.confirmed,
+      preparing: TRACK_ORDER_PAGE.guidance.preparing,
+      out_for_delivery: TRACK_ORDER_PAGE.guidance.outForDelivery,
+      delivered: TRACK_ORDER_PAGE.guidance.delivered,
+      completed: TRACK_ORDER_PAGE.guidance.completed,
+      cancelled: TRACK_ORDER_PAGE.guidance.cancelled,
+    }[order?.status] || TRACK_ORDER_PAGE.guidance.default);
+
   const renderSearch = () => (
-    <section className="sf-section" style={{ textAlign: 'center', paddingTop: 40 }}>
-      <h1 className="text-charcoal font-serif">Track your order</h1>
-      <p className="text-muted text-sm" style={{ marginTop: 12, maxWidth: '40ch', marginInline: 'auto' }}>Enter your order code (e.g. PI-123456) and phone number to see its status.</p>
-      <form onSubmit={handleSearch} style={{ marginTop: 24, display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-        <input id="track-code" required value={input} onChange={(e) => setInput(e.target.value)} placeholder="Order code" style={{ minWidth: '140px', maxWidth: '100%', padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
-        <input id="track-phone" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" type="tel" style={{ minWidth: '160px', maxWidth: '100%', padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', background: '#fff', fontSize: '0.875rem' }} />
-        <button type="submit" className="btn btn-primary btn-cafe btn-cafe-primary">Track</button>
+    <section className="track-landing">
+      <div className="track-intro">
+        <p className="sf-hero-eyebrow">{TRACK_ORDER_PAGE.eyebrow}</p>
+        <h1 className="text-charcoal font-serif">{TRACK_ORDER_PAGE.heading}</h1>
+        <p className="text-muted text-sm">{TRACK_ORDER_PAGE.intro}</p>
+        <svg className="track-illustration" width="240" height="180" viewBox="0 0 240 180" fill="none" aria-hidden="true">
+          <path d="M66 51h89v105H66z" fill="var(--color-cream)" stroke="var(--color-border)" strokeWidth="2" />
+          <path d="M82 75h56M82 90h41M82 120h47" stroke="var(--color-border)" strokeWidth="4" strokeLinecap="round" />
+          <path d="M155 66h13l-6.5 9zM155 87h13l-6.5 9zM155 108h13l-6.5 9zM155 129h13l-6.5 9z" fill="var(--color-bg)" />
+          <path d="M29 111h125v28a15 15 0 0 1-15 15H44a15 15 0 0 1-15-15z" fill="var(--color-surface)" stroke="var(--color-sage)" strokeWidth="3" />
+          <path d="M154 117h19a18 18 0 0 1 0 36h-27" stroke="var(--color-sage)" strokeWidth="6" strokeLinecap="round" />
+          <path d="M67 98c-5-8 5-11 0-19M91 98c-5-8 5-11 0-19M115 98c-5-8 5-11 0-19" stroke="var(--color-ochre)" strokeWidth="3" strokeLinecap="round" />
+          <path d="M31 122h121" stroke="var(--color-cream-dim)" strokeWidth="3" />
+        </svg>
+      </div>
+      <form className="track-form" onSubmit={handleSearch}>
+        <label htmlFor="track-code">{TRACK_ORDER_PAGE.codeLabel}</label>
+        <input id="track-code" required value={input} onChange={(e) => setInput(e.target.value)} placeholder={TRACK_ORDER_PAGE.codePlaceholder} autoComplete="off" />
+        <p className="track-field-hint">{TRACK_ORDER_PAGE.codeHint}</p>
+        <label htmlFor="track-phone">{TRACK_ORDER_PAGE.phoneLabel}</label>
+        <input id="track-phone" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder={TRACK_ORDER_PAGE.phonePlaceholder} type="tel" autoComplete="tel" />
+        <p className="track-field-hint">{TRACK_ORDER_PAGE.privacyNote}</p>
+        <button type="submit" className="btn-cafe btn-cafe-primary">{TRACK_ORDER_PAGE.submit}</button>
       </form>
-      {error && <p className="text-muted text-sm" style={{ marginTop: 12, color: 'var(--color-error)' }}>{error}</p>}
     </section>
   );
 
-  if (!code) return <div className="sf-container min-h-dvh px-4 py-6">{renderSearch()}</div>;
+  if (!code) return <div className="sf-container min-h-dvh px-4 py-6"><div className="track-page">{renderSearch()}</div></div>;
 
-  if (loading) {
+  if (loading && !order) {
     return (
       <div className="sf-container min-h-dvh px-4 py-6">
-        <div className="sf-loading" style={{ textAlign: 'center' }}><div className="sf-spinner" aria-label="Loading" /></div>
+        <div className="track-loading" role="status">
+          <div className="sf-spinner" aria-hidden="true" />
+          <p>{TRACK_ORDER_PAGE.checking}</p>
+        </div>
       </div>
     );
   }
@@ -81,9 +132,10 @@ export default function Track() {
     return (
       <div className="sf-container min-h-dvh px-4 py-6">
         {renderSearch()}
-        <section className="sf-section" style={{ textAlign: 'center', marginTop: 32 }}>
-          <h2 className="text-charcoal font-serif" style={{ fontSize: '1.5rem', margin: '0 0 8px' }}>Order not found</h2>
-          <p className="text-muted text-sm" style={{ color: 'var(--color-text-muted)', marginTop: 4, maxWidth: '40ch', marginInline: 'auto' }}>We could not find an order with that code. Check your confirmation message and try again.</p>
+        <section className="track-not-found" role="status">
+          <h2 className="text-charcoal font-serif">{error ? TRACK_ORDER_PAGE.checkErrorHeading : TRACK_ORDER_PAGE.notFoundHeading}</h2>
+          <p className="text-muted text-sm">{error || TRACK_ORDER_PAGE.notFound}</p>
+          {error && <button type="button" className="btn-cafe btn-cafe-outline" onClick={() => load(code, phone, { showLoading: true })}>{TRACK_ORDER_PAGE.tryAgain}</button>}
         </section>
       </div>
     );
@@ -104,6 +156,27 @@ export default function Track() {
         </div>
 
         <Stepper currentStatus={order.status} />
+
+        <div className="track-update-panel" aria-live="polite" aria-atomic="true">
+          <div className="track-update-copy">
+            <h2>{TRACK_ORDER_PAGE.nextHeading}</h2>
+            <p>{guidance}</p>
+            <p className="track-last-checked">
+              {lastChecked
+                ? `${TRACK_ORDER_PAGE.lastChecked} ${formatAccra(lastChecked, { hour: 'numeric', minute: '2-digit' })}`
+                : TRACK_ORDER_PAGE.checking}
+              {!['completed', 'cancelled', 'delivered'].includes(order.status) && ` \u00b7 ${TRACK_ORDER_PAGE.autoRefresh}`}
+            </p>
+          </div>
+          <button type="button" className="track-refresh" onClick={handleRefresh} disabled={refreshing} aria-label={refreshing ? TRACK_ORDER_PAGE.refreshing : TRACK_ORDER_PAGE.refresh}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M20 7v5h-5M4 17v-5h5" />
+              <path d="M5.5 9a7 7 0 0 1 11.6-2L20 12M4 12l2.9 5a7 7 0 0 0 11.6-2" />
+            </svg>
+            <span>{refreshing ? TRACK_ORDER_PAGE.refreshing : TRACK_ORDER_PAGE.refresh}</span>
+          </button>
+          {error && <p className="track-refresh-error" role="alert">{error}</p>}
+        </div>
 
         <div style={{ marginTop: 24, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem' }}>
           <div>

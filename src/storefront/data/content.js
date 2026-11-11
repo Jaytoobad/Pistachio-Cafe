@@ -128,5 +128,42 @@ export const CONTACT_INTRO = 'Questions about an order, a large order or a booki
 
 export const DELIVERY_ZONES_TEXT = 'We deliver within Spintex and the surrounding Accra areas. The fee and the time shown at checkout come from the zone you pick.';
 
+export const TRACK_ORDER_PAGE = {
+  eyebrow: 'A little update from our kitchen',
+  heading: 'Track your order',
+  intro: 'Enter the order code from your confirmation and the phone number used at checkout.',
+  codeLabel: 'Order code',
+  phoneLabel: 'Phone number',
+  codePlaceholder: 'e.g. PI-123456',
+  phonePlaceholder: 'The number used at checkout',
+  submit: 'Track my order',
+  codeHint: 'Your order code is in your confirmation message.',
+  privacyNote: 'Your phone number helps us find the right order.',
+  refresh: 'Refresh status',
+  refreshing: 'Checking for updates',
+  checking: 'Checking for the latest order update...',
+  autoRefresh: 'Updates automatically every 12 seconds',
+  nextHeading: 'What happens next',
+  tryAgain: 'Try again',
+  lookupError: 'Could not look up this order. Try again.',
+  refreshError: 'We could not refresh your order. Please try again.',
+  checkErrorHeading: 'We could not check this order',
+  notFoundHeading: 'Order not found',
+  lastChecked: 'Last checked',
+  notFound: 'We could not find that order. Check the code and phone number from your confirmation, then try again.',
+  guidance: {
+    received: 'We have received your order. The cafe team will confirm it shortly.',
+    confirmed: 'Your order is confirmed. Our team is getting it ready.',
+    preparing: 'The kitchen is preparing your order fresh.',
+    readyPickup: 'Your order is ready for pickup at the cafe.',
+    readyDelivery: 'Your order is ready. Our team is arranging the delivery.',
+    outForDelivery: 'Your order is on its way to you.',
+    delivered: 'Your order has been delivered. We hope you enjoy it.',
+    completed: 'Your order is complete. Thanks for choosing Pistachio Cafe.',
+    cancelled: 'This order was cancelled. Contact the cafe if you need help.',
+    default: 'We are keeping an eye on your order. Check back for the next update.',
+  },
+};
+
 // There are no sample reviews. The storefront shows approved reviews from the
 // database and nothing else - never invented quotes.
