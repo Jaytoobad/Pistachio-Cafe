@@ -2806,7 +2806,8 @@
   }
 }
 
-.home-story-media {
+.home-story-media,
+.steam-video-panel {
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 12px;
@@ -2815,7 +2816,8 @@
 }
 
 @media (min-width: 768px) {
-  .home-story-media {
+  .home-story-media,
+  .steam-video-panel {
     padding: var(--space-6);
   }
 }
@@ -4276,15 +4278,11 @@
 .steam-video-panel {
   width: 100%;
   position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: transparent;
-  padding: var(--space-4);
 }
 
 .steam-video {
   width: 100%;
-  height: 260px;
+  height: 100%;
   object-fit: cover;
   object-position: center;
   display: block;
@@ -4323,11 +4321,6 @@
   .steam-video-panel {
     flex: 0 0 45%;
     max-width: 45%;
-    padding: var(--space-6);
-  }
-
-  .steam-video {
-    height: 420px;
   }
 }
 
@@ -4335,11 +4328,6 @@
   .steam-video-panel {
     flex: 0 0 50%;
     max-width: 50%;
-    padding: var(--space-6);
-  }
-
-  .steam-video {
-    height: 500px;
   }
 }
 

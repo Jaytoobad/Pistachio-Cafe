@@ -85,8 +85,10 @@ export const ABOUT_HERO = {
 // The story card under the about hero.
 export const ABOUT_STORY = {
   title: 'A neighbourhood table, done with care',
-  body: 'Pistachio is a neighbourhood kitchen in Spintex. Breakfast, brunch, coffee and desserts all come out of one kitchen, and we keep the doors open late at the weekend so the table keeps going.',
-  body2: 'Most plates are cooked to order, so a breakfast takes a few minutes longer than a takeaway. Order ahead and we will have it ready when you arrive.',
+  body: 'At Pistachio Cafe, a good day can begin with a cup of coffee and breakfast, turn into a long brunch, or find its sweet finish with dessert. Our cafe in Spintex brings these moments together in one welcoming neighbourhood spot.',
+  body2: 'Coffee, breakfast, brunch, desserts and shisha each have their place on the menu. Whether you are stopping in for a quick pick-up or settling in with friends, we want your visit to feel relaxed and thoughtfully made.',
+  body3: 'Most of our plates are prepared to order. That can mean a little extra time at the table, and it is part of serving food fresh. If you are on the way, order ahead for pickup or choose delivery across Accra.',
+  body4: 'When the weekend arrives, we keep the doors open later. We also host paint-and-sip evenings and other get-togethers, giving the neighbourhood another reason to share a table. At every hour, our aim is simple: good food, warm service and a cup worth coming back for.',
 };
 
 export const EVENTS_PAGE = {

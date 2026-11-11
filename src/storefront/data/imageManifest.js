@@ -5,6 +5,7 @@
 // instead of a broken image.
 export const LOCAL_IMAGE_FILES = [
   '/images/about-marble-bag.jpg',
+  '/images/about/story-cafe.jpg',
   '/images/about/story.jpg',
   '/images/brand/logo.png',
   '/images/brand/logo.svg',

@@ -21,7 +21,7 @@ export default function About() {
             </div>
           </div>
           <figure className="about-photo">
-            <img src={IMAGES.story} alt="Coffee served beside Pistachio Cafe packaging." loading="lazy" />
+            <img src={IMAGES.story} alt="Pistachio Cafe coffee cups served with a cookie and pistachios." loading="lazy" />
           </figure>
         </div>
       </section>
@@ -31,6 +31,8 @@ export default function About() {
           <h2>{ABOUT_STORY.title}</h2>
           <p>{ABOUT_STORY.body}</p>
           <p>{ABOUT_STORY.body2}</p>
+          <p>{ABOUT_STORY.body3}</p>
+          <p>{ABOUT_STORY.body4}</p>
           <Link to="/events" className="btn btn-outline">See cafe events</Link>
         </div>
       </section>

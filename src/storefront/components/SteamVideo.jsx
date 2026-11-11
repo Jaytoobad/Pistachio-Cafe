@@ -39,7 +39,6 @@ export default function SteamVideo() {
       { threshold: 0.15 }
     );
     observer.observe(video);
-    observer.observe(video);
     video.addEventListener('loadeddata', handleLoadedData);
 
     return () => {

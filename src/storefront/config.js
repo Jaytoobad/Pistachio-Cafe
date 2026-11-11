@@ -132,7 +132,7 @@ export const IMAGES = {
   heroImage: '/images/hero/hero.jpg',
   heroCoffee: '/images/hero-coffee-beans.jpg',
   // Story photo for the home page.
-  story: '/images/about/story.jpg',
+  story: '/images/about/story-cafe.jpg',
   // TODO: final about image
   about: '/images/about-marble-bag.jpg',
   // TODO: final menu imagery
